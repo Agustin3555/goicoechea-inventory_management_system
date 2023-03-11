@@ -19,9 +19,9 @@ interface IconStyleProvider {
   }
 }
 
-export const iconStyleAdapter = (props?: IconStyleProps): IconStyleProvider => {
+export const iconStyleAdapter = (style?: IconStyleProps): IconStyleProvider => {
   const normalizedProps: IconNormalizedStyleProps = {
-    size: props?.size || 'xs',
+    size: style?.size || 'xs',
   }
 
   // #region Auxiliary vars

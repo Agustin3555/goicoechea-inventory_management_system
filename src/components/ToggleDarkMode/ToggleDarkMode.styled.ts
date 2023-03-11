@@ -2,6 +2,7 @@ import {
   Color,
   colorAdapter,
   degAdapter,
+  fontSizeAdapter,
   microinteractionAdapter,
   notFontSizeAdapter,
 } from '@/styles'
@@ -28,7 +29,7 @@ interface ToggleDarkModeStyleProvider {
 export const toggleDarkModeStyleAdapter = (darkMode: boolean): ToggleDarkModeStyleProvider => {
   // #region Auxiliary vars
 
-  const dimension = notFontSizeAdapter('m')
+  const dimension = `calc(${fontSizeAdapter('s')} * 2 + ${fontSizeAdapter('m')})`
   const padding = notFontSizeAdapter('5xs')
   const buttonDimension = `calc(${dimension} - ${padding} * 2)`
   const buttonColorDark: Color = 'g-15'
@@ -70,7 +71,7 @@ export const StylizedToggleDarkMode = styled.div<{ p: ToggleDarkModeStyleProvide
   border-radius: ${notFontSizeAdapter('6xl')};
   background-color: ${({ p }) => p.backgroundColor};
   overflow: hidden;
-  transition: background-color ${microinteractionAdapter(3)} ease-out,
+  transition: background-color ${microinteractionAdapter(2)} ease-out,
     transform ${microinteractionAdapter(3)} ease-out;
 
   .checkbox {
@@ -89,7 +90,7 @@ export const StylizedToggleDarkMode = styled.div<{ p: ToggleDarkModeStyleProvide
     height: ${({ p }) => p.button.height};
     border-radius: ${notFontSizeAdapter('6xl')};
     background-color: ${({ p }) => p.button.backgroundColor};
-    transition: background-color ${microinteractionAdapter(3)} ease-out,
+    transition: background-color ${microinteractionAdapter(2)} ease-out,
       transform ${microinteractionAdapter(1)} ease-out;
 
     .sun-container,
@@ -100,9 +101,8 @@ export const StylizedToggleDarkMode = styled.div<{ p: ToggleDarkModeStyleProvide
       justify-content: center;
       width: 100%;
       height: 100%;
-      transition-property: opacity, transform;
-      transition-duration: ${microinteractionAdapter(3)};
-      transition-timing-function: ease-out;
+      transition: opacity ${microinteractionAdapter(3)} ease-out,
+        transform ${microinteractionAdapter(3)} ease-out;
     }
 
     .sun-container {
@@ -111,7 +111,7 @@ export const StylizedToggleDarkMode = styled.div<{ p: ToggleDarkModeStyleProvide
     }
 
     .moon-container {
-      color: ${colorAdapter('g-14')};
+      color: ${colorAdapter('g-12')};
       ${({ p }) => p.button.iconBContainer.deactivate}
     }
   }

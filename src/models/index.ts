@@ -1,2 +1,2 @@
-export * from './localStorageEntities.model'
+export * from './sections.model'
 export * from './users'

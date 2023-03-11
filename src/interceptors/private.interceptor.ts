@@ -1,8 +1,5 @@
-import { LocalStorageEntities } from '@/models'
+import { tokenEntity } from '@/services'
 import { privateInstance } from '@/services/instances'
-import { LocalStorageEntity } from '@/tools'
-
-const tokenEntity = new LocalStorageEntity<string>(LocalStorageEntities.TOKEN)
 
 export const PrivateInterceptor = () => {
   privateInstance.interceptors.request.use(config => {

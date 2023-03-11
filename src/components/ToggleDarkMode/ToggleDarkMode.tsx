@@ -26,10 +26,10 @@ const ToggleDarkMode = () => {
       />
       <div className="button">
         <div className="sun-container">
-          <Icon iconName="fa-solid fa-sun" styleProps={{ size: 's' }} />
+          <Icon iconName="fa-solid fa-sun" style={{ size: 'm' }} />
         </div>
         <div className="moon-container">
-          <Icon iconName="fa-solid fa-moon" styleProps={{ size: 's' }} />
+          <Icon iconName="fa-solid fa-moon" style={{ size: 'm' }} />
         </div>
       </div>
     </StylizedToggleDarkMode>

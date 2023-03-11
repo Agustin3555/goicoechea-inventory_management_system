@@ -16,6 +16,7 @@ type ButtonWidthProp = 'expanded' | NotFontSize
 export interface ButtonStyleProps {
   width?: ButtonWidthProp
   padding?: FontSize
+  tight?: boolean
   borderRadius?: NotFontSize
   backgroundColor: {
     dark: Color
@@ -26,6 +27,7 @@ export interface ButtonStyleProps {
 
 interface ButtonNormalizedStyleProps {
   padding: FontSize
+  tight: boolean
   borderRadius: NotFontSize
   backgroundColor: {
     dark: Color
@@ -53,6 +55,7 @@ export const buttonStyleAdapter = (
 ): ButtonStyleProvider => {
   const normalizedProps: ButtonNormalizedStyleProps = {
     padding: style.padding || 's',
+    tight: style.tight || false,
     borderRadius: style.borderRadius || '3xs',
     backgroundColor: {
       dark: style.backgroundColor.dark,
@@ -69,7 +72,9 @@ export const buttonStyleAdapter = (
 
   return {
     width: '',
-    padding: `${paddingTopBottom} calc(${paddingTopBottom} * 2)`,
+    padding: `${paddingTopBottom} ${
+      normalizedProps.tight ? '' : `calc(${paddingTopBottom} * 2)`
+    }`,
     borderRadius: notFontSizeAdapter(normalizedProps.borderRadius),
     backgroundColor: colorAdapter(
       darkMode ? normalizedProps.backgroundColor.dark : normalizedProps.backgroundColor.bright

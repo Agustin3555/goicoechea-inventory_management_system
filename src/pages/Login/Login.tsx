@@ -1,17 +1,13 @@
 import { Button, Icon, Input, SinglePageOnCard, Spinner } from '@/components'
 import { useDarkMode } from '@/hooks'
-import { LocalStorageEntities } from '@/models'
 import { createUser, resetUser } from '@/redux/states/user.state'
 import { PrivateRoutes } from '@/routes'
-import { AuthService, UsersService } from '@/services'
-import { LocalStorageEntity } from '@/tools'
+import { AuthService, tokenEntity, UsersService } from '@/services'
 import { ChangeEventHandler, FormEventHandler, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { loginStyleAdapter, StylizedLogin } from './Login.styled'
-
-const tokenEntity = new LocalStorageEntity<string>(LocalStorageEntities.TOKEN)
 
 const Login = () => {
   const darkMode = useDarkMode()
@@ -84,7 +80,7 @@ const Login = () => {
           </div>
           <div className="auth-error-container">
             <div className="auth-error" data-show={authError}>
-              Email o contraseña incorrecta
+              Email o contraseña incorrectos
             </div>
           </div>
           <Button
@@ -112,7 +108,7 @@ const Login = () => {
                     <Spinner />
                   ) : (
                     <>
-                      <Icon iconName="fa-solid fa-arrow-right" styleProps={{ size: 's' }} />
+                      <Icon iconName="fa-solid fa-arrow-right" style={{ size: 's' }} />
                       <span className="text">Acceder</span>
                     </>
                   )}

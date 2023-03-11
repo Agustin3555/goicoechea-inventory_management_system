@@ -1,9 +1,6 @@
-import { LocalStorageEntities, User, UserRole } from '@/models'
-import { LocalStorageEntity } from '@/tools'
+import { User, UserRole } from '@/models'
+import { tokenEntity, userEntity } from '@/services'
 import { createSlice } from '@reduxjs/toolkit'
-
-const userEntity = new LocalStorageEntity<User>(LocalStorageEntities.USER)
-const tokenEntity = new LocalStorageEntity<string>(LocalStorageEntities.TOKEN)
 
 const userEmptyState: User = {
   id: 0,

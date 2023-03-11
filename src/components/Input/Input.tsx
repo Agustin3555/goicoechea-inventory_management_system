@@ -1,5 +1,5 @@
 import { useDarkMode } from '@/hooks'
-import { ChangeEventHandler, InputHTMLAttributes } from 'react'
+import { InputHTMLAttributes } from 'react'
 import { inputStyleAdapter, StylizedInput, InputStyleProps } from './Input.styled'
 
 const Input = ({

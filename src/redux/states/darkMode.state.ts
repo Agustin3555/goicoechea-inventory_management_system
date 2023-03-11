@@ -1,9 +1,7 @@
-import { LocalStorageEntities } from '@/models'
-import { LocalStorageEntity } from '@/tools'
+import { darkModeEntity } from '@/services'
 import { createSlice } from '@reduxjs/toolkit'
 
 const defaultState = false
-const darkModeEntity = new LocalStorageEntity<boolean>(LocalStorageEntities.DARK_MODE)
 
 export const darkModeSlice = createSlice({
   name: 'darkMode',
