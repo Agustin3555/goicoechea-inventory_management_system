@@ -50,8 +50,6 @@ export const StylizedIcon = styled.div<{ p: IconStyleProvider }>`
 
   .icon {
     font-size: ${({ p }) => p.icon.fontSize};
-    transition-property: color;
-    transition-duration: ${microinteractionAdapter(2)};
-    transition-timing-function: ease-out;
+    transition: color ${microinteractionAdapter(2)} ease-out;
   }
 `

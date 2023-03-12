@@ -3,7 +3,7 @@ import { Sections } from '@/models'
 import { AppStore } from '@/redux/store'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { Section } from './components'
+import { Categories, Manufacturers, Me, Offers, Products, Sales, Users } from './components'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { mainStyleAdapter, StylizedMain } from './Main.styled'
 
@@ -12,15 +12,13 @@ const Main = () => {
 
   const sections = useMemo(
     () => ({
-      [Sections.SALES]: <Section sectionId={Sections.SALES} title="SALES" />,
-      [Sections.OFFERS]: <Section sectionId={Sections.OFFERS} title="OFFERS" />,
-      [Sections.PRODUCTS]: <Section sectionId={Sections.PRODUCTS} title="PRODUCTS" />,
-      [Sections.MANUFACTURERS]: (
-        <Section sectionId={Sections.MANUFACTURERS} title="MANUFACTURERS" />
-      ),
-      [Sections.CATEGORIES]: <Section sectionId={Sections.CATEGORIES} title="CATEGORIES" />,
-      [Sections.USERS]: <Section sectionId={Sections.USERS} title="USERS" />,
-      [Sections.ME]: <Section sectionId={Sections.ME} title="ME" />,
+      [Sections.SALES.key]: <Sales />,
+      [Sections.OFFERS.key]: <Offers />,
+      [Sections.PRODUCTS.key]: <Products />,
+      [Sections.MANUFACTURERS.key]: <Manufacturers />,
+      [Sections.CATEGORIES.key]: <Categories />,
+      [Sections.USERS.key]: <Users />,
+      [Sections.ME.key]: <Me />,
     }),
     []
   )

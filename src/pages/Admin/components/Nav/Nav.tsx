@@ -2,64 +2,51 @@ import { ToggleDarkMode } from '@/components'
 import { useDarkMode } from '@/hooks'
 import { Sections } from '@/models'
 import { AppStore } from '@/redux/store'
+import { exclude } from '@/tools'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { SectionButton } from './components'
 import { navStyleAdapter, StylizedNav } from './Nav.styled'
 
 const sections = {
-  sales: {
-    sectionId: Sections.SALES,
-    title: 'Ventas',
-    iconName: 'fa-solid fa-cash-register',
+  [Sections.SALES.key]: {
+    ...exclude(Sections.SALES, ['views']),
   },
-  offers: {
-    sectionId: Sections.OFFERS,
-    title: 'Ofertas',
-    iconName: 'fa-solid fa-fire',
+  [Sections.OFFERS.key]: {
+    ...exclude(Sections.OFFERS, ['views']),
   },
-  products: {
-    sectionId: Sections.PRODUCTS,
-    title: 'Productos',
-    iconName: 'fa-solid fa-boxes-stacked',
+  [Sections.PRODUCTS.key]: {
+    ...exclude(Sections.PRODUCTS, ['views']),
   },
-  manufactures: {
-    sectionId: Sections.MANUFACTURERS,
-    title: 'Fabricantes',
-    iconName: 'fa-solid fa-industry',
+  [Sections.MANUFACTURERS.key]: {
+    ...exclude(Sections.MANUFACTURERS, ['views']),
   },
-  categories: {
-    sectionId: Sections.CATEGORIES,
-    title: 'Categorías',
-    iconName: 'fa-solid fa-sitemap',
+  [Sections.CATEGORIES.key]: {
+    ...exclude(Sections.CATEGORIES, ['views']),
   },
-  users: {
-    sectionId: Sections.USERS,
-    title: 'Usuarios',
-    iconName: 'fa-solid fa-users',
+  [Sections.USERS.key]: {
+    ...exclude(Sections.USERS, ['views']),
   },
-  me: {
-    sectionId: Sections.ME,
-    title: 'Mi usuario',
-    iconName: 'fa-solid fa-user',
+  [Sections.ME.key]: {
+    ...exclude(Sections.ME, ['views']),
   },
 }
 
 const adminSections = [
-  sections.sales,
-  sections.offers,
-  sections.products,
-  sections.manufactures,
-  sections.categories,
-  sections.users,
+  sections[Sections.SALES.key],
+  sections[Sections.OFFERS.key],
+  sections[Sections.PRODUCTS.key],
+  sections[Sections.MANUFACTURERS.key],
+  sections[Sections.CATEGORIES.key],
+  sections[Sections.USERS.key],
 ]
 
 const employeeSections = [
-  sections.sales,
-  sections.offers,
-  sections.products,
-  sections.manufactures,
-  sections.categories,
+  sections[Sections.SALES.key],
+  sections[Sections.OFFERS.key],
+  sections[Sections.PRODUCTS.key],
+  sections[Sections.MANUFACTURERS.key],
+  sections[Sections.CATEGORIES.key],
 ]
 
 const Nav = () => {
@@ -81,8 +68,12 @@ const Nav = () => {
       <nav className="top">
         <ul className="items">
           {allowedUserSections.map(section => (
-            <li key={section.sectionId}>
-              <SectionButton {...section} />
+            <li key={section.key}>
+              <SectionButton
+                id={section.key}
+                title={section.title}
+                iconName={section.iconName}
+              />
             </li>
           ))}
         </ul>
@@ -91,8 +82,12 @@ const Nav = () => {
         <ToggleDarkMode />
         <nav>
           <ul className="items">
-            <li key={sections.me.sectionId}>
-              <SectionButton {...sections.me} />
+            <li key={Sections.ME.key}>
+              <SectionButton
+                id={Sections.ME.key}
+                title={Sections.ME.title}
+                iconName={Sections.ME.iconName}
+              />
             </li>
           </ul>
         </nav>

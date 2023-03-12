@@ -1,6 +1,5 @@
 import { Icon } from '@/components'
 import { useDarkMode } from '@/hooks'
-import { Sections } from '@/models'
 import { setSectionActive } from '@/redux/states/sectionActive.state'
 import { AppStore } from '@/redux/store'
 import { useCallback } from 'react'
@@ -8,30 +7,30 @@ import { useDispatch, useSelector } from 'react-redux'
 import { sectionButtonStyleAdapter, StylizedSectionButton } from './SectionButton.styled'
 
 const SectionButton = ({
-  sectionId,
+  id,
   title,
   iconName,
 }: {
-  sectionId: Sections
+  id: string
   title: string
   iconName: string
 }) => {
   const darkMode = useDarkMode()
   const dispatch = useDispatch()
-  const active = useSelector((store: AppStore) => store.sectionActive === sectionId)
+  const active = useSelector((store: AppStore) => store.sectionActive === id)
 
   const handleChange = useCallback(() => {
-    dispatch(setSectionActive(sectionId))
+    dispatch(setSectionActive(id))
   }, [])
 
   return (
     <StylizedSectionButton p={sectionButtonStyleAdapter(darkMode, active)}>
-      <label className="label" htmlFor={sectionId} />
+      <label className="label" htmlFor={id} />
       <input
         className="input"
         type="radio"
         name="section"
-        id={sectionId}
+        id={id}
         title={title}
         checked={active}
         onChange={handleChange}

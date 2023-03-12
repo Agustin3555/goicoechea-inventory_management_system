@@ -4,14 +4,11 @@ import {
   fontSizeAdapter,
   microinteractionAdapter,
   notFontSizeAdapter,
-  shadowAdapter,
 } from '@/styles'
 
 interface SectionStyleProvider {
   head: {
-    title: {
-      color: string
-    }
+    color: string
   }
   separator: {
     backgroundColor: string
@@ -23,9 +20,7 @@ export const sectionStyleAdapter = (darkMode: boolean): SectionStyleProvider => 
 
   return {
     head: {
-      title: {
-        color: colorAdapter(darkMode ? 'g-4' : 'g-12'),
-      },
+      color: colorAdapter(darkMode ? 'g-2' : 'g-14'),
     },
     separator: {
       backgroundColor: colorAdapter(darkMode ? 'g-8' : 'g-8'),
@@ -44,18 +39,22 @@ export const StylizedSection = styled.div<{ p: SectionStyleProvider }>`
     display: flex;
     align-items: center;
     gap: ${fontSizeAdapter('xs')};
+    color: ${({ p }) => p.head.color};
+    transition: color ${microinteractionAdapter(2)} ease-out;
 
     .separator {
       width: ${notFontSizeAdapter('6xs')};
-      height: ${fontSizeAdapter('s')};
+      height: ${fontSizeAdapter('xs')};
     }
 
     .title {
       width: 100%;
       font-size: ${fontSizeAdapter('m')};
-      line-height: ${fontSizeAdapter('m')};
-      color: ${({ p }) => p.head.title.color};
-      transition: color ${microinteractionAdapter(2)} ease-out;
+      line-height: initial;
+      font-weight: 500;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
   }
 
@@ -65,10 +64,44 @@ export const StylizedSection = styled.div<{ p: SectionStyleProvider }>`
     transition: background-color ${microinteractionAdapter(2)} ease-out;
   }
 
+  .animation-container {
+    width: 100%;
+    height: 100%;
+    transition: opacity ${microinteractionAdapter(1)} ease-out;
+  }
+
+  .fade-enter {
+    opacity: 0;
+  }
+
+  .fade-exit {
+    opacity: 1;
+  }
+
+  .fade-enter-active {
+    opacity: 1;
+  }
+
+  .fade-exit-active {
+    opacity: 0;
+  }
+
   @media (min-width: 90rem) {
     .head {
       .separator,
       .toggle-container {
+        display: none;
+      }
+    }
+  }
+
+  @media (max-width: 26.5625rem) {
+    .head {
+      .icon-container {
+        width: 100%;
+      }
+
+      .title {
         display: none;
       }
     }

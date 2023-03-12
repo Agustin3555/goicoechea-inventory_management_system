@@ -1,6 +1,7 @@
-import { Sections, User } from '@/models'
+import { User } from '@/models'
 import { configureStore } from '@reduxjs/toolkit'
 import {
+  activeViewsReducer,
   darkModeReducer,
   sectionActiveReducer,
   showNavReducer,
@@ -11,7 +12,8 @@ import {
 export interface AppStore {
   user: User
   darkMode: boolean
-  sectionActive: Sections
+  sectionActive: string
+  activeViews: { [x: string]: string }
   showNav: boolean
   showRightPanel: boolean
 }
@@ -21,6 +23,7 @@ export default configureStore<AppStore>({
     user: userReducer,
     darkMode: darkModeReducer,
     sectionActive: sectionActiveReducer,
+    activeViews: activeViewsReducer,
     showNav: showNavReducer,
     showRightPanel: showRightPanelReducer,
   },
