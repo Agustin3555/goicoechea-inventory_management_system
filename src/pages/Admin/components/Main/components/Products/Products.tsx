@@ -1,4 +1,5 @@
 import { Sections } from '@/models'
+import Search from '../Search/Search'
 import Section from '../Section/Section'
 
 const Products = () => {
@@ -10,7 +11,7 @@ const Products = () => {
       views={[
         {
           ...Sections.PRODUCTS.views.SEARCH,
-          component: <div>SEARCH</div>,
+          component: <Search />,
         },
         {
           ...Sections.PRODUCTS.views.NEW,

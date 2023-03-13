@@ -150,7 +150,7 @@ export const insetBorderAdapter = (
   width: NotFontSize,
   color: Color,
   alpha: Knob | number,
-  showsBorder: boolean[]
+  showsBorder: boolean[] = [true]
 ) => {
   let boxShadow = ''
 

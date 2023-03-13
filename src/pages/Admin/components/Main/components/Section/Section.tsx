@@ -1,4 +1,4 @@
-import { Icon } from '@/components'
+import { Icon, Separator } from '@/components'
 import { useDarkMode } from '@/hooks'
 import { AppStore } from '@/redux/store'
 import { useSelector } from 'react-redux'
@@ -33,18 +33,22 @@ const Section = ({
         <div className="toggle-container">
           <ToggleNav />
         </div>
-        <div className="separator" />
+        <div className="separator-container">
+          <Separator style={{ long: 'xs', backgroundColor: { dark: 'g-8' } }} />
+        </div>
         <div className="icon-container">
           <Icon iconName={iconName} style={{ size: 's' }} />
         </div>
         <h1 className="title">{title}</h1>
         <ViewSelector sectionId={id} views={views} />
-        <div className="separator" />
+        <div className="separator-container">
+          <Separator style={{ long: 'xs', backgroundColor: { dark: 'g-8' } }} />
+        </div>
         <div className="toggle-container">
           <ToggleRightPanel />
         </div>
       </div>
-      <div className="separator" />
+      <Separator style={{ invert: true, backgroundColor: { dark: 'g-8' } }} />
       <SwitchTransition>
         <CSSTransition
           key={activeView.id}

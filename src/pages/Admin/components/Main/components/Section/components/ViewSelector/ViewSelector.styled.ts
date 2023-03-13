@@ -14,11 +14,6 @@ interface ViewSelectorProvider {
     hover: {
       height: string
     }
-    selected: {
-      selectedSeparator: {
-        backgroundColor: string
-      }
-    }
     items: {
       item: {
         input: {
@@ -45,11 +40,6 @@ export const viewSelectorAdapter = (
       backgroundColor: colorAdapter(darkMode ? 'g-14' : 'g-0'),
       hover: {
         height: `calc(${fontSizeAdapter('xs')} * 3 * ${amountValues + 1})`,
-      },
-      selected: {
-        selectedSeparator: {
-          backgroundColor: colorAdapter(darkMode ? 'g-8' : 'g-8'),
-        },
       },
       items: {
         item: {
@@ -92,13 +82,6 @@ export const StylizedViewSelector = styled.div<{ p: ViewSelectorProvider }>`
         gap: ${fontSizeAdapter('xs')};
         width: 100%;
         transition: color ${microinteractionAdapter(2)} ease-out;
-      }
-
-      .selected-separator {
-        width: ${notFontSizeAdapter('6xs')};
-        height: ${fontSizeAdapter('xs')};
-        background-color: ${({ p }) =>
-          p.viewSelectorContainer.selected.selectedSeparator.backgroundColor};
       }
     }
 

@@ -14,24 +14,17 @@ interface GlobalStyleProvider {
   }
   scrollbar: {
     width: string
-    backgroundColor: string
   }
   scrollbarThumb: {
     backgroundColor: string
-    borderWidth: string
-    borderColor: string
     hover: {
-      borderColor: string
+      backgroundColor: string
     }
   }
 }
 
 export const GlobalStyleAdapter = (darkMode: boolean): GlobalStyleProvider => {
   // #region Auxiliary vars
-
-  const width = notFontSizeAdapter('3xs')
-  const padding = notFontSizeAdapter('3xs')
-  const backgroundColor = colorAdapter(darkMode ? 'g-16' : 'g-1')
 
   // #endregion
 
@@ -41,15 +34,12 @@ export const GlobalStyleAdapter = (darkMode: boolean): GlobalStyleProvider => {
       color: colorAdapter(darkMode ? 'g-4' : 'g-16'),
     },
     scrollbar: {
-      width: `calc(${width} + ${padding} * 2)`,
-      backgroundColor: backgroundColor,
+      width: notFontSizeAdapter('2xs'),
     },
     scrollbarThumb: {
-      backgroundColor: colorAdapter(darkMode ? 'g-14' : 'g-1'),
-      borderWidth: padding,
-      borderColor: backgroundColor,
+      backgroundColor: colorAdapter(darkMode ? 'g-14' : 'g-4'),
       hover: {
-        borderColor: colorAdapter(darkMode ? 'g-12' : 'g-1'),
+        backgroundColor: colorAdapter(darkMode ? 'g-12' : 'g-6'),
       },
     },
   }
@@ -75,18 +65,15 @@ export const StylizedGlobalStyle = createGlobalStyle<{ p: GlobalStyleProvider }>
 
   ::-webkit-scrollbar {
     width: ${({ p }) => p.scrollbar.width};
-    background-color: ${({ p }) => p.scrollbar.backgroundColor};
   }
 
   ::-webkit-scrollbar-thumb {
     background-color: ${({ p }) => p.scrollbarThumb.backgroundColor};
-    border-width: ${({ p }) => p.scrollbarThumb.borderWidth};
-    border-style: solid;
-    border-color: ${({ p }) => p.scrollbarThumb.borderColor};
+    border: 0;
     border-radius: ${notFontSizeAdapter('6xl')};
 
     :hover {
-      background-color: ${({ p }) => p.scrollbarThumb.hover.borderColor};
+      background-color: ${({ p }) => p.scrollbarThumb.hover.backgroundColor};
     }
   }
 `

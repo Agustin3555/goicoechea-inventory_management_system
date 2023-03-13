@@ -1,7 +1,7 @@
 import { toggleShowNav } from '@/redux/states/showNav.state'
 import { toggleShowRightPanel } from '@/redux/states/showRightPanel.state'
 import { AppStore } from '@/redux/store'
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { StylizedAdmin } from './Admin.styled'
 import { Main, Nav, RightPanel } from './components'

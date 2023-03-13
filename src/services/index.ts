@@ -1,4 +1,5 @@
 export * from './auth.service'
 export * from './instances'
 export * from './localStorageEntities.service'
+export * from './products.service'
 export * from './users.service'

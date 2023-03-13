@@ -1,4 +1,4 @@
-import { Icon } from '@/components'
+import { Icon, Separator } from '@/components'
 import { useDarkMode } from '@/hooks'
 import { setActiveViews } from '@/redux/states/activeViews.state'
 import { AppStore } from '@/redux/store'
@@ -43,7 +43,7 @@ const ViewSelector = ({
             <Icon iconName={selected.iconName} style={{ size: 'xs' }} />
             <span className="text">{selected.title}</span>
           </div>
-          <div className="selected-separator" />
+          <Separator style={{ backgroundColor: { dark: 'g-8' } }} />
           <Icon iconName="fa-solid fa-chevron-down" style={{ size: 'xs' }} />
         </div>
         <div className="items">
