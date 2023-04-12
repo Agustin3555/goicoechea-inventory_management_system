@@ -1,15 +1,12 @@
-import styled from 'styled-components'
+import styled, { FlattenSimpleInterpolation } from 'styled-components'
 import {
   Color,
   colorAdapter,
-  fontSizeAdapter,
-  insetBorderAdapter,
   microinteractionAdapter,
   NotFontSize,
   notFontSizeAdapter,
 } from '@/styles'
 
-type SeparatorFontSize = 'xs' | 's'
 type SeparatorLongProp = 'expanded' | NotFontSize
 
 export interface SeparatorStyleProps {
@@ -19,6 +16,7 @@ export interface SeparatorStyleProps {
     dark: Color
     bright?: Color
   }
+  styled?: FlattenSimpleInterpolation
 }
 
 interface SeparatorNormalizedStyleProps {
@@ -34,6 +32,7 @@ interface SeparatorStyleProvider {
   width: string
   height: string
   backgroundColor: string
+  styled?: FlattenSimpleInterpolation
 }
 
 export const separatorStyleAdapter = (
@@ -63,6 +62,7 @@ export const separatorStyleAdapter = (
     backgroundColor: colorAdapter(
       darkMode ? normalizedProps.backgroundColor.dark : normalizedProps.backgroundColor.bright
     ),
+    styled: style?.styled,
   }
 }
 
@@ -72,4 +72,6 @@ export const StylizedSeparator = styled.div<{ p: SeparatorStyleProvider }>`
   border-radius: ${notFontSizeAdapter('6xl')};
   background-color: ${({ p }) => p.backgroundColor};
   transition: background-color ${microinteractionAdapter(2)} ease-out;
+
+  ${({ p }) => p.styled};
 `

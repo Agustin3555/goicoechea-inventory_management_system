@@ -48,7 +48,10 @@ const Section = ({
           <ToggleRightPanel />
         </div>
       </div>
-      <Separator style={{ invert: true, backgroundColor: { dark: 'g-8' } }} />
+      {/* TODO: con esto se muestra el separator  */}
+      <div style={{ flexShrink: 1 }}>
+        <Separator style={{ invert: true, backgroundColor: { dark: 'g-8' } }} />
+      </div>
       <SwitchTransition>
         <CSSTransition
           key={activeView.id}

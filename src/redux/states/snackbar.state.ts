@@ -1,0 +1,74 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
+export enum MessageType {
+  info,
+  warning,
+  error,
+}
+
+interface MessageInfo {
+  text: string
+  type: MessageType
+}
+
+interface Message {
+  id: string
+  info: MessageInfo
+  screenTime: number
+}
+
+export interface Snackbar {
+  messages: Message[]
+}
+
+const defaultState: Snackbar = {
+  messages: [],
+}
+
+const readingTimeInMs = (text: string) => {
+  // Remover espacios en blanco al inicio y final del string
+  text = text.trim()
+
+  if (text === '') return 1000
+
+  const words = text.split(/\s+/).length
+
+  // Valor entre 200 a 400
+  const WORDS_PER_MINUTE = 300
+  // Valor entre 1 a 10
+  const READING_DIFFICULTY = 2.5
+
+  const readingTimeInMinutes = words / WORDS_PER_MINUTE
+
+  return Math.round(readingTimeInMinutes * 60 * 1000 * READING_DIFFICULTY)
+}
+
+export const snackbarSlice = createSlice({
+  name: 'snackbar',
+  initialState: defaultState,
+  reducers: {
+    enqueueMessage: (state, action: PayloadAction<MessageInfo>) => {
+      const messageInfo = action.payload
+      const currentTime = new Date()
+
+      const newMessage: Message = {
+        id:
+          currentTime.getHours().toString() +
+          currentTime.getMinutes().toString() +
+          currentTime.getSeconds().toString() +
+          currentTime.getMilliseconds().toString(),
+        info: messageInfo,
+        screenTime: readingTimeInMs(messageInfo.text),
+      }
+
+      state.messages.push(newMessage)
+    },
+    dequeueMessage: state => {
+      state.messages.shift()
+    },
+  },
+})
+
+export const { enqueueMessage, dequeueMessage } = snackbarSlice.actions
+
+export default snackbarSlice.reducer

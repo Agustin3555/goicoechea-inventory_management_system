@@ -101,12 +101,10 @@ export const StylizedButton = styled.button<{ p: ButtonStyleProvider }>`
   background-color: ${({ p }) => p.backgroundColor};
   cursor: pointer;
   transition: background-color ${microinteractionAdapter(2)} ease-out,
-    box-shadow ${microinteractionAdapter(2)} ease-out,
-    transform ${microinteractionAdapter(2)} ease-out;
+    box-shadow ${microinteractionAdapter(2)} ease-out;
 
   :hover {
     box-shadow: ${({ p }) => p.hover.boxShadow};
-    transform: scale(1.0125);
   }
 
   :active {

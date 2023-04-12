@@ -35,7 +35,7 @@ const SectionButton = ({
         checked={active}
         onChange={handleChange}
       />
-      <div className="fake">
+      <div className="fake-button">
         <Icon iconName={iconName} style={{ size: 'm' }} />
       </div>
     </StylizedSectionButton>

@@ -13,14 +13,14 @@ interface ToggleDarkModeStyleProvider {
   height: string
   padding: string
   backgroundColor: string
-  button: {
+  fakeButton: {
     width: string
     height: string
     backgroundColor: string
-    iconAContainer: {
+    sun: {
       deactivate?: FlattenSimpleInterpolation
     }
-    iconBContainer: {
+    moon: {
       deactivate?: FlattenSimpleInterpolation
     }
   }
@@ -49,14 +49,14 @@ export const toggleDarkModeStyleAdapter = (darkMode: boolean): ToggleDarkModeSty
     backgroundColor: darkMode
       ? colorAdapter(buttonColorDark, -2)
       : colorAdapter(buttonColorBright, -6),
-    button: {
+    fakeButton: {
       width: buttonDimension,
       height: buttonDimension,
       backgroundColor: colorAdapter(darkMode ? buttonColorDark : buttonColorBright),
-      iconAContainer: {
+      sun: {
         deactivate: darkMode ? undefined : deactivate,
       },
-      iconBContainer: {
+      moon: {
         deactivate: darkMode ? deactivate : undefined,
       },
     },
@@ -74,27 +74,25 @@ export const StylizedToggleDarkMode = styled.div<{ p: ToggleDarkModeStyleProvide
   transition: background-color ${microinteractionAdapter(2)} ease-out,
     transform ${microinteractionAdapter(3)} ease-out;
 
-  .checkbox {
+  .input {
     position: absolute;
-    z-index: 1;
-    inset: 0;
     width: 100%;
     height: 100%;
     appearance: none;
     cursor: pointer;
   }
 
-  .button {
+  .fake-button {
     position: absolute;
-    width: ${({ p }) => p.button.width};
-    height: ${({ p }) => p.button.height};
+    width: ${({ p }) => p.fakeButton.width};
+    height: ${({ p }) => p.fakeButton.height};
     border-radius: ${notFontSizeAdapter('6xl')};
-    background-color: ${({ p }) => p.button.backgroundColor};
+    background-color: ${({ p }) => p.fakeButton.backgroundColor};
     transition: background-color ${microinteractionAdapter(2)} ease-out,
       transform ${microinteractionAdapter(1)} ease-out;
 
-    .sun-container,
-    .moon-container {
+    .sun,
+    .moon {
       position: absolute;
       display: flex;
       align-items: center;
@@ -105,22 +103,22 @@ export const StylizedToggleDarkMode = styled.div<{ p: ToggleDarkModeStyleProvide
         transform ${microinteractionAdapter(3)} ease-out;
     }
 
-    .sun-container {
+    .sun {
       color: ${colorAdapter('g-4')};
-      ${({ p }) => p.button.iconAContainer.deactivate}
+      ${({ p }) => p.fakeButton.sun.deactivate}
     }
 
-    .moon-container {
+    .moon {
       color: ${colorAdapter('g-12')};
-      ${({ p }) => p.button.iconBContainer.deactivate}
+      ${({ p }) => p.fakeButton.moon.deactivate}
     }
-  }
-
-  :active .button {
-    transform: scale(87.5%);
   }
 
   :hover {
     transform: rotate(-22.5deg);
+  }
+
+  :active .fake-button {
+    transform: scale(87.5%);
   }
 `

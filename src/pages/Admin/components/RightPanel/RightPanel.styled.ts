@@ -33,7 +33,7 @@ export const rightPanelStyleAdapter = (
         ? `calc(
         100% -
           (
-            (${notFontSizeAdapter('2xs')} + ${fontSizeAdapter('s')}) * 2 +
+            (${fontSizeAdapter('xs')} + ${fontSizeAdapter('s')}) * 2 +
               ${fontSizeAdapter('m')}
           )
       )`
@@ -43,12 +43,16 @@ export const rightPanelStyleAdapter = (
 }
 
 export const StylizedRightPanel = styled.div<{ p: RightPanelStyleProvider }>`
-  position: fixed;
+  position: absolute;
+  top: 0;
   right: ${({ p }) => p.right};
   /* TODO: cambiar luego para que se adapte a su contenido */
   width: 200px;
   height: 100%;
   padding: ${notFontSizeAdapter('2xs')};
+  border-radius: calc(${notFontSizeAdapter('4xs')} + ${fontSizeAdapter('xs')});
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
   background-color: ${({ p }) => p.backgroundColor};
   box-shadow: ${({ p }) => p.boxShadow};
   transition: right ${microinteractionAdapter(2)} ease-out,
@@ -58,6 +62,8 @@ export const StylizedRightPanel = styled.div<{ p: RightPanelStyleProvider }>`
 
   @media (min-width: 90rem) {
     right: 0;
+    top: ${fontSizeAdapter('xs')};
+    height: calc(100% - ${fontSizeAdapter('xs')} * 2);
   }
 
   @media (max-width: 26.5625rem) {

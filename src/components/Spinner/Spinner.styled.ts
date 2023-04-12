@@ -1,18 +1,81 @@
 import styled from 'styled-components'
-import { colorAdapter, fontSizeAdapter, notFontSizeAdapter, shadowAdapter } from '@/styles'
+import {
+  Color,
+  colorAdapter,
+  fontSizeAdapter,
+  notFontSizeAdapter,
+  shadowAdapter,
+} from '@/styles'
 
-interface SpinnerStyleProvider {}
+export interface SpinnerStyleProps {
+  semicircleBackgroundColor?: {
+    dark?: Color
+    bright?: Color
+  }
+  lineBackgroundColor?: {
+    dark?: Color
+    bright?: Color
+  }
+}
 
-export const spinnerStyleAdapter = (darkMode: boolean): SpinnerStyleProvider => {
+interface SpinnerNormalizedStyleProps {
+  semicircleBackgroundColor: {
+    dark: Color
+    bright: Color
+  }
+  lineBackgroundColor: {
+    dark: Color
+    bright: Color
+  }
+}
+
+interface SpinnerStyleProvider {
+  before: {
+    backgroundColor: string
+  }
+  after: {
+    backgroundColor: string
+  }
+}
+
+export const spinnerStyleAdapter = (
+  darkMode: boolean,
+  style?: SpinnerStyleProps
+): SpinnerStyleProvider => {
+  const normalizedProps: SpinnerNormalizedStyleProps = {
+    semicircleBackgroundColor: {
+      dark: style?.semicircleBackgroundColor?.dark || 'g-0',
+      bright: style?.semicircleBackgroundColor?.bright || 'g-0',
+    },
+    lineBackgroundColor: {
+      dark: style?.lineBackgroundColor?.dark || 'g-14',
+      bright: style?.lineBackgroundColor?.bright || 'g-14',
+    },
+  }
+
   // #region Auxiliary vars
 
   // #endregion
 
-  return {}
+  return {
+    before: {
+      backgroundColor: colorAdapter(
+        darkMode
+          ? normalizedProps.semicircleBackgroundColor.dark
+          : normalizedProps.semicircleBackgroundColor.bright
+      ),
+    },
+    after: {
+      backgroundColor: colorAdapter(
+        darkMode
+          ? normalizedProps.lineBackgroundColor.dark
+          : normalizedProps.lineBackgroundColor.bright
+      ),
+    },
+  }
 }
 
-export const StylizedSpinner = styled.div<{ p?: SpinnerStyleProvider }>`
-  position: relative;
+export const StylizedSpinner = styled.div<{ p: SpinnerStyleProvider }>`
   width: ${fontSizeAdapter('s')};
   height: ${fontSizeAdapter('s')};
   animation: rotate 1.6s ease-in infinite alternate;
@@ -24,7 +87,7 @@ export const StylizedSpinner = styled.div<{ p?: SpinnerStyleProvider }>`
     bottom: 0;
     width: ${fontSizeAdapter('s')};
     height: calc(${fontSizeAdapter('s')} * 0.5);
-    background-color: ${colorAdapter('g-0')};
+    background-color: ${({ p }) => p.before.backgroundColor};
     border-radius: 0 0 ${notFontSizeAdapter('6xl')} ${notFontSizeAdapter('6xl')};
   }
 
@@ -36,7 +99,7 @@ export const StylizedSpinner = styled.div<{ p?: SpinnerStyleProvider }>`
     width: ${notFontSizeAdapter('5xs')};
     height: ${fontSizeAdapter('s')};
     border-radius: ${notFontSizeAdapter('6xl')};
-    background-color: ${colorAdapter('g-14')};
+    background-color: ${({ p }) => p.after.backgroundColor};
     animation: rotate 1.3s linear infinite alternate-reverse;
   }
 

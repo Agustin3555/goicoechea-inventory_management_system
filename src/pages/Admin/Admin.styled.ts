@@ -1,9 +1,18 @@
-import { colorAdapter, microinteractionAdapter } from '@/styles'
+import {
+  colorAdapter,
+  fontSizeAdapter,
+  microinteractionAdapter,
+  notFontSizeAdapter,
+  shadowAdapter,
+} from '@/styles'
 import styled from 'styled-components'
 
 export const StylizedAdmin = styled.div`
+  position: relative;
+
   .deep-touch {
     position: absolute;
+    top: 0;
     width: 100%;
     height: 100%;
     background-color: ${colorAdapter('g-19')};

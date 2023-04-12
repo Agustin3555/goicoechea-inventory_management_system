@@ -1,5 +1,3 @@
-export * from './auth.service'
-export * from './instances'
-export * from './localStorageEntities.service'
-export * from './products.service'
+export * from './auths.service'
+export * from './localStorage'
 export * from './users.service'

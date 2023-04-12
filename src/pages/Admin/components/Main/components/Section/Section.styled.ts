@@ -26,7 +26,6 @@ export const StylizedSection = styled.div<{ p: SectionStyleProvider }>`
   display: flex;
   flex-direction: column;
   gap: ${fontSizeAdapter('xs')};
-  width: 100%;
   height: 100%;
 
   .head {
@@ -48,8 +47,6 @@ export const StylizedSection = styled.div<{ p: SectionStyleProvider }>`
   }
 
   .animation-container {
-    position: relative;
-    width: 100%;
     height: 100%;
     transition: opacity ${microinteractionAdapter(1)} ease-out;
   }

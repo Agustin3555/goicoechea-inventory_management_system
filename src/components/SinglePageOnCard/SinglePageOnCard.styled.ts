@@ -34,7 +34,6 @@ export const singlePageOnCardStyleAdapter = (
 }
 
 export const StylizedSinglePageOnCard = styled.div<{ p: SinglePageOnCardStyleProvider }>`
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -1,15 +1,18 @@
 import { Button, Icon, Input, Separator, Spinner } from '@/components'
 import { useDarkMode } from '@/hooks'
-import { ProductsService } from '@/services'
+import { setSearchedData } from '@/redux/states/searchedData.state'
+import { AppStore } from '@/redux/store'
 import { FormEventHandler, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
-import { Checkbox } from './components'
+import { Checkbox, Item } from './components'
 import { searchStyleAdapter, StylizedSearch } from './Search.styled'
 
 const Search = ({ sectionId }: { sectionId: string }) => {
   const darkMode = useDarkMode()
   const [loading, setLoading] = useState(false)
-  const [items, setItems] = useState([])
+  const items = useSelector((store: AppStore) => store.searchedData['products'])
+  const dispatch = useDispatch()
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event: any) => {
     event.preventDefault()
@@ -17,9 +20,8 @@ const Search = ({ sectionId }: { sectionId: string }) => {
     setLoading(true)
 
     try {
-      const products = await ProductsService.findAll()
-
-      setItems(products)
+      // const products = await ProductsService.findAll()
+      // dispatch(setSearchedData({ sectionId: 'products', data: products }))
     } catch (error) {
     } finally {
       setLoading(false)
@@ -76,7 +78,7 @@ const Search = ({ sectionId }: { sectionId: string }) => {
       </div>
       <div className="items">
         {items.map(item => (
-          <li>{JSON.stringify(item.name)}</li>
+          <Item key={item.data.id} id={item.data.id as number} title={item.data.name} />
         ))}
       </div>
     </StylizedSearch>

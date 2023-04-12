@@ -10,11 +10,11 @@ import {
 interface SectionButtonStyleProvider {
   hover: {
     transform: string
-    fake: {
+    fakeButton: {
       boxShadow: string
     }
   }
-  fake: {
+  fakeButton: {
     color: string
     backgroundColor: string
   }
@@ -31,11 +31,11 @@ export const sectionButtonStyleAdapter = (
   return {
     hover: {
       transform: active ? '' : 'scale(1.025)',
-      fake: {
+      fakeButton: {
         boxShadow: active ? '' : shadowAdapter(2),
       },
     },
-    fake: {
+    fakeButton: {
       color: colorAdapter(active ? 'g-0' : darkMode ? 'g-4' : 'g-12'),
       backgroundColor: colorAdapter(active ? 'a' : darkMode ? 'g-14' : 'g-0'),
     },
@@ -44,7 +44,6 @@ export const sectionButtonStyleAdapter = (
 
 export const StylizedSectionButton = styled.div<{ p: SectionButtonStyleProvider }>`
   position: relative;
-  transition: transform ${microinteractionAdapter(2)} ease-out;
 
   .input {
     position: absolute;
@@ -58,20 +57,16 @@ export const StylizedSectionButton = styled.div<{ p: SectionButtonStyleProvider 
     }
   }
 
-  .fake {
+  .fake-button {
     padding: ${fontSizeAdapter('s')};
-    color: ${({ p }) => p.fake.color};
+    color: ${({ p }) => p.fakeButton.color};
     border-radius: ${notFontSizeAdapter('3xs')};
-    background-color: ${({ p }) => p.fake.backgroundColor};
+    background-color: ${({ p }) => p.fakeButton.backgroundColor};
     transition: background-color ${microinteractionAdapter(2)} ease-out,
       box-shadow ${microinteractionAdapter(2)} ease-out;
   }
 
-  :hover {
-    transform: ${({ p }) => p.hover.transform};
-
-    .fake {
-      box-shadow: ${({ p }) => p.hover.fake.boxShadow};
-    }
+  :hover .fake-button {
+    box-shadow: ${({ p }) => p.hover.fakeButton.boxShadow};
   }
 `

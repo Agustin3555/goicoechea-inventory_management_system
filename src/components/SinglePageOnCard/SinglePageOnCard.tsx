@@ -1,4 +1,4 @@
-import { Panel, ToggleDarkMode } from '@/components'
+import { ToggleDarkMode } from '@/components'
 import { useDarkMode } from '@/hooks'
 import {
   singlePageOnCardStyleAdapter,

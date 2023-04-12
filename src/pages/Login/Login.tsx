@@ -2,7 +2,7 @@ import { Button, Icon, Input, SinglePageOnCard, Spinner } from '@/components'
 import { useDarkMode } from '@/hooks'
 import { createUser, resetUser } from '@/redux/states/user.state'
 import { PrivateRoutes } from '@/routes'
-import { AuthService, tokenEntity, UsersService } from '@/services'
+import { AuthService, UsersService, tokenEntity } from '@/services'
 import { ChangeEventHandler, FormEventHandler, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -37,11 +37,10 @@ const Login = () => {
     setLoading(true)
     setAuthError(false)
 
-    const { email, password } = formValues
-
     try {
-      const token = await AuthService.login(email, password)
-      tokenEntity.set(token)
+      const token = await AuthService.login(formValues)
+
+      token && tokenEntity.set(token.token)
 
       const user = await UsersService.me()
       dispatch(createUser(user))
@@ -49,9 +48,9 @@ const Login = () => {
       navigate(`/${PrivateRoutes.ADMIN}`, { replace: true })
     } catch (error) {
       setAuthError(true)
-    } finally {
-      setLoading(false)
     }
+
+    setLoading(false)
   }
 
   return (

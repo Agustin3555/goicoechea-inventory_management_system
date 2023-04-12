@@ -243,6 +243,13 @@ export const insetBorderAdapter = (
   return boxShadow
 }
 
+export const borderAdapter = (width: NotFontSize, color: Color, alpha: Knob | number) => {
+  const finalColor = colorWithAlpha(color, alpha)
+  const finalWidth = notFontSizeAdapter(width)
+
+  return `${finalWidth} solid ${finalColor}`
+}
+
 export const borderRadiusAdapter = (...borderRadius: NotFontSize[]) => {
   const a = borderRadius[0] !== undefined ? notFontSizeAdapter(borderRadius[0]) : ''
   const b = borderRadius[1] !== undefined ? notFontSizeAdapter(borderRadius[1]) : ''
@@ -254,8 +261,8 @@ export const borderRadiusAdapter = (...borderRadius: NotFontSize[]) => {
 
 // TODO: test
 
-export const colorWithAlpha = (valueColor: Color, alpha: Knob | number) => {
-  let finalColor = colorAdapter(valueColor)
+export const colorWithAlpha = (valueColor: Color, alpha: Knob | number, gap?: number) => {
+  let finalColor = colorAdapter(valueColor, gap)
   if (finalColor === '') return ''
 
   finalColor = getCSSVarValue(finalColor.slice(4, -1))
@@ -268,7 +275,13 @@ export const colorWithAlpha = (valueColor: Color, alpha: Knob | number) => {
 
   // TODO: hacer los otros sistemas de colores
 
-  if (finalColor.includes('#')) return finalColor + Math.trunc(alpha * 255).toString(16)
+  if (finalColor.includes('#')) {
+    let hexAlpha = Math.trunc(alpha * 255).toString(16)
+
+    if (hexAlpha.length < 2) hexAlpha = `0${hexAlpha}`
+
+    return `${finalColor}${hexAlpha}`
+  }
 
   return ''
 }

@@ -1,12 +1,12 @@
 import { BrowserRouter, Navigate, Route } from 'react-router-dom'
 import { Admin, Login } from './pages'
 import { Provider } from 'react-redux'
-import store from './redux/store'
 import { AuthGuard } from './guards'
 import { PrivateRoutes, PublicRoutes } from './routes'
-import { RoutesWithNotFound } from './components'
+import { RoutesWithNotFound, Snackbar } from './components'
 import { GlobalStyle } from './styles'
 import { StylizedApp } from './App.styled'
+import { store } from './redux'
 
 const App = () => {
   return (
@@ -26,6 +26,7 @@ const App = () => {
             </Route>
           </RoutesWithNotFound>
         </BrowserRouter>
+        <Snackbar />
       </Provider>
     </StylizedApp>
   )

@@ -1,7 +1,7 @@
-import { User } from '@/models'
+import { User_FullData } from '@/models'
 import { LocalStorageEntity } from '@/tools'
 
-export const userEntity = new LocalStorageEntity<User>('user')
+export const userEntity = new LocalStorageEntity<User_FullData>('user')
 export const tokenEntity = new LocalStorageEntity<string>('token')
 export const darkModeEntity = new LocalStorageEntity<boolean>('dark-mode')
 export const sectionActiveEntity = new LocalStorageEntity<string>('section-active')

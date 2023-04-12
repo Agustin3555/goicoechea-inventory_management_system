@@ -86,7 +86,6 @@ export const StylizedViewSelector = styled.div<{ p: ViewSelectorProvider }>`
     }
 
     .items {
-      position: relative;
       display: flex;
       flex-direction: column;
       height: 0;
@@ -96,6 +95,7 @@ export const StylizedViewSelector = styled.div<{ p: ViewSelectorProvider }>`
 
         .input {
           position: absolute;
+          z-index: 1;
           width: 100%;
           height: 100%;
           opacity: 0;

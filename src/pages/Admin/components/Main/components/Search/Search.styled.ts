@@ -17,13 +17,10 @@ export const searchStyleAdapter = (darkMode: boolean): SearchStyleProvider => {
 }
 
 export const StylizedSearch = styled.div<{ p: SearchStyleProvider }>`
-  position: absolute;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
   gap: ${fontSizeAdapter('xs')};
   height: 100%;
-  width: 100%;
 
   .search-head {
     display: flex;
@@ -69,6 +66,8 @@ export const StylizedSearch = styled.div<{ p: SearchStyleProvider }>`
     display: flex;
     flex-direction: column;
     gap: ${fontSizeAdapter('xs')};
+    height: calc(100% - ${fontSizeAdapter('xs')} - 114px);
     overflow-y: scroll;
+    padding-right: ${fontSizeAdapter('xs')};
   }
 `

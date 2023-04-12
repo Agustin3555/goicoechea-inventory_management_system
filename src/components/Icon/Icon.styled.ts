@@ -1,8 +1,9 @@
-import styled from 'styled-components'
+import styled, { FlattenSimpleInterpolation } from 'styled-components'
 import { FontSize, fontSizeAdapter, microinteractionAdapter } from '@/styles'
 
 export interface IconStyleProps {
   size?: FontSize
+  styled?: FlattenSimpleInterpolation
 }
 
 interface IconNormalizedStyleProps {
@@ -10,13 +11,12 @@ interface IconNormalizedStyleProps {
 }
 
 interface IconStyleProvider {
-  this: {
-    width: string
-    height: string
-  }
+  width: string
+  height: string
   icon: {
     fontSize: string
   }
+  styled?: FlattenSimpleInterpolation
 }
 
 export const iconStyleAdapter = (style?: IconStyleProps): IconStyleProvider => {
@@ -31,13 +31,12 @@ export const iconStyleAdapter = (style?: IconStyleProps): IconStyleProvider => {
   // #endregion
 
   return {
-    this: {
-      width: size,
-      height: size,
-    },
+    width: size,
+    height: size,
     icon: {
       fontSize: size,
     },
+    styled: style?.styled,
   }
 }
 
@@ -45,11 +44,13 @@ export const StylizedIcon = styled.div<{ p: IconStyleProvider }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${({ p }) => p.this.width};
-  height: ${({ p }) => p.this.height};
+  width: ${({ p }) => p.width};
+  height: ${({ p }) => p.height};
 
   .icon {
     font-size: ${({ p }) => p.icon.fontSize};
     transition: color ${microinteractionAdapter(2)} ease-out;
   }
+
+  ${({ p }) => p.styled};
 `

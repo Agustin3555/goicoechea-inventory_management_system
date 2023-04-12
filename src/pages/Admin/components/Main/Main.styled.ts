@@ -15,11 +15,11 @@ interface MainStyleProvider {
 export const mainStyleAdapter = (darkMode: boolean): MainStyleProvider => {
   // #region Auxiliary vars
 
-  const paddingTopBottom = notFontSizeAdapter('2xs')
-  const paddingLeft = `calc(${notFontSizeAdapter('2xs')} * 3 + ${fontSizeAdapter(
+  const paddingTopBottom = fontSizeAdapter('xs')
+  const paddingLeft = `calc(${fontSizeAdapter('xs')} * 3 + ${fontSizeAdapter(
     's'
   )} * 2 + ${fontSizeAdapter('m')})`
-  const paddingRight = `calc(${notFontSizeAdapter('2xs')} + 200px)`
+  const paddingRight = `calc(${fontSizeAdapter('xs')} + 200px)`
 
   // #endregion
 
@@ -30,14 +30,11 @@ export const mainStyleAdapter = (darkMode: boolean): MainStyleProvider => {
 }
 
 export const StylizedMain = styled.div<{ p: MainStyleProvider }>`
-  position: absolute;
-  width: 100%;
-  height: 100%;
+  height: 100vh;
   padding: ${({ p }) => p.padding};
   transition: padding ${microinteractionAdapter(2)} ease-out;
 
   .container {
-    width: 100%;
     height: 100%;
     padding: ${fontSizeAdapter('xs')};
     border-radius: calc(${notFontSizeAdapter('4xs')} + ${fontSizeAdapter('xs')});
@@ -47,7 +44,6 @@ export const StylizedMain = styled.div<{ p: MainStyleProvider }>`
       background-color ${microinteractionAdapter(2)} ease-out;
 
     .animation-container {
-      width: 100%;
       height: 100%;
       transition: opacity ${microinteractionAdapter(1)} ease-out;
     }
@@ -70,8 +66,8 @@ export const StylizedMain = styled.div<{ p: MainStyleProvider }>`
   }
 
   @media (max-width: 89.9375rem) {
-    padding-right: ${notFontSizeAdapter('2xs')};
-    padding-left: ${notFontSizeAdapter('2xs')};
+    padding-right: ${fontSizeAdapter('xs')};
+    padding-left: ${fontSizeAdapter('xs')};
   }
 
   @media (max-width: 26.5625rem) {
