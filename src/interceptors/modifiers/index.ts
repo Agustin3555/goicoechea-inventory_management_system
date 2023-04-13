@@ -1,2 +1,2 @@
 export * from './addToken'
-export * from './showError'
+export * from './catchError'

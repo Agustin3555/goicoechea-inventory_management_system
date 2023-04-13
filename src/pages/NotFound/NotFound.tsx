@@ -1,6 +1,6 @@
 import { Button, Icon, SinglePageOnCard } from '@/components'
 import { useDarkMode } from '@/hooks'
-import { PrivateRoutes } from '@/routes'
+import { PRIVATE_ROUTES } from '@/routes'
 import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { notFoundStyleAdapter, StylizedNotFound } from './NotFound.styled'
@@ -9,7 +9,7 @@ const NotFound = () => {
   const darkMode = useDarkMode()
   const navigate = useNavigate()
 
-  const handleGoBack = useCallback(() => navigate(PrivateRoutes.ADMIN, { replace: true }), [])
+  const handleGoBack = useCallback(() => navigate(PRIVATE_ROUTES.admin, { replace: true }), [])
 
   return (
     <StylizedNotFound p={notFoundStyleAdapter(darkMode)}>

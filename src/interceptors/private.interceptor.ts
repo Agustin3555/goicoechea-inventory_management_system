@@ -1,7 +1,7 @@
 import { privateInstance } from '@/tools'
-import { addToken, showError } from './modifiers'
+import { addToken, catchError } from './modifiers'
 
 export const PrivateInterceptor = () => {
-  privateInstance.interceptors.response.use(undefined, showError)
+  privateInstance.interceptors.response.use(undefined, catchError)
   privateInstance.interceptors.request.use(addToken)
 }

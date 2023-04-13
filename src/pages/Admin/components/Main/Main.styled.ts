@@ -30,7 +30,7 @@ export const mainStyleAdapter = (darkMode: boolean): MainStyleProvider => {
 }
 
 export const StylizedMain = styled.div<{ p: MainStyleProvider }>`
-  height: 100vh;
+  height: 100%;
   padding: ${({ p }) => p.padding};
   transition: padding ${microinteractionAdapter(2)} ease-out;
 

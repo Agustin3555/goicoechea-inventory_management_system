@@ -36,7 +36,7 @@ const readingTimeInMs = (text: string) => {
   // Valor entre 200 a 400
   const WORDS_PER_MINUTE = 300
   // Valor entre 1 a 10
-  const READING_DIFFICULTY = 2.5
+  const READING_DIFFICULTY = 3.75
 
   const readingTimeInMinutes = words / WORDS_PER_MINUTE
 

@@ -1,14 +1,9 @@
-import {
-  colorAdapter,
-  fontSizeAdapter,
-  microinteractionAdapter,
-  notFontSizeAdapter,
-  shadowAdapter,
-} from '@/styles'
+import { colorAdapter, microinteractionAdapter } from '@/styles'
 import styled from 'styled-components'
 
 export const StylizedAdmin = styled.div`
   position: relative;
+  height: 100%;
 
   .deep-touch {
     position: absolute;

@@ -1,3 +1,3 @@
-export enum PublicRoutes {
-  LOGIN = 'login',
+export enum PUBLIC_ROUTES {
+  login = 'login',
 }

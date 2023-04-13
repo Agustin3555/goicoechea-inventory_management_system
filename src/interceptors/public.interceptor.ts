@@ -1,6 +1,6 @@
 import { publicInstance } from '@/tools'
-import { showError } from './modifiers'
+import { catchError } from './modifiers'
 
 export const PublicInterceptor = () => {
-  publicInstance.interceptors.response.use(undefined, showError)
+  publicInstance.interceptors.response.use(undefined, catchError)
 }

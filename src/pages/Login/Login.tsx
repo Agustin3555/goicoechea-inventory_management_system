@@ -1,13 +1,14 @@
 import { Button, Icon, Input, SinglePageOnCard, Spinner } from '@/components'
 import { useDarkMode } from '@/hooks'
-import { createUser, resetUser } from '@/redux/states/user.state'
-import { PrivateRoutes } from '@/routes'
+import { MessageType, createUser, enqueueMessage, resetUser } from '@/redux'
+import { PRIVATE_ROUTES } from '@/routes'
 import { AuthService, UsersService, tokenEntity } from '@/services'
 import { ChangeEventHandler, FormEventHandler, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { loginStyleAdapter, StylizedLogin } from './Login.styled'
+import { AppError, ERRORS, getErrorInterpretation } from '@/tools'
 
 const Login = () => {
   const darkMode = useDarkMode()
@@ -37,17 +38,29 @@ const Login = () => {
     setLoading(true)
     setAuthError(false)
 
-    try {
-      const token = await AuthService.login(formValues)
+    const loginResponse = await AuthService.login(formValues)
 
-      token && tokenEntity.set(token.token)
+    if (!loginResponse) {
+      setLoading(false)
+    } else if (loginResponse instanceof AppError) {
+      if (loginResponse.code === ERRORS.login) setAuthError(true)
+    } else {
+      tokenEntity.set(loginResponse.token)
 
-      const user = await UsersService.me()
-      dispatch(createUser(user))
+      const userResponse = await UsersService.me()
 
-      navigate(`/${PrivateRoutes.ADMIN}`, { replace: true })
-    } catch (error) {
-      setAuthError(true)
+      if (userResponse) {
+        dispatch(createUser(userResponse))
+
+        dispatch(
+          enqueueMessage({
+            text: 'Logueado con éxito',
+            type: MessageType.info,
+          })
+        )
+
+        navigate(`/${PRIVATE_ROUTES.admin}`, { replace: true })
+      }
     }
 
     setLoading(false)
@@ -79,7 +92,7 @@ const Login = () => {
           </div>
           <div className="auth-error-container">
             <div className="auth-error" data-show={authError}>
-              Email o contraseña incorrectos
+              {getErrorInterpretation(ERRORS.login)}
             </div>
           </div>
           <Button

@@ -1,3 +1,3 @@
-export enum PrivateRoutes {
-  ADMIN = 'admin',
+export enum PRIVATE_ROUTES {
+  admin = 'admin',
 }
