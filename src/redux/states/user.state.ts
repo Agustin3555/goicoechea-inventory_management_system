@@ -1,4 +1,4 @@
-import { User_FullData, USER_ROLE } from '@/models'
+import { User_FullData, ROLE } from '@/models'
 import { tokenEntity, userEntity } from '@/services'
 import { createSlice } from '@reduxjs/toolkit'
 
@@ -7,7 +7,7 @@ const userEmptyState: User_FullData = {
   name: '',
   lastName: null,
   email: '',
-  role: USER_ROLE.employee,
+  role: ROLE.employee,
   createdAt: '',
   updatedAt: null,
 }

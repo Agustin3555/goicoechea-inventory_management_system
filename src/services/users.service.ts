@@ -1,61 +1,61 @@
-import { getAllAdapter, getOneAdapter, meAdapter, newAdapter, updateAdapter } from '@/adapters'
-import { User_NewData, User_UpdateData } from '@/models'
-import { privateInstance } from '@/tools'
+import { UserAdapters } from '@/adapters'
+import { UserModels } from '@/models'
+import { AppError, privateInstance } from '@/tools'
 
 const collection = '/users'
 
-export class UsersService {
-  static async me() {
+export namespace UserServices {
+  export const me = async () => {
     const response = await privateInstance.get(`${collection}/me`)
-    if (!response) return undefined
+    if (!response || response instanceof AppError) return response as AppError
 
-    const adaptedResponse = meAdapter.output(response.data)
+    const adaptedResponse = UserAdapters.me.output(response.data)
     return adaptedResponse
   }
 
-  static async getAll() {
+  export const getAll = async () => {
     const response = await privateInstance.get(collection)
-    if (!response) return undefined
+    if (!response || response instanceof AppError) return response as AppError
 
-    const adaptedResponse = getAllAdapter.output(response.data)
+    const adaptedResponse = UserAdapters.getAll.output(response.data)
     return adaptedResponse
   }
 
-  static async getOne(params: { id: number }) {
+  export const getOne = async (params: { id: number }) => {
     const { id } = params
 
     const response = await privateInstance.get(`${collection}/${id}`)
-    if (!response) return undefined
+    if (!response || response instanceof AppError) return response as AppError
 
-    const adaptedResponse = getOneAdapter.output(response.data)
+    const adaptedResponse = UserAdapters.getOne.output(response.data)
     return adaptedResponse
   }
 
-  static async new(data: User_NewData) {
-    const adaptedInput = newAdapter.input(data)
+  export const create = async (data: UserModels.CreateData) => {
+    const adaptedInput = UserAdapters.create.input(data)
 
     const response = await privateInstance.post(collection, adaptedInput)
-    if (!response) return undefined
+    if (!response || response instanceof AppError) return response as AppError
 
     return true
   }
 
-  static async update(data: User_UpdateData, params: { id: number }) {
+  export const update = async (data: UserModels.UpdateData, params: { id: number }) => {
     const { id } = params
-    const adaptedInput = updateAdapter.input(data)
+    const adaptedInput = UserAdapters.update.input(data)
 
     const response = await privateInstance.put(`${collection}/${id}`, adaptedInput)
-    if (!response) return undefined
+    if (!response || response instanceof AppError) return response as AppError
 
-    const adaptedResponse = updateAdapter.output(response.data)
+    const adaptedResponse = UserAdapters.update.output(response.data)
     return adaptedResponse
   }
 
-  static async delete(params: { id: number }) {
+  export const remove = async (params: { id: number }) => {
     const { id } = params
 
     const response = await privateInstance.delete(`${collection}/${id}`)
-    if (!response) return undefined
+    if (!response || response instanceof AppError) return response as AppError
 
     return true
   }

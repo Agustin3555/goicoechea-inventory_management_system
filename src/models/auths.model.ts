@@ -1,13 +1,15 @@
-export interface Auth_LoginResponse {
-  token: string
-}
+export namespace AuthModels {
+  export interface LoginResponse {
+    token: string
+  }
 
-export interface Auth_LoginData {
-  email: string
-  password: string
-}
+  export interface LoginData {
+    email: string
+    password: string
+  }
 
-export interface Auth_LoginBody {
-  email: string
-  password: string
+  export interface LoginBody {
+    email: string
+    password: string
+  }
 }

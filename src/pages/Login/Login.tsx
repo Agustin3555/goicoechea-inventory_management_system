@@ -2,7 +2,7 @@ import { Button, Icon, Input, SinglePageOnCard, Spinner } from '@/components'
 import { useDarkMode } from '@/hooks'
 import { MessageType, createUser, enqueueMessage, resetUser } from '@/redux'
 import { PRIVATE_ROUTES } from '@/routes'
-import { AuthService, UsersService, tokenEntity } from '@/services'
+import { AuthServices, UserServices, tokenEntity } from '@/services'
 import { ChangeEventHandler, FormEventHandler, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -38,7 +38,7 @@ const Login = () => {
     setLoading(true)
     setAuthError(false)
 
-    const loginResponse = await AuthService.login(formValues)
+    const loginResponse = await AuthServices.login(formValues)
 
     if (!loginResponse) {
       setLoading(false)
@@ -47,7 +47,7 @@ const Login = () => {
     } else {
       tokenEntity.set(loginResponse.token)
 
-      const userResponse = await UsersService.me()
+      const userResponse = await UserServices.me()
 
       if (userResponse) {
         dispatch(createUser(userResponse))

@@ -1,23 +1,25 @@
-import { Auth_LoginBody, Auth_LoginData, Auth_LoginResponse } from '@/models'
+import { AuthModels } from '@/models'
 import { InputAdapter, OutputAdapter } from '@/tools'
 
-export const loginAdapter: {
-  input: InputAdapter<Auth_LoginData, Auth_LoginBody>
-  output: OutputAdapter<any, Auth_LoginResponse>
-} = {
-  input: data => {
-    const convertedResource: Auth_LoginBody = {
-      email: data.email,
-      password: data.password,
-    }
+export namespace AuthAdapters {
+  export const login: {
+    input: InputAdapter<AuthModels.LoginData, AuthModels.LoginBody>
+    output: OutputAdapter<any, AuthModels.LoginResponse>
+  } = {
+    input: data => {
+      const convertedResource: AuthModels.LoginBody = {
+        email: data.email,
+        password: data.password,
+      }
 
-    return convertedResource
-  },
-  output: response => {
-    const convertedResource: Auth_LoginResponse = {
-      token: response.access_token,
-    }
+      return convertedResource
+    },
+    output: response => {
+      const convertedResource: AuthModels.LoginResponse = {
+        token: response.access_token,
+      }
 
-    return convertedResource
-  },
+      return convertedResource
+    },
+  }
 }
