@@ -7,11 +7,15 @@ import { InputField } from '../../../'
 import New from '../New/New'
 import Search from '../Search/Search'
 import Section from '../Section/Section'
+import { ManufacturerServices } from '@/services'
+import { AppError } from '@/tools'
+
+const sectionKey = Sections.PRODUCTS.key
 
 const Products = () => {
   return (
     <Section
-      id={Sections.PRODUCTS.key}
+      id={sectionKey}
       title={Sections.PRODUCTS.title}
       iconName={Sections.PRODUCTS.iconName}
       views={[
@@ -48,7 +52,7 @@ const Products = () => {
               /> */}
               <InputField
                 action={setNewResourceData}
-                sectionKey={Sections.PRODUCTS.key}
+                sectionKey={sectionKey}
                 fieldKey="name"
                 title="Nombre"
                 validations={[
@@ -76,7 +80,7 @@ const Products = () => {
               />
               <InputField
                 action={setNewResourceData}
-                sectionKey={Sections.PRODUCTS.key}
+                sectionKey={sectionKey}
                 fieldKey="unitPrice"
                 title="Precio"
                 inputExtraAttrs={{
@@ -85,21 +89,25 @@ const Products = () => {
                   required: true,
                 }}
               />
-              <Selector
-                sectionId={Sections.PRODUCTS.key}
+              {/* <Selector
+                sectionId={sectionKey}
                 loadResources={async () => {
                   // const products = await ProductsService.findAll()
                   // return products.map(product => ({ id: product.id, title: product.name }))
                 }}
                 title="Fabricante"
-              />
+              /> */}
               <SelectorField
                 action={setNewResourceData}
-                sectionKey={Sections.PRODUCTS.key}
+                sectionKey={sectionKey}
                 loadOptions={async () => {
-                  // const products = await ProductsService.findAll()
-                  // if (!products) return undefined
-                  // return products.map(product => ({ id: product.id, title: product.name }))
+                  const manufacturers = await ManufacturerServices.getAll()
+                  if (manufacturers instanceof AppError) return
+
+                  return manufacturers.map(item => ({
+                    id: item.id.toString(),
+                    title: item.name,
+                  }))
                 }}
                 fieldKey="manufacturer"
                 title="Fabricante"
@@ -107,7 +115,7 @@ const Products = () => {
               />
               <InputField
                 action={setNewResourceData}
-                sectionKey={Sections.PRODUCTS.key}
+                sectionKey={sectionKey}
                 fieldKey="stock"
                 title="Stock"
                 inputExtraAttrs={{
@@ -117,7 +125,7 @@ const Products = () => {
               />
               <InputField
                 action={setNewResourceData}
-                sectionKey={Sections.PRODUCTS.key}
+                sectionKey={sectionKey}
                 fieldKey="minStock"
                 title="Stock mínimo"
                 inputExtraAttrs={{

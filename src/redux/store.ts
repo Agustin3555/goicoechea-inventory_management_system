@@ -1,4 +1,3 @@
-import { User_FullData } from '@/models'
 import { configureStore } from '@reduxjs/toolkit'
 import {
   ActiveViews,
@@ -13,11 +12,14 @@ import {
   showRightPanelReducer,
   Snackbar,
   snackbarReducer,
+  UpdatedSection,
+  updatedSectionReducer,
   userReducer,
 } from './states'
+import { UserModels } from '@/models'
 
 export interface AppStore {
-  user: User_FullData
+  user: UserModels.FullData
   darkMode: boolean
   sectionActive: string
   activeViews: ActiveViews
@@ -26,6 +28,7 @@ export interface AppStore {
   searchedData: SearchedData
   newResourceData: NewResourceData
   snackbar: Snackbar
+  updatedSection: UpdatedSection
 }
 
 export default configureStore<AppStore>({
@@ -39,5 +42,6 @@ export default configureStore<AppStore>({
     searchedData: searchedDataReducer,
     newResourceData: newResourceDataReducer,
     snackbar: snackbarReducer,
+    updatedSection: updatedSectionReducer,
   },
 })

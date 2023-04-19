@@ -23,6 +23,12 @@ interface Option {
   title: string
 }
 
+/*
+Cuando se toque por primera ves que cargue los items.
+Si se detecta un cambio en los recursos que se hbilite la opcion de que cuando
+lo toque otra ves que se cargue los items de nuevo.
+*/
+
 const SelectorField = ({
   action,
   sectionKey,
@@ -154,6 +160,7 @@ const SelectorField = ({
                         lineBackgroundColor: { dark: 'g-2', bright: 'g-12' },
                       }}
                     />
+                    <Icon iconName="fa-solid fa-xmark" style={{ size: 'm' }}></Icon>
                   </div>
                 ) : (
                   <div className="items">

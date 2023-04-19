@@ -1,5 +1,6 @@
 export * from './adapters.tool'
-export * from './appError.tool'
 export * from './axiosInstances.tool'
+export * from './error.tool'
 export * from './exclude.tool'
 export * from './localStorageEntity.tool'
+export * from './sections.tool'

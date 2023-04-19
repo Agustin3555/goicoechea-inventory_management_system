@@ -1,16 +1,49 @@
 import { toggleShowNav } from '@/redux/states/showNav.state'
 import { toggleShowRightPanel } from '@/redux/states/showRightPanel.state'
 import { AppStore } from '@/redux/store'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { StylizedAdmin } from './Admin.styled'
 import { Main, Nav, RightPanel } from './components'
+import { io } from 'socket.io-client'
+import { SECTIONS, getErrorInterpretation } from '@/tools'
+import { MessageType, enqueueMessage, setUpdatedSection } from '@/redux'
 
 const Admin = () => {
   const dispatch = useDispatch()
   const [enableEvent, setEnableEvent] = useState(true)
   const showNavState = useSelector((store: AppStore) => store.showNav)
   const showRightPanelState = useSelector((store: AppStore) => store.showRightPanel)
+
+  useEffect(() => {
+    const socket = io('http://localhost:3000')
+
+    socket.on('connect', () => {
+      dispatch(
+        enqueueMessage({
+          text: 'Conectado con éxito',
+          type: MessageType.info,
+        })
+      )
+    })
+
+    socket.on('connect_error', (error: any) => {
+      dispatch(
+        enqueueMessage({
+          text: getErrorInterpretation(error.type) as string,
+          type: MessageType.error,
+        })
+      )
+    })
+
+    socket.on('updatedSection', (section: SECTIONS) => {
+      dispatch(setUpdatedSection(section))
+    })
+
+    return () => {
+      socket.disconnect()
+    }
+  }, [])
 
   const handleClick = () => {
     setEnableEvent(false)

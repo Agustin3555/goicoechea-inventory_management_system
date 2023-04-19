@@ -43,7 +43,7 @@ const Login = () => {
     if (!loginResponse) {
       setLoading(false)
     } else if (loginResponse instanceof AppError) {
-      if (loginResponse.code === ERRORS.login) setAuthError(true)
+      if (loginResponse.code === ERRORS.api_login) setAuthError(true)
     } else {
       tokenEntity.set(loginResponse.token)
 
@@ -92,7 +92,7 @@ const Login = () => {
           </div>
           <div className="auth-error-container">
             <div className="auth-error" data-show={authError}>
-              {getErrorInterpretation(ERRORS.login)}
+              {getErrorInterpretation(ERRORS.api_login)}
             </div>
           </div>
           <Button
