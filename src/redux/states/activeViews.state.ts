@@ -2,11 +2,11 @@ import { Sections } from '@/models/sections.model'
 import { activeViewsEntity } from '@/services'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-export interface ActiveViews {
+export interface ActiveViewsState {
   [key: string]: string
 }
 
-const defaultState: ActiveViews = {
+const defaultState: ActiveViewsState = {
   [Sections.SALES.key]: Sections.SALES.views.SEARCH.id,
   [Sections.OFFERS.key]: Sections.OFFERS.views.SEARCH.id,
   [Sections.PRODUCTS.key]: Sections.PRODUCTS.views.SEARCH.id,
@@ -28,7 +28,7 @@ export const activeViewsSlice = createSlice({
     return defaultState
   })(),
   reducers: {
-    setActiveViews: (state, action: PayloadAction<{ [x: string]: string }>) => {
+    setActiveViews: (state, action: PayloadAction<{ [key: string]: string }>) => {
       const newState = { ...state, ...action.payload }
 
       activeViewsEntity.set(newState)

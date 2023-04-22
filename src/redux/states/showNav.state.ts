@@ -1,10 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const defaultState = false
+export type ShowNavState = boolean
+
+const initialState: ShowNavState = false
 
 export const showNavSlice = createSlice({
   name: 'showNav',
-  initialState: defaultState,
+  initialState,
   reducers: {
     toggleShowNav: state => !state,
   },

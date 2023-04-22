@@ -1,11 +1,11 @@
 import { Sections } from '@/models/sections.model'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-export interface NewResourceData {
+export interface NewResourceDataState {
   [key: string]: { [key: string]: any }
 }
 
-const defaultState: NewResourceData = {
+const initialState: NewResourceDataState = {
   [Sections.SALES.key]: {},
   [Sections.OFFERS.key]: {},
   [Sections.PRODUCTS.key]: {},
@@ -16,7 +16,7 @@ const defaultState: NewResourceData = {
 
 export const newResourceDataSlice = createSlice({
   name: 'newResourceData',
-  initialState: defaultState,
+  initialState,
   reducers: {
     setNewResourceData: (
       state,

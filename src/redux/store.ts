@@ -1,47 +1,55 @@
 import { configureStore } from '@reduxjs/toolkit'
 import {
-  ActiveViews,
+  ActiveViewsState,
   activeViewsReducer,
   darkModeReducer,
-  NewResourceData,
+  NewResourceDataState,
   newResourceDataReducer,
-  SearchedData,
+  SearchedDataState,
   searchedDataReducer,
   sectionActiveReducer,
+  ServerConnectedReducer,
+  ServerConnectedState,
   showNavReducer,
   showRightPanelReducer,
-  Snackbar,
+  SnackbarState,
   snackbarReducer,
-  UpdatedSection,
-  updatedSectionReducer,
+  UpdatesOfSectionsState,
+  updatesOfSectionsReducer,
   userReducer,
+  ShowNavState,
+  DarkModeState,
+  ShowRightPanelState,
+  UserState,
+  SectionActiveState,
 } from './states'
-import { UserModels } from '@/models'
 
 export interface AppStore {
-  user: UserModels.FullData
-  darkMode: boolean
-  sectionActive: string
-  activeViews: ActiveViews
-  showNav: boolean
-  showRightPanel: boolean
-  searchedData: SearchedData
-  newResourceData: NewResourceData
-  snackbar: Snackbar
-  updatedSection: UpdatedSection
+  user: UserState
+  darkMode: DarkModeState
+  serverConnected: ServerConnectedState
+  showNav: ShowNavState
+  showRightPanel: ShowRightPanelState
+  sectionActive: SectionActiveState
+  activeViews: ActiveViewsState
+  snackbar: SnackbarState
+  updatesOfSections: UpdatesOfSectionsState
+  searchedData: SearchedDataState
+  newResourceData: NewResourceDataState
 }
 
 export default configureStore<AppStore>({
   reducer: {
     user: userReducer,
     darkMode: darkModeReducer,
-    sectionActive: sectionActiveReducer,
-    activeViews: activeViewsReducer,
+    serverConnected: ServerConnectedReducer,
     showNav: showNavReducer,
     showRightPanel: showRightPanelReducer,
+    sectionActive: sectionActiveReducer,
+    activeViews: activeViewsReducer,
+    snackbar: snackbarReducer,
+    updatesOfSections: updatesOfSectionsReducer,
     searchedData: searchedDataReducer,
     newResourceData: newResourceDataReducer,
-    snackbar: snackbarReducer,
-    updatedSection: updatedSectionReducer,
   },
 })

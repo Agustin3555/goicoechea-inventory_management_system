@@ -6,25 +6,38 @@ import { useDispatch, useSelector } from 'react-redux'
 import { StylizedAdmin } from './Admin.styled'
 import { Main, Nav, RightPanel } from './components'
 import { io } from 'socket.io-client'
-import { SECTIONS, getErrorInterpretation } from '@/tools'
-import { MessageType, enqueueMessage, setUpdatedSection } from '@/redux'
+import { getErrorInterpretation } from '@/tools'
+import {
+  MessageType,
+  clearMessageQueue,
+  enqueueMessage,
+  setConnection,
+  tickSectionUpdate,
+} from '@/redux'
 
 const Admin = () => {
   const dispatch = useDispatch()
   const [enableEvent, setEnableEvent] = useState(true)
   const showNavState = useSelector((store: AppStore) => store.showNav)
   const showRightPanelState = useSelector((store: AppStore) => store.showRightPanel)
+  const serverConnectedState = useSelector((store: AppStore) => store.serverConnected)
 
   useEffect(() => {
-    const socket = io('http://localhost:3000')
+    const socket = io('http://localhost:3000', {
+      reconnectionDelay: 8250,
+    })
 
     socket.on('connect', () => {
+      dispatch(clearMessageQueue())
+
       dispatch(
         enqueueMessage({
           text: 'Conectado con éxito',
           type: MessageType.info,
         })
       )
+
+      dispatch(setConnection(true))
     })
 
     socket.on('connect_error', (error: any) => {
@@ -34,10 +47,20 @@ const Admin = () => {
           type: MessageType.error,
         })
       )
+
+      if (serverConnectedState) dispatch(setConnection(false))
     })
 
-    socket.on('updatedSection', (section: SECTIONS) => {
-      dispatch(setUpdatedSection(section))
+    socket.on('updatedSection', (section: string) => {
+      dispatch(tickSectionUpdate(section))
+
+      dispatch(
+        enqueueMessage({
+          // TODO: cambiar a que se muestre bien la seccion
+          text: `Se ha actualizado la sección de "${section}".`,
+          type: MessageType.warning,
+        })
+      )
     })
 
     return () => {

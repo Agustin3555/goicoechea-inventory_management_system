@@ -2,7 +2,9 @@ import { UserModels } from '@/models'
 import { tokenEntity, userEntity } from '@/services'
 import { createSlice } from '@reduxjs/toolkit'
 
-const userEmptyState: UserModels.FullData = {
+export type UserState = UserModels.FullData
+
+const userEmptyState: UserState = {
   id: 0,
   name: '',
   lastName: null,

@@ -8,11 +8,11 @@ interface Item {
   }
 }
 
-export interface SearchedData {
+export interface SearchedDataState {
   [key: string]: Item[]
 }
 
-const defaultState: SearchedData = {
+const initialState: SearchedDataState = {
   [Sections.SALES.key]: [],
   [Sections.OFFERS.key]: [],
   [Sections.PRODUCTS.key]: [],
@@ -23,7 +23,7 @@ const defaultState: SearchedData = {
 
 export const searchedDataSlice = createSlice({
   name: 'searchedData',
-  initialState: defaultState,
+  initialState,
   reducers: {
     setSearchedData: (state, action: PayloadAction<{ sectionId: string; data: any[] }>) => {
       const { sectionId, data } = action.payload

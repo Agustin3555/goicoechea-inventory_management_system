@@ -17,11 +17,11 @@ interface Message {
   screenTime: number
 }
 
-export interface Snackbar {
+export interface SnackbarState {
   messages: Message[]
 }
 
-const defaultState: Snackbar = {
+const defaultState: SnackbarState = {
   messages: [],
 }
 
@@ -66,9 +66,10 @@ export const snackbarSlice = createSlice({
     dequeueMessage: state => {
       state.messages.shift()
     },
+    clearMessageQueue: () => defaultState,
   },
 })
 
-export const { enqueueMessage, dequeueMessage } = snackbarSlice.actions
+export const { enqueueMessage, dequeueMessage, clearMessageQueue } = snackbarSlice.actions
 
 export default snackbarSlice.reducer

@@ -100,9 +100,11 @@ const Products = () => {
               <SelectorField
                 action={setNewResourceData}
                 sectionKey={sectionKey}
+                dependentSectionKey={Sections.MANUFACTURERS.key}
                 loadOptions={async () => {
                   const manufacturers = await ManufacturerServices.getAll()
-                  if (manufacturers instanceof AppError) return
+                  if (!manufacturers || manufacturers instanceof AppError)
+                    return manufacturers as AppError
 
                   return manufacturers.map(item => ({
                     id: item.id.toString(),

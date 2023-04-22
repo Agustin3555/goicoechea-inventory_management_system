@@ -1,7 +1,9 @@
 import { darkModeEntity } from '@/services'
 import { createSlice } from '@reduxjs/toolkit'
 
-const defaultState = false
+export type DarkModeState = boolean
+
+const defaultState: DarkModeState = false
 
 export const darkModeSlice = createSlice({
   name: 'darkMode',

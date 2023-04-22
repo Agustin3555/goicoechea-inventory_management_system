@@ -2,7 +2,9 @@ import { Sections } from '@/models/sections.model'
 import { sectionActiveEntity } from '@/services'
 import { createSlice } from '@reduxjs/toolkit'
 
-const defaultState = Sections.SALES.key
+export type SectionActiveState = string
+
+const defaultState: SectionActiveState = Sections.SALES.key
 
 export const sectionActiveSlice = createSlice({
   name: 'sectionActive',

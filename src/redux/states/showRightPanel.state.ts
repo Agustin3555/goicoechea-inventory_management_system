@@ -1,10 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const defaultState = false
+export type ShowRightPanelState = boolean
+
+const initialState: ShowRightPanelState = false
 
 export const showRightPanelSlice = createSlice({
   name: 'showRightPanel',
-  initialState: defaultState,
+  initialState,
   reducers: {
     toggleShowRightPanel: state => !state,
   },

@@ -1,8 +1,7 @@
 import { Icon, Spinner } from '@/components'
 import { useDarkMode } from '@/hooks'
-import { setActiveViews } from '@/redux/states/activeViews.state'
 import { AppStore } from '@/redux/store'
-import { ChangeEventHandler, FocusEventHandler, InputHTMLAttributes, useState } from 'react'
+import { ChangeEventHandler, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { FieldName } from '..'
@@ -12,6 +11,9 @@ import {
   SelectorFieldStyleProps,
 } from './SelectorField.styled'
 import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
+import { AppError } from '@/tools'
+import { css } from 'styled-components'
+import { notFontSizeAdapter } from '@/styles'
 
 const blankSelection = {
   id: 'blank',
@@ -23,15 +25,16 @@ interface Option {
   title: string
 }
 
-/*
-Cuando se toque por primera ves que cargue los items.
-Si se detecta un cambio en los recursos que se hbilite la opcion de que cuando
-lo toque otra ves que se cargue los items de nuevo.
-*/
+enum STATUS {
+  loading,
+  error,
+  ready,
+}
 
 const SelectorField = ({
   action,
   sectionKey,
+  dependentSectionKey,
   fieldKey,
   title,
   required = false,
@@ -44,22 +47,29 @@ const SelectorField = ({
     value: any
   }>
   sectionKey: string
+  dependentSectionKey: string
   fieldKey: string
   title: string
   required?: boolean
-  loadOptions: (name?: string) => Promise<Option[] | undefined>
-  extraAttrs?: InputHTMLAttributes<HTMLInputElement>
+  loadOptions: (name?: string) => Promise<AppError | Option[]>
   style?: SelectorFieldStyleProps
 }) => {
   const darkMode = useDarkMode()
   const dispatch = useDispatch()
+  const [status, setStatus] = useState<STATUS>(STATUS.loading)
   const [writing, setWriting] = useState(false)
   const [selecting, setSelecting] = useState(false)
-  const [loading, setLoading] = useState(true)
   const [options, setOptions] = useState<Option[]>([])
-  const [optionSelected, setOptionSelected] = useState<Option>()
+  const [selectedOption, setSelectedOption] = useState<Option>()
   const [inputValue, setInputValue] = useState('') // TODO: sacar el valor por redux
   const [errorRequired, setErrorRequired] = useState(false) // TODO: sacar el valor por redux
+  const dataUpdates = useSelector(
+    (store: AppStore) => store.updatesOfSections[dependentSectionKey]
+  )
+
+  useEffect(() => {
+    setOptions([])
+  }, [dataUpdates])
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = event => {
     const { value } = event.currentTarget
@@ -81,23 +91,44 @@ const SelectorField = ({
     setInputValue(value)
   }
 
-  const handleInputFocus = async () => {
+  const handleInputFocus = () => {
     setWriting(true)
-    setLoading(true)
-
-    const items = await loadOptions()
-    if (items) setOptions(items)
-
-    setLoading(false)
   }
 
   const handleInputBlur = () => {
-    setInputValue(optionSelected?.title || '')
+    setInputValue(selectedOption?.title || '')
 
     setWriting(false)
   }
 
-  const handleEnter = () => setSelecting(true)
+  const handleEnter = async () => {
+    setSelecting(true)
+
+    if (options.length === 0) {
+      setStatus(STATUS.loading)
+
+      const items = await loadOptions()
+
+      if (items && !(items instanceof AppError)) {
+        setOptions(items)
+
+        if (selectedOption) {
+          const updatedSelectedOption = items.find(item => item.id === selectedOption.id)
+
+          // TODO: testear esto cuando tenga la posibilidad de actualisar o eliminar los recursos
+          if (updatedSelectedOption)
+            setSelectedOption({ id: selectedOption.id, title: updatedSelectedOption.title })
+          else {
+            dispatch(action({ sectionKey, fieldKey, value: undefined }))
+            setSelectedOption(undefined)
+          }
+        }
+
+        setStatus(STATUS.ready)
+      } else setStatus(STATUS.error)
+    }
+  }
+
   const handleLeave = () => setSelecting(false)
 
   const handleItemChange: ChangeEventHandler<HTMLInputElement> = event => {
@@ -107,15 +138,74 @@ const SelectorField = ({
       if (required) setErrorRequired(true)
 
       dispatch(action({ sectionKey, fieldKey, value: undefined }))
-      setOptionSelected(undefined)
+      setSelectedOption(undefined)
       setInputValue('')
     } else {
       if (required) setErrorRequired(false)
 
       dispatch(action({ sectionKey, fieldKey, value: parseInt(id) }))
-      setOptionSelected({ id, title })
+      setSelectedOption({ id, title })
       setInputValue(title)
     }
+  }
+
+  const componentsByStatus = {
+    [STATUS.loading]: (
+      <div className="spinner-container">
+        <Spinner
+          style={{
+            semicircleBackgroundColor: { dark: 'g-10', bright: 'g-4' },
+            lineBackgroundColor: { dark: 'g-2', bright: 'g-12' },
+          }}
+        />
+      </div>
+    ),
+    [STATUS.error]: (
+      <Icon
+        iconName="fa-solid fa-xmark"
+        style={{
+          size: 'm',
+          styled: css`
+            margin-top: ${notFontSizeAdapter('4xs')};
+          `,
+        }}
+      />
+    ),
+    [STATUS.ready]: (
+      <div className="items">
+        <div className="item" key={blankSelection.id}>
+          <label htmlFor={blankSelection.id} />
+          <input
+            className="input"
+            type="radio"
+            name="view"
+            id={blankSelection.id}
+            title={blankSelection.title}
+            onChange={handleItemChange}
+          />
+          <div className="fake-input">
+            <span className="text">{blankSelection.title}</span>
+          </div>
+        </div>
+        {options.map(item => (
+          <div className="item" key={item.id}>
+            <label htmlFor={item.id} />
+            <input
+              className="input"
+              type="radio"
+              checked={selectedOption?.id === item.id ? true : undefined}
+              name="view"
+              id={item.id}
+              title={item.title}
+              onChange={handleItemChange}
+            />
+            <div className="fake-input">
+              <span className="text">{item.title}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    ),
   }
 
   return (
@@ -145,58 +235,13 @@ const SelectorField = ({
           </div>
           <SwitchTransition>
             <CSSTransition
-              key={loading.toString()}
+              key={status}
               classNames="fade"
               addEndListener={(node, done) =>
                 node.addEventListener('transitionend', done, false)
               }
             >
-              <div className="animation-container">
-                {loading ? (
-                  <div className="spinner-container">
-                    <Spinner
-                      style={{
-                        semicircleBackgroundColor: { dark: 'g-10', bright: 'g-4' },
-                        lineBackgroundColor: { dark: 'g-2', bright: 'g-12' },
-                      }}
-                    />
-                    <Icon iconName="fa-solid fa-xmark" style={{ size: 'm' }}></Icon>
-                  </div>
-                ) : (
-                  <div className="items">
-                    <div className="item" key={blankSelection.id}>
-                      <label htmlFor={blankSelection.id} />
-                      <input
-                        className="input"
-                        type="radio"
-                        name="view"
-                        id={blankSelection.id}
-                        title={blankSelection.title}
-                        onChange={handleItemChange}
-                      />
-                      <div className="fake-input">
-                        <span className="text">{blankSelection.title}</span>
-                      </div>
-                    </div>
-                    {options.map(item => (
-                      <div className="item" key={item.id}>
-                        <label htmlFor={item.id} />
-                        <input
-                          className="input"
-                          type="radio"
-                          name="view"
-                          id={item.id}
-                          title={item.title}
-                          onChange={handleItemChange}
-                        />
-                        <div className="fake-input">
-                          <span className="text">{item.title}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <div className="animation-container">{componentsByStatus[status]}</div>
             </CSSTransition>
           </SwitchTransition>
         </div>

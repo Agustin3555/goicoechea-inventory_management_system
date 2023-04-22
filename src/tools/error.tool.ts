@@ -13,7 +13,7 @@ const ERROR_MATCHER: { [key: string]: string } = {
   [ERRORS.client_required]: 'Campo obligatorio',
   [ERRORS.api_network]: 'No se puede obtener datos del servidor.',
   [ERRORS.api_login]: 'Email o contraseña incorrectos.',
-  [ERRORS.ws_network]: 'No se puede establecer una conexión directa con el servidor.',
+  [ERRORS.ws_network]: 'No se puede establecer una conexión con el servidor. Reintentando ...',
 }
 
 export const getErrorInterpretation = (errorCode: string) =>

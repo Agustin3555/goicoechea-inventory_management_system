@@ -1,13 +1,10 @@
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
+import styled, { FlattenSimpleInterpolation } from 'styled-components'
 import {
-  borderAdapter,
   Color,
   colorAdapter,
   colorWithAlpha,
   fontSizeAdapter,
-  insetBorderAdapter,
   microinteractionAdapter,
-  NotFontSize,
   notFontSizeAdapter,
   shadowAdapter,
 } from '@/styles'
