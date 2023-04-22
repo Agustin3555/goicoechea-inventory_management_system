@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 import {
   colorAdapter,
+  colorWithAlpha,
   fontSizeAdapter,
-  insetBorderAdapter,
   microinteractionAdapter,
   NotFontSize,
   notFontSizeAdapter,
@@ -31,10 +31,6 @@ interface InputStyleProvider {
     height: string
     fontSize: string
     color: string
-    boxShadow: string
-    focus: {
-      boxShadow: string
-    }
     placeholder: {
       color: string
     }
@@ -69,10 +65,6 @@ export const inputStyleAdapter = (
       height: `calc(${fontSize} * 3)`,
       fontSize,
       color: colorAdapter(darkMode ? 'g-0' : 'g-19'),
-      boxShadow: insetBorderAdapter('6xs', darkMode ? 'a' : 'a', 0.375),
-      focus: {
-        boxShadow: insetBorderAdapter('6xs', darkMode ? 'a' : 'a', 1),
-      },
       placeholder: {
         color: colorAdapter(darkMode ? 'g-8' : 'g-8'),
       },
@@ -101,13 +93,14 @@ export const StylizedInput = styled.div<{ p: InputStyleProvider }>`
     font-size: ${({ p }) => p.input.fontSize};
     color: ${({ p }) => p.input.color};
     background: transparent;
-    border: none;
+    border-width: ${notFontSizeAdapter('6xs')};
+    border-style: solid;
+    border-color: ${colorWithAlpha('a', 0.375)};
     border-radius: ${notFontSizeAdapter('4xs')};
-    box-shadow: ${({ p }) => p.input.boxShadow};
-    transition: box-shadow ${microinteractionAdapter(2)} ease-out;
+    transition: border-color ${microinteractionAdapter(2)} ease-out;
 
     :focus {
-      box-shadow: ${({ p }) => p.input.focus.boxShadow};
+      border-color: ${colorWithAlpha('a', 1)};
       outline: none;
     }
 

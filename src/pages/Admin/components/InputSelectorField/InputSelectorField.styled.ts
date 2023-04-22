@@ -10,7 +10,7 @@ import {
   shadowAdapter,
 } from '@/styles'
 
-export interface SelectorStyleProps {
+export interface InputSelectorFieldStyleProps {
   styled?: FlattenSimpleInterpolation
   color?: {
     dark?: Color
@@ -26,7 +26,7 @@ export interface SelectorStyleProps {
   }
 }
 
-interface SelectorNormalizedStyleProps {
+interface InputSelectorFieldNormalizedStyleProps {
   color: {
     dark: Color
     bright: Color
@@ -41,7 +41,7 @@ interface SelectorNormalizedStyleProps {
   }
 }
 
-interface SelectorProvider {
+interface InputSelectorFieldProvider {
   styled?: FlattenSimpleInterpolation
   selectorContainer: {
     color: string
@@ -74,12 +74,12 @@ interface SelectorProvider {
   }
 }
 
-export const selectorAdapter = (
+export const inputSelectorFieldAdapter = (
   darkMode: boolean,
   variable: boolean,
-  style?: SelectorStyleProps
-): SelectorProvider => {
-  const normalizedProps: SelectorNormalizedStyleProps = {
+  style?: InputSelectorFieldStyleProps
+): InputSelectorFieldProvider => {
+  const normalizedProps: InputSelectorFieldNormalizedStyleProps = {
     color: {
       dark: style?.color?.dark || 'g-4',
       bright: style?.color?.bright || 'g-12',
@@ -155,7 +155,7 @@ export const selectorAdapter = (
   }
 }
 
-export const StylizedSelector = styled.div<{ p: SelectorProvider }>`
+export const StylizedInputSelectorField = styled.div<{ p: InputSelectorFieldProvider }>`
   height: calc(${fontSizeAdapter('xs')} * 6);
 
   .selector-container {

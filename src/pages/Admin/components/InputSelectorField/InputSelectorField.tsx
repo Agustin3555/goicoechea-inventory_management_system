@@ -6,14 +6,18 @@ import { ChangeEventHandler, FocusEventHandler, InputHTMLAttributes, useState } 
 import { useDispatch, useSelector } from 'react-redux'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { FieldName } from '..'
-import { StylizedSelector, selectorAdapter, SelectorStyleProps } from './Selector.styled'
+import {
+  StylizedInputSelectorField,
+  inputSelectorFieldAdapter,
+  InputSelectorFieldStyleProps,
+} from './InputSelectorField.styled'
 
 interface Item {
   id: string
   title: string
 }
 
-const Selector = ({
+const InputSelectorField = ({
   sectionId,
   loadResources,
   title,
@@ -26,10 +30,8 @@ const Selector = ({
   title: string
   variable?: boolean
   extraAttrs?: InputHTMLAttributes<HTMLInputElement>
-  style?: SelectorStyleProps
+  style?: InputSelectorFieldStyleProps
 }) => {
-  // TODO: cambiar el nombre de Selector a InputSelectorField
-
   const darkMode = useDarkMode()
   const dispatch = useDispatch()
   const [writing, setWriting] = useState(false)
@@ -57,7 +59,7 @@ const Selector = ({
   const handleChange = () => {}
 
   return (
-    <StylizedSelector p={selectorAdapter(darkMode, variable, style)}>
+    <StylizedInputSelectorField p={inputSelectorFieldAdapter(darkMode, variable, style)}>
       <FieldName title={title} />
       <div className="selector-container" data-expanded={writing || selecting}>
         <div
@@ -131,8 +133,8 @@ const Selector = ({
           </CSSTransition>
         </SwitchTransition>
       </div>
-    </StylizedSelector>
+    </StylizedInputSelectorField>
   )
 }
 
-export default Selector
+export default InputSelectorField
