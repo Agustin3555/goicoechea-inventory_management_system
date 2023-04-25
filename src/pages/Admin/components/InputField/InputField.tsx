@@ -5,7 +5,9 @@ import { ChangeEventHandler, InputHTMLAttributes, useEffect, useState } from 're
 import { useDispatch, useSelector } from 'react-redux'
 import FieldName from '../FieldName/FieldName'
 import { StylizedInputField } from './InputField.styled'
-import { Validation, useValidateInput } from '../../hooks'
+import { useValidateInput } from '../../hooks'
+import { Validation } from '../../tools'
+import { ErrorList } from '..'
 
 const InputField = ({
   action,
@@ -27,26 +29,20 @@ const InputField = ({
   inputExtraAttrs?: InputHTMLAttributes<HTMLInputElement>
 }) => {
   const dispatch = useDispatch()
-  const initialValue = useSelector(
+  const initialInputValue = useSelector(
     (store: AppStore) => store.newResourceData[sectionKey][fieldKey]
   ) as string
-  const [value, setValue] = useState(initialValue || '')
-  const { errors, validate } = useValidateInput(value, validations)
+  const [inputValue, setValue] = useState(initialInputValue || '')
+  const { errors } = useValidateInput(inputValue, validations)
 
-  useEffect(() => {
-    validate()
-  }, [])
-
-  const handleChange: ChangeEventHandler<HTMLInputElement> = event => {
+  const handleInputChange: ChangeEventHandler<HTMLInputElement> = event => {
     const { value } = event.currentTarget
 
     setValue(value)
-    validate()
   }
 
-  const handleBlur = () => {
-    validate()
-    dispatch(action({ sectionKey, fieldKey, value }))
+  const handleInputBlur = () => {
+    dispatch(action({ sectionKey, fieldKey, value: inputValue }))
   }
 
   return (
@@ -58,17 +54,13 @@ const InputField = ({
         title={title}
         style={{ width: '3xl' }}
         extraAttrs={{
-          onChange: handleChange,
-          onBlur: handleBlur,
-          value,
+          onChange: handleInputChange,
+          onBlur: handleInputBlur,
+          value: inputValue,
           ...inputExtraAttrs,
         }}
       />
-      <div className="errors">
-        {errors.map(error => (
-          <p className="item">{error}</p>
-        ))}
-      </div>
+      <ErrorList errors={errors} />
     </StylizedInputField>
   )
 }

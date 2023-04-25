@@ -10,7 +10,6 @@ import {
 } from '@/styles'
 
 export interface SelectorFieldStyleProps {
-  styled?: FlattenSimpleInterpolation
   color?: {
     dark?: Color
     bright?: Color
@@ -19,6 +18,7 @@ export interface SelectorFieldStyleProps {
     dark?: Color
     bright?: Color
   }
+  styled?: FlattenSimpleInterpolation
 }
 
 interface SelectorFieldNormalizedStyleProps {
@@ -33,41 +33,74 @@ interface SelectorFieldNormalizedStyleProps {
 }
 
 interface SelectorFieldProvider {
-  styled?: FlattenSimpleInterpolation
-  selectorFieldContainer: {
-    color: string
-    backgroundColor: string
-    selected: {
-      input: {
-        color: string
-        borderColor: string
-        hover: {
-          borderColor: string
-        }
-        placeholder: {
-          color: string
+  box: {
+    height: string
+    selector: {
+      height: string
+      color: string
+      backgroundColor: string
+      dataExpanded: {
+        true: {
+          height: string
         }
       }
-    }
-    items: {
-      scrollbarThumb: {
-        backgroundColor: string
-        hover: {
-          backgroundColor: string
-        }
-      }
-      item: {
+      selected: {
+        gap: string
+        padding: string
         input: {
-          hover: {
-            fakeInput: {
+          height: string
+          padding: string
+          color: string
+          borderWidth: string
+          borderColor: string
+          focus: {
+            borderColor: string
+          }
+          placeholder: {
+            color: string
+          }
+        }
+      }
+      animationContainer: {
+        height: string
+        items: {
+          scrollbarThumb: {
+            backgroundColor: string
+            hover: {
               backgroundColor: string
+            }
+          }
+          item: {
+            height: string
+            input: {
+              hover: {
+                fakeInput: {
+                  backgroundColor: string
+                }
+              }
+            }
+            fakeInput: {
+              padding: string
             }
           }
         }
       }
     }
   }
+  styled?: FlattenSimpleInterpolation
 }
+
+const PADDING = notFontSizeAdapter('4xs')
+const INPUT_PADDING = fontSizeAdapter('xs')
+const ARROW_WH = fontSizeAdapter('xs')
+const NUM_OF_OPTIONS_TO_SHOW = 4
+
+const boxHeight = `calc(${fontSizeAdapter('xs')} * 3)`
+const sumOfPaddingY = `calc(${PADDING} * 2)`
+const inputHeight = `calc(${boxHeight} - ${sumOfPaddingY})`
+const selectedGap = `calc((${inputHeight} - ${ARROW_WH}) / 2 + ${PADDING})`
+const selectedPadding = `${PADDING} ${selectedGap} ${PADDING} ${PADDING}`
+const inputBorderWidth = notFontSizeAdapter('6xs')
 
 export const selectorFieldAdapter = (
   darkMode: boolean,
@@ -91,63 +124,84 @@ export const selectorFieldAdapter = (
   // #endregion
 
   return {
-    styled: style?.styled,
-    selectorFieldContainer: {
-      color: colorAdapter(
-        darkMode ? normalizedProps.color.dark : normalizedProps.color.bright
-      ),
-      backgroundColor: colorAdapter(
-        darkMode
-          ? normalizedProps.backgroundColor.dark
-          : normalizedProps.backgroundColor.bright
-      ),
-      selected: {
-        input: {
-          color: inputColor,
-          borderColor: colorWithAlpha(
-            darkMode ? normalizedProps.color.dark : normalizedProps.color.bright,
-            0
-          ),
-          hover: {
+    box: {
+      height: boxHeight,
+      selector: {
+        height: boxHeight,
+        color: colorAdapter(
+          darkMode ? normalizedProps.color.dark : normalizedProps.color.bright
+        ),
+        backgroundColor: colorAdapter(
+          darkMode
+            ? normalizedProps.backgroundColor.dark
+            : normalizedProps.backgroundColor.bright
+        ),
+        dataExpanded: {
+          true: {
+            height: `calc(${boxHeight} * ${1 + NUM_OF_OPTIONS_TO_SHOW} + ${boxHeight} * 0.5)`,
+          },
+        },
+        selected: {
+          gap: selectedGap,
+          padding: selectedPadding,
+          input: {
+            height: inputHeight,
+            padding: `calc(${INPUT_PADDING} - ${PADDING} - ${inputBorderWidth})`,
+            color: inputColor,
+            borderWidth: inputBorderWidth,
             borderColor: colorWithAlpha(
               darkMode ? normalizedProps.color.dark : normalizedProps.color.bright,
-              1,
-              darkMode ? -8 : 10
+              0
             ),
-          },
-          placeholder: {
-            color: inputColor,
+            focus: {
+              borderColor: colorWithAlpha(
+                darkMode ? normalizedProps.color.dark : normalizedProps.color.bright,
+                1,
+                darkMode ? -8 : 10
+              ),
+            },
+            placeholder: {
+              color: inputColor,
+            },
           },
         },
-      },
-      items: {
-        scrollbarThumb: {
-          backgroundColor: colorAdapter(
-            darkMode
-              ? normalizedProps.backgroundColor.dark
-              : normalizedProps.backgroundColor.bright,
-            darkMode ? 2 : -2
-          ),
-          hover: {
-            backgroundColor: colorAdapter(
-              darkMode
-                ? normalizedProps.backgroundColor.dark
-                : normalizedProps.backgroundColor.bright,
-              darkMode ? 3 : -3
-            ),
-          },
-        },
-        item: {
-          input: {
-            hover: {
+        animationContainer: {
+          height: `calc(${boxHeight} * ${NUM_OF_OPTIONS_TO_SHOW} + ${boxHeight} * 0.5)`,
+          items: {
+            scrollbarThumb: {
+              backgroundColor: colorAdapter(
+                darkMode
+                  ? normalizedProps.backgroundColor.dark
+                  : normalizedProps.backgroundColor.bright,
+                darkMode ? 2 : -2
+              ),
+              hover: {
+                backgroundColor: colorAdapter(
+                  darkMode
+                    ? normalizedProps.backgroundColor.dark
+                    : normalizedProps.backgroundColor.bright,
+                  darkMode ? 3 : -3
+                ),
+              },
+            },
+            item: {
+              height: boxHeight,
+              input: {
+                hover: {
+                  fakeInput: {
+                    backgroundColor: colorAdapter(darkMode ? 'g-13' : 'g-1'),
+                  },
+                },
+              },
               fakeInput: {
-                backgroundColor: colorAdapter(darkMode ? 'g-13' : 'g-1'),
+                padding: `0 ${INPUT_PADDING}`,
               },
             },
           },
         },
       },
     },
+    styled: style?.styled,
   }
 }
 
@@ -156,17 +210,17 @@ export const StylizedSelectorField = styled.div<{ p: SelectorFieldProvider }>`
   flex-direction: column;
   gap: ${fontSizeAdapter('xs')};
 
-  .box-selector {
-    height: calc(${fontSizeAdapter('xs')} * 3);
+  .box {
+    height: ${({ p }) => p.box.height};
 
-    .selector-field-container {
+    .selector {
       position: relative;
       display: flex;
       flex-direction: column;
-      height: calc(${fontSizeAdapter('xs')} * 3);
-      border-radius: ${notFontSizeAdapter('3xs')};
-      color: ${({ p }) => p.selectorFieldContainer.color};
-      background-color: ${({ p }) => p.selectorFieldContainer.backgroundColor};
+      height: ${({ p }) => p.box.selector.height};
+      border-radius: ${notFontSizeAdapter('4xs')};
+      color: ${({ p }) => p.box.selector.color};
+      background-color: ${({ p }) => p.box.selector.backgroundColor};
       overflow: hidden;
       transition: box-shadow ${microinteractionAdapter(2)} ease-out,
         height ${microinteractionAdapter(2)} ease-out,
@@ -179,31 +233,30 @@ export const StylizedSelectorField = styled.div<{ p: SelectorFieldProvider }>`
       .selected {
         display: flex;
         align-items: center;
-        gap: ${fontSizeAdapter('xs')};
-        padding: calc(${fontSizeAdapter('xs')} * 0.5);
-        padding-right: ${fontSizeAdapter('xs')};
+        gap: ${({ p }) => p.box.selector.selected.gap};
+        padding: ${({ p }) => p.box.selector.selected.padding};
 
         .input {
           width: 100%;
-          padding: calc(${fontSizeAdapter('xs')} * 0.5);
-          height: calc(${fontSizeAdapter('xs')} * 2);
+          height: ${({ p }) => p.box.selector.selected.input.height};
+          padding: ${({ p }) => p.box.selector.selected.input.padding};
           font-size: ${fontSizeAdapter('xs')};
-          color: ${({ p }) => p.selectorFieldContainer.selected.input.color};
+          color: ${({ p }) => p.box.selector.selected.input.color};
           background-color: transparent;
-          border-width: ${notFontSizeAdapter('6xs')};
+          border-width: ${({ p }) => p.box.selector.selected.input.borderWidth};
           border-style: solid;
-          border-color: ${({ p }) => p.selectorFieldContainer.selected.input.borderColor};
+          border-color: ${({ p }) => p.box.selector.selected.input.borderColor};
           border-radius: ${notFontSizeAdapter('5xs')};
-          transition: border-color ${microinteractionAdapter(2)} ease-out;
+          transition: background-color ${microinteractionAdapter(2)} ease-out,
+            border-color ${microinteractionAdapter(2)} ease-out;
 
           :focus {
-            border-color: ${({ p }) =>
-              p.selectorFieldContainer.selected.input.hover.borderColor};
+            border-color: ${({ p }) => p.box.selector.selected.input.focus.borderColor};
             outline: none;
           }
 
           ::placeholder {
-            color: ${({ p }) => p.selectorFieldContainer.selected.input.placeholder.color};
+            color: ${({ p }) => p.box.selector.selected.input.placeholder.color};
             transition: color ${microinteractionAdapter(2)} ease-out;
           }
         }
@@ -227,7 +280,7 @@ export const StylizedSelectorField = styled.div<{ p: SelectorFieldProvider }>`
         display: flex;
         justify-content: center;
         align-items: center;
-        height: calc(${fontSizeAdapter('xs')} * 3 * 3 + ${fontSizeAdapter('xs')} * 2.5);
+        height: ${({ p }) => p.box.selector.animationContainer.height};
         transition: opacity ${microinteractionAdapter(1)} ease-out;
 
         .spinner-container {
@@ -244,11 +297,11 @@ export const StylizedSelectorField = styled.div<{ p: SelectorFieldProvider }>`
 
           ::-webkit-scrollbar-thumb {
             background-color: ${({ p }) =>
-              p.selectorFieldContainer.items.scrollbarThumb.backgroundColor};
+              p.box.selector.animationContainer.items.scrollbarThumb.backgroundColor};
 
             :hover {
               background-color: ${({ p }) =>
-                p.selectorFieldContainer.items.scrollbarThumb.hover.backgroundColor};
+                p.box.selector.animationContainer.items.scrollbarThumb.hover.backgroundColor};
             }
           }
 
@@ -264,7 +317,8 @@ export const StylizedSelectorField = styled.div<{ p: SelectorFieldProvider }>`
 
               :hover + .fake-input {
                 background-color: ${({ p }) =>
-                  p.selectorFieldContainer.items.item.input.hover.fakeInput.backgroundColor};
+                  p.box.selector.animationContainer.items.item.input.hover.fakeInput
+                    .backgroundColor};
               }
 
               :checked {
@@ -278,13 +332,16 @@ export const StylizedSelectorField = styled.div<{ p: SelectorFieldProvider }>`
             }
 
             .fake-input {
-              padding: ${fontSizeAdapter('xs')};
+              display: flex;
+              align-items: center;
+              height: ${({ p }) => p.box.selector.animationContainer.items.item.height};
+              padding: ${({ p }) =>
+                p.box.selector.animationContainer.items.item.fakeInput.padding};
               transition: color ${microinteractionAdapter(2)} ease-out,
                 background-color ${microinteractionAdapter(2)} ease-out;
 
               .text {
                 font-size: ${fontSizeAdapter('xs')};
-                line-height: ${fontSizeAdapter('xs')};
               }
             }
           }
@@ -308,17 +365,11 @@ export const StylizedSelectorField = styled.div<{ p: SelectorFieldProvider }>`
       }
     }
 
-    .selector-field-container[data-expanded='true'] {
+    .selector[data-expanded='true'] {
       z-index: 1;
-      height: calc(${fontSizeAdapter('xs')} * 3 * 4 + ${fontSizeAdapter('xs')} * 2.5);
+      height: ${({ p }) => p.box.selector.dataExpanded.true.height};
       box-shadow: ${shadowAdapter(2)};
     }
-  }
-
-  .error-required {
-    color: ${colorAdapter('a')};
-    font-size: ${fontSizeAdapter('xs')};
-    line-height: calc(${fontSizeAdapter('xs')} * 1.5);
   }
 
   ${({ p }) => p.styled};

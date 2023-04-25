@@ -1,22 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { Validation } from '../tools'
 
-export interface Validation {
-  validation: (value: any) => boolean
-  errorMsg: string
-  break: boolean
-}
-
-export const useValidateInput = (value: string, validations?: Validation[]) => {
+export const useValidateInput = (inputValue: string, validations?: Validation[]) => {
   const [errors, setErrors] = useState<string[]>([])
 
-  const validate = () => {
+  useEffect(() => {
     if (validations) {
       let accumulatedErrors: string[] = []
 
       for (let i = 0; i < validations.length; i++) {
         const item = validations[i]
 
-        if (item.validation(value)) {
+        if (item.validation(inputValue)) {
           accumulatedErrors = [...accumulatedErrors, `• ${item.errorMsg}`]
 
           if (item.break) break
@@ -25,7 +20,7 @@ export const useValidateInput = (value: string, validations?: Validation[]) => {
 
       setErrors(accumulatedErrors)
     }
-  }
+  }, [inputValue])
 
-  return { errors, validate }
+  return { errors }
 }

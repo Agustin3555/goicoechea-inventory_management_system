@@ -2,7 +2,7 @@ import { Sections } from '@/models'
 import { setNewResourceData } from '@/redux/states'
 // import { ProductsService } from '@/services'
 import { css } from 'styled-components'
-import { Selector, SelectorField } from '../../..'
+import { InputSelectorField, SelectorField } from '../../..'
 import { InputField } from '../../../'
 import New from '../New/New'
 import Search from '../Search/Search'
@@ -89,18 +89,27 @@ const Products = () => {
                   required: true,
                 }}
               />
-              {/* <Selector
-                sectionId={sectionKey}
-                loadResources={async () => {
-                  // const products = await ProductsService.findAll()
-                  // return products.map(product => ({ id: product.id, title: product.name }))
-                }}
-                title="Fabricante"
-              /> */}
-              <SelectorField
+              {/* <InputSelectorField
                 action={setNewResourceData}
                 sectionKey={sectionKey}
                 dependentSectionKey={Sections.MANUFACTURERS.key}
+                fieldKey="manufacturer"
+                title="Fabricante"
+                validations={[
+                  {
+                    validation: (value: string) => value === '',
+                    errorMsg: 'Campo obligatorio',
+                    break: true,
+                  },
+                  {
+                    validation: (value: string) => value.includes('m'),
+                    errorMsg: 'No puede contener m',
+                  },
+                  {
+                    validation: (value: string) => value.includes('n'),
+                    errorMsg: 'No puede contener n',
+                  },
+                ]}
                 loadOptions={async () => {
                   const manufacturers = await ManufacturerServices.getAll()
                   if (!manufacturers || manufacturers instanceof AppError)
@@ -111,9 +120,24 @@ const Products = () => {
                     title: item.name,
                   }))
                 }}
+              /> */}
+              <SelectorField
+                action={setNewResourceData}
+                sectionKey={sectionKey}
+                dependentSectionKey={Sections.MANUFACTURERS.key}
                 fieldKey="manufacturer"
                 title="Fabricante"
                 required
+                loadOptions={async () => {
+                  const manufacturers = await ManufacturerServices.getAll()
+                  if (!manufacturers || manufacturers instanceof AppError)
+                    return manufacturers as AppError
+
+                  return manufacturers.map(item => ({
+                    id: item.id.toString(),
+                    title: item.name,
+                  }))
+                }}
               />
               <InputField
                 action={setNewResourceData}

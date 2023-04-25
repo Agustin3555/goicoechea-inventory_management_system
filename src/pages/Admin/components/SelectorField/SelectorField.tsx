@@ -1,10 +1,10 @@
 import { Icon, Spinner } from '@/components'
 import { useDarkMode } from '@/hooks'
 import { AppStore } from '@/redux/store'
-import { ChangeEventHandler, useEffect, useState } from 'react'
+import { ChangeEventHandler, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
-import { FieldName } from '..'
+import { ErrorList, FieldName } from '..'
 import {
   StylizedSelectorField,
   selectorFieldAdapter,
@@ -14,21 +14,13 @@ import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
 import { AppError } from '@/tools'
 import { css } from 'styled-components'
 import { notFontSizeAdapter } from '@/styles'
+import { BLANK_SELECTION, Option, STATUS, Validation, reorderBySearch } from '../../tools'
+import { useSectionDependency, useValidateInput } from '../../hooks'
 
-const blankSelection = {
-  id: 'blank',
-  title: '~',
-}
-
-interface Option {
-  id: string
-  title: string
-}
-
-enum STATUS {
-  loading,
-  error,
-  ready,
+const requiredValidation: Validation = {
+  validation: (value: string) => value === '',
+  errorMsg: 'Campo obligatorio',
+  break: true,
 }
 
 const SelectorField = ({
@@ -37,9 +29,9 @@ const SelectorField = ({
   dependentSectionKey,
   fieldKey,
   title,
-  required = false,
-  loadOptions,
+  required,
   style,
+  loadOptions,
 }: {
   action: ActionCreatorWithPayload<{
     sectionKey: string
@@ -51,8 +43,8 @@ const SelectorField = ({
   fieldKey: string
   title: string
   required?: boolean
-  loadOptions: (name?: string) => Promise<AppError | Option[]>
   style?: SelectorFieldStyleProps
+  loadOptions: (name?: string) => Promise<AppError | Option[]>
 }) => {
   const darkMode = useDarkMode()
   const dispatch = useDispatch()
@@ -62,44 +54,8 @@ const SelectorField = ({
   const [options, setOptions] = useState<Option[]>([])
   const [selectedOption, setSelectedOption] = useState<Option>()
   const [inputValue, setInputValue] = useState('') // TODO: sacar el valor por redux
-  const [errorRequired, setErrorRequired] = useState(false) // TODO: sacar el valor por redux
-  const dataUpdates = useSelector(
-    (store: AppStore) => store.updatesOfSections[dependentSectionKey]
-  )
-
-  useEffect(() => {
-    setOptions([])
-  }, [dataUpdates])
-
-  const handleInputChange: ChangeEventHandler<HTMLInputElement> = event => {
-    const { value } = event.currentTarget
-
-    const optionsCopy = [...options].sort((a, b) => {
-      const aTitle = a.title.toLowerCase()
-      const bTitle = b.title.toLowerCase()
-
-      const aIndex = aTitle.indexOf(value.toLowerCase())
-      const bIndex = bTitle.indexOf(value.toLowerCase())
-
-      if (aIndex === -1 && bIndex === -1) return aTitle.localeCompare(bTitle)
-      if (aIndex === -1) return 1
-      if (bIndex === -1) return -1
-      return aIndex - bIndex
-    })
-
-    setOptions(optionsCopy)
-    setInputValue(value)
-  }
-
-  const handleInputFocus = () => {
-    setWriting(true)
-  }
-
-  const handleInputBlur = () => {
-    setInputValue(selectedOption?.title || '')
-
-    setWriting(false)
-  }
+  const { errors } = useValidateInput(inputValue, required ? [requiredValidation] : undefined)
+  useSectionDependency(setOptions, dependentSectionKey)
 
   const handleEnter = async () => {
     setSelecting(true)
@@ -129,20 +85,37 @@ const SelectorField = ({
     }
   }
 
-  const handleLeave = () => setSelecting(false)
+  const handleLeave = () => {
+    setSelecting(false)
+  }
+
+  const handleInputFocus = () => {
+    setWriting(true)
+  }
+
+  const handleInputBlur = () => {
+    setInputValue(selectedOption?.title || '')
+
+    setWriting(false)
+  }
+
+  const handleInputChange: ChangeEventHandler<HTMLInputElement> = event => {
+    const { value } = event.currentTarget
+
+    const optionsCopy = reorderBySearch(value, [...options])
+
+    setOptions(optionsCopy)
+    setInputValue(value)
+  }
 
   const handleItemChange: ChangeEventHandler<HTMLInputElement> = event => {
     const { id, title } = event.currentTarget
 
-    if (id === blankSelection.id) {
-      if (required) setErrorRequired(true)
-
+    if (id === BLANK_SELECTION.id) {
       dispatch(action({ sectionKey, fieldKey, value: undefined }))
       setSelectedOption(undefined)
       setInputValue('')
     } else {
-      if (required) setErrorRequired(false)
-
       dispatch(action({ sectionKey, fieldKey, value: parseInt(id) }))
       setSelectedOption({ id, title })
       setInputValue(title)
@@ -173,18 +146,18 @@ const SelectorField = ({
     ),
     [STATUS.ready]: (
       <div className="items">
-        <div className="item" key={blankSelection.id}>
-          <label htmlFor={blankSelection.id} />
+        <div className="item" key={BLANK_SELECTION.id}>
+          <label htmlFor={BLANK_SELECTION.id} />
           <input
             className="input"
             type="radio"
             name="view"
-            id={blankSelection.id}
-            title={blankSelection.title}
+            id={BLANK_SELECTION.id}
+            title={BLANK_SELECTION.title}
             onChange={handleItemChange}
           />
           <div className="fake-input">
-            <span className="text">{blankSelection.title}</span>
+            <span className="text">{BLANK_SELECTION.title}</span>
           </div>
         </div>
         {options.map(item => (
@@ -211,9 +184,9 @@ const SelectorField = ({
   return (
     <StylizedSelectorField p={selectorFieldAdapter(darkMode, style)}>
       <FieldName title={title} />
-      <div className="box-selector">
+      <div className="box">
         <div
-          className="selector-field-container"
+          className="selector"
           data-expanded={writing || selecting}
           onMouseEnter={handleEnter}
           onMouseLeave={handleLeave}
@@ -224,10 +197,10 @@ const SelectorField = ({
               name={fieldKey}
               autoComplete="nope"
               value={inputValue}
-              placeholder={blankSelection.title}
-              onChange={handleInputChange}
+              placeholder={BLANK_SELECTION.title}
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
+              onChange={handleInputChange}
             />
             <div className="icon-container" data-expanded={writing || selecting}>
               <Icon iconName="fa-solid fa-chevron-down" style={{ size: 'xs' }} />
@@ -246,7 +219,7 @@ const SelectorField = ({
           </SwitchTransition>
         </div>
       </div>
-      {errorRequired && <p className="error-required">• Campo obligatorio</p>}
+      <ErrorList errors={errors} />
     </StylizedSelectorField>
   )
 }
