@@ -1,7 +1,7 @@
 import { Icon, Spinner } from '@/components'
 import { useDarkMode } from '@/hooks'
 import { AppStore } from '@/redux/store'
-import { ChangeEventHandler, useState } from 'react'
+import { ChangeEventHandler, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { ErrorList, FieldName } from '..'
@@ -14,14 +14,14 @@ import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
 import { AppError } from '@/tools'
 import { css } from 'styled-components'
 import { notFontSizeAdapter } from '@/styles'
-import { BLANK_SELECTION, Option, STATUS, Validation, reorderBySearch } from '../../tools'
+import {
+  BLANK_SELECTION,
+  Option,
+  STATUS,
+  reorderBySearch,
+  requiredValidation,
+} from '../../tools'
 import { useSectionDependency, useValidateInput } from '../../hooks'
-
-const requiredValidation: Validation = {
-  validation: (value: string) => value === '',
-  errorMsg: 'Campo obligatorio',
-  break: true,
-}
 
 const SelectorField = ({
   action,
@@ -53,7 +53,8 @@ const SelectorField = ({
   const [selecting, setSelecting] = useState(false)
   const [options, setOptions] = useState<Option[]>([])
   const [selectedOption, setSelectedOption] = useState<Option>()
-  const [inputValue, setInputValue] = useState('') // TODO: sacar el valor por redux
+  // TODO: iniciar con el valor del state de Redux
+  const [inputValue, setInputValue] = useState('')
   const { errors } = useValidateInput(inputValue, required ? [requiredValidation] : undefined)
   useSectionDependency(setOptions, dependentSectionKey)
 
@@ -150,10 +151,11 @@ const SelectorField = ({
           <label htmlFor={BLANK_SELECTION.id} />
           <input
             className="input"
-            type="radio"
-            name="view"
             id={BLANK_SELECTION.id}
+            name="view"
             title={BLANK_SELECTION.title}
+            type="radio"
+            checked={inputValue === '' ? true : undefined}
             onChange={handleItemChange}
           />
           <div className="fake-input">
@@ -165,11 +167,11 @@ const SelectorField = ({
             <label htmlFor={item.id} />
             <input
               className="input"
+              id={item.id}
+              name="view"
+              title={item.title}
               type="radio"
               checked={selectedOption?.id === item.id ? true : undefined}
-              name="view"
-              id={item.id}
-              title={item.title}
               onChange={handleItemChange}
             />
             <div className="fake-input">
@@ -195,9 +197,9 @@ const SelectorField = ({
             <input
               className="input"
               name={fieldKey}
-              autoComplete="nope"
               value={inputValue}
               placeholder={BLANK_SELECTION.title}
+              autoComplete="nope"
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
               onChange={handleInputChange}

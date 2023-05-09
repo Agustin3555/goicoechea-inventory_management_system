@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { FlattenSimpleInterpolation } from 'styled-components'
 import {
   Color,
   colorAdapter,
@@ -11,10 +11,7 @@ import {
   shadowAdapter,
 } from '@/styles'
 
-type ButtonWidthProp = 'expanded' | NotFontSize
-
 export interface ButtonStyleProps {
-  width?: ButtonWidthProp
   padding?: FontSize
   tight?: boolean
   borderRadius?: NotFontSize
@@ -23,6 +20,7 @@ export interface ButtonStyleProps {
     bright?: Color
   }
   elevation?: Elevation
+  styled?: FlattenSimpleInterpolation
 }
 
 interface ButtonNormalizedStyleProps {
@@ -37,7 +35,6 @@ interface ButtonNormalizedStyleProps {
 }
 
 interface ButtonStyleProvider {
-  width: string
   padding: string
   borderRadius: string
   backgroundColor: string
@@ -47,6 +44,7 @@ interface ButtonStyleProvider {
   active: {
     backgroundColor: string
   }
+  styled?: FlattenSimpleInterpolation
 }
 
 export const buttonStyleAdapter = (
@@ -71,7 +69,6 @@ export const buttonStyleAdapter = (
   // #endregion
 
   return {
-    width: '',
     padding: `${paddingTopBottom} ${
       normalizedProps.tight ? '' : `calc(${paddingTopBottom} * 2)`
     }`,
@@ -90,11 +87,11 @@ export const buttonStyleAdapter = (
         1
       ),
     },
+    styled: style?.styled,
   }
 }
 
 export const StylizedButton = styled.button<{ p: ButtonStyleProvider }>`
-  width: ${({ p }) => p.width};
   padding: ${({ p }) => p.padding};
   border: none;
   border-radius: ${({ p }) => p.borderRadius};
@@ -110,7 +107,6 @@ export const StylizedButton = styled.button<{ p: ButtonStyleProvider }>`
   :active {
     background-color: ${({ p }) => p.active.backgroundColor};
     box-shadow: none;
-    transform: scale(1);
   }
 
   :disabled {
@@ -118,6 +114,7 @@ export const StylizedButton = styled.button<{ p: ButtonStyleProvider }>`
     background-color: default;
     box-shadow: none;
     cursor: default;
-    transform: scale(1);
   }
+
+  ${({ p }) => p.styled};
 `

@@ -40,6 +40,6 @@ export const catchError = (error: any) => {
       })
     )
 
-    return undefined
+    return
   }
 }

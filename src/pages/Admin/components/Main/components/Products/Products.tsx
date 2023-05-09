@@ -1,14 +1,7 @@
 import { Sections } from '@/models'
-import { setNewResourceData } from '@/redux/states'
-// import { ProductsService } from '@/services'
-import { css } from 'styled-components'
-import { InputSelectorField, SelectorField } from '../../..'
-import { InputField } from '../../../'
-import New from '../New/New'
 import Search from '../Search/Search'
 import Section from '../Section/Section'
-import { ManufacturerServices } from '@/services'
-import { AppError } from '@/tools'
+import { NewProduct } from './components'
 
 const sectionKey = Sections.PRODUCTS.key
 
@@ -25,142 +18,7 @@ const Products = () => {
         },
         {
           ...Sections.PRODUCTS.views.NEW,
-          component: (
-            <New title="Nuevo Producto">
-              {/* <Selector
-                sectionId="new"
-                views={[
-                  { id: 'hola', title: 'Holaaaaaaaaaaaaaaaaaaaaaaa', iconName: 'f' },
-                  { id: 'hola1', title: 'Hola', iconName: 'f' },
-                  { id: 'hola2', title: 'Hola', iconName: 'f' },
-                  { id: 'hola3', title: 'Hola', iconName: 'f' },
-                  { id: 'hola4', title: 'Hola', iconName: 'f' },
-                  { id: 'hola5', title: 'Hola', iconName: 'f' },
-                ]}
-              />
-              <Selector
-                sectionId="new"
-                variable={false}
-                views={[
-                  { id: 'hola', title: 'Hola', iconName: 'f' },
-                  { id: 'hola1', title: 'Hola', iconName: 'f' },
-                  { id: 'hola2', title: 'Hola', iconName: 'f' },
-                  { id: 'hola3', title: 'Hola', iconName: 'f' },
-                  { id: 'hola4', title: 'Hola', iconName: 'f' },
-                  { id: 'hola5', title: 'Hola', iconName: 'f' },
-                ]}
-              /> */}
-              <InputField
-                action={setNewResourceData}
-                sectionKey={sectionKey}
-                fieldKey="name"
-                title="Nombre"
-                validations={[
-                  {
-                    validation: (value: string) => value === '',
-                    errorMsg: 'Campo obligatorio',
-                    // break: true,
-                    break: false,
-                  },
-                  {
-                    validation: (value: string) => value.includes('m'),
-                    errorMsg: 'No puede contener m',
-                    break: false,
-                  },
-                  {
-                    validation: (value: string) => value.includes('n'),
-                    errorMsg: 'No puede contener n',
-                    break: false,
-                  },
-                ]}
-                inputExtraAttrs={{
-                  required: true,
-                  autoComplete: 'nope',
-                }}
-              />
-              <InputField
-                action={setNewResourceData}
-                sectionKey={sectionKey}
-                fieldKey="unitPrice"
-                title="Precio"
-                inputExtraAttrs={{
-                  type: 'number',
-                  min: 0,
-                  required: true,
-                }}
-              />
-              {/* <InputSelectorField
-                action={setNewResourceData}
-                sectionKey={sectionKey}
-                dependentSectionKey={Sections.MANUFACTURERS.key}
-                fieldKey="manufacturer"
-                title="Fabricante"
-                validations={[
-                  {
-                    validation: (value: string) => value === '',
-                    errorMsg: 'Campo obligatorio',
-                    break: true,
-                  },
-                  {
-                    validation: (value: string) => value.includes('m'),
-                    errorMsg: 'No puede contener m',
-                  },
-                  {
-                    validation: (value: string) => value.includes('n'),
-                    errorMsg: 'No puede contener n',
-                  },
-                ]}
-                loadOptions={async () => {
-                  const manufacturers = await ManufacturerServices.getAll()
-                  if (!manufacturers || manufacturers instanceof AppError)
-                    return manufacturers as AppError
-
-                  return manufacturers.map(item => ({
-                    id: item.id.toString(),
-                    title: item.name,
-                  }))
-                }}
-              /> */}
-              <SelectorField
-                action={setNewResourceData}
-                sectionKey={sectionKey}
-                dependentSectionKey={Sections.MANUFACTURERS.key}
-                fieldKey="manufacturer"
-                title="Fabricante"
-                required
-                loadOptions={async () => {
-                  const manufacturers = await ManufacturerServices.getAll()
-                  if (!manufacturers || manufacturers instanceof AppError)
-                    return manufacturers as AppError
-
-                  return manufacturers.map(item => ({
-                    id: item.id.toString(),
-                    title: item.name,
-                  }))
-                }}
-              />
-              <InputField
-                action={setNewResourceData}
-                sectionKey={sectionKey}
-                fieldKey="stock"
-                title="Stock"
-                inputExtraAttrs={{
-                  type: 'number',
-                  min: 0,
-                }}
-              />
-              <InputField
-                action={setNewResourceData}
-                sectionKey={sectionKey}
-                fieldKey="minStock"
-                title="Stock mínimo"
-                inputExtraAttrs={{
-                  type: 'number',
-                  min: 0,
-                }}
-              />
-            </New>
-          ),
+          component: <NewProduct />,
         },
       ]}
     />

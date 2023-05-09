@@ -20,7 +20,11 @@ export const newResourceDataSlice = createSlice({
   reducers: {
     setNewResourceData: (
       state,
-      action: PayloadAction<{ sectionKey: string; fieldKey: string; value: any }>
+      action: PayloadAction<{
+        sectionKey: string
+        fieldKey: string
+        value: undefined | boolean | number | string
+      }>
     ) => {
       const { sectionKey, fieldKey, value } = action.payload
       const stateCloned = JSON.parse(JSON.stringify(state))

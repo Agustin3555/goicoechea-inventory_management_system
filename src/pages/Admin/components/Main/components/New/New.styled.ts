@@ -20,7 +20,10 @@ export const newStyleAdapter = (darkMode: boolean): NewStyleProvider => {
 }
 
 export const StylizedNew = styled.form<{ p: NewStyleProvider }>`
-  height: 100%;
+  max-height: calc(100% - 53px - ${fontSizeAdapter('xs')});
+  padding-right: ${fontSizeAdapter('xs')};
+  overflow-y: scroll;
+  overflow-x: hidden;
 
   .title {
     margin-top: ${fontSizeAdapter('xs')};
@@ -36,8 +39,5 @@ export const StylizedNew = styled.form<{ p: NewStyleProvider }>`
     display: flex;
     flex-wrap: wrap;
     gap: ${fontSizeAdapter('xs')};
-    max-height: calc(100% - 126px - ${fontSizeAdapter('xs')});
-    padding-right: ${fontSizeAdapter('xs')};
-    /* overflow-y: auto; */
   }
 `

@@ -1,7 +1,7 @@
 import { Icon, Spinner } from '@/components'
 import { useDarkMode } from '@/hooks'
 import { AppStore } from '@/redux/store'
-import { ChangeEventHandler, InputHTMLAttributes, useState } from 'react'
+import { ChangeEventHandler, InputHTMLAttributes, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { ErrorList, FieldName } from '..'
@@ -13,7 +13,14 @@ import {
 import { AppError } from '@/tools'
 import { useSectionDependency, useValidateInput } from '../../hooks'
 import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
-import { BLANK_SELECTION, Option, STATUS, Validation, reorderBySearch } from '../../tools'
+import {
+  BLANK_SELECTION,
+  Option,
+  STATUS,
+  Validation,
+  reorderBySearch,
+  requiredValidation,
+} from '../../tools'
 import { css } from 'styled-components'
 import { notFontSizeAdapter } from '@/styles'
 
@@ -23,6 +30,7 @@ const InputSelectorField = ({
   dependentSectionKey,
   fieldKey,
   title,
+  required,
   validations,
   inputExtraAttrs,
   style,
@@ -37,6 +45,7 @@ const InputSelectorField = ({
   dependentSectionKey: string
   fieldKey: string
   title: string
+  required?: boolean
   validations?: Validation[]
   inputExtraAttrs?: InputHTMLAttributes<HTMLInputElement>
   style?: InputSelectorFieldStyleProps
@@ -52,7 +61,16 @@ const InputSelectorField = ({
     (store: AppStore) => store.newResourceData[sectionKey][fieldKey]
   ) as string
   const [inputValue, setInputValue] = useState(initialValue || '')
-  const { errors } = useValidateInput(inputValue, validations)
+  const finalValidations = useMemo(() => {
+    if (validations || required) {
+      let v: Validation[] = []
+      if (required) v = [requiredValidation]
+      if (validations) v = [...v, ...validations]
+      return v
+    }
+    return
+  }, [])
+  const { errors } = useValidateInput(inputValue, finalValidations)
   useSectionDependency(setOptions, dependentSectionKey)
 
   const handleEnter = async () => {
@@ -133,10 +151,10 @@ const InputSelectorField = ({
           <label htmlFor={BLANK_SELECTION.id} />
           <input
             className="input"
-            type="radio"
-            name="view"
             id={BLANK_SELECTION.id}
+            name="view"
             title={BLANK_SELECTION.title}
+            type="radio"
             checked={inputValue === '' ? true : undefined}
             onChange={handleItemChange}
           />
@@ -149,11 +167,11 @@ const InputSelectorField = ({
             <label htmlFor={item.id} />
             <input
               className="input"
+              id={item.id}
+              name="view"
+              title={item.title}
               type="radio"
               checked={inputValue === item.title ? true : undefined}
-              name="view"
-              id={item.id}
-              title={item.title}
               onChange={handleItemChange}
             />
             <div className="fake-input">
@@ -179,9 +197,10 @@ const InputSelectorField = ({
             <input
               className="input"
               name={fieldKey}
-              autoComplete="nope"
               value={inputValue}
               placeholder={BLANK_SELECTION.title}
+              autoComplete="nope"
+              {...inputExtraAttrs}
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
               onChange={handleInputChange}
