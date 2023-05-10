@@ -70,7 +70,12 @@ const InputSelectorField = ({
     }
     return
   }, [])
-  const { errors } = useValidateInput(inputValue, finalValidations)
+  const { errors } = useValidateInput({
+    inputValue,
+    validations: finalValidations,
+    sectionKey,
+    fieldKey,
+  })
   useSectionDependency(setOptions, dependentSectionKey)
 
   const handleEnter = async () => {

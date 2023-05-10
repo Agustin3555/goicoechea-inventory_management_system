@@ -8,7 +8,7 @@ import {
   SearchedDataState,
   searchedDataReducer,
   sectionActiveReducer,
-  ServerConnectedReducer,
+  serverConnectedReducer,
   ServerConnectedState,
   showNavReducer,
   showRightPanelReducer,
@@ -22,6 +22,8 @@ import {
   ShowRightPanelState,
   UserState,
   SectionActiveState,
+  ErrorInFieldState,
+  errorInFieldReducer,
 } from './states'
 
 export interface AppStore {
@@ -36,13 +38,14 @@ export interface AppStore {
   updatesOfSections: UpdatesOfSectionsState
   searchedData: SearchedDataState
   newResourceData: NewResourceDataState
+  errorInField: ErrorInFieldState
 }
 
 export default configureStore<AppStore>({
   reducer: {
     user: userReducer,
     darkMode: darkModeReducer,
-    serverConnected: ServerConnectedReducer,
+    serverConnected: serverConnectedReducer,
     showNav: showNavReducer,
     showRightPanel: showRightPanelReducer,
     sectionActive: sectionActiveReducer,
@@ -51,5 +54,6 @@ export default configureStore<AppStore>({
     updatesOfSections: updatesOfSectionsReducer,
     searchedData: searchedDataReducer,
     newResourceData: newResourceDataReducer,
+    errorInField: errorInFieldReducer,
   },
 })

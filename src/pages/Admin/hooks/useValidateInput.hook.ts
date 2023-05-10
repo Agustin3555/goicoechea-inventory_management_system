@@ -1,7 +1,20 @@
 import { useEffect, useState } from 'react'
 import { Validation } from '../tools'
+import { useDispatch } from 'react-redux'
+import { setErrorInField } from '@/redux'
 
-export const useValidateInput = (inputValue: string, validations?: Validation[]) => {
+export const useValidateInput = ({
+  inputValue,
+  validations,
+  sectionKey,
+  fieldKey,
+}: {
+  inputValue: string
+  validations?: Validation[]
+  sectionKey: string
+  fieldKey: string
+}) => {
+  const dispatch = useDispatch()
   const [errors, setErrors] = useState<string[]>([])
 
   useEffect(() => {
@@ -21,6 +34,10 @@ export const useValidateInput = (inputValue: string, validations?: Validation[])
       setErrors(accumulatedErrors)
     }
   }, [inputValue])
+
+  useEffect(() => {
+    if (errors) dispatch(setErrorInField({ sectionKey, fieldKey, error: errors.length !== 0 }))
+  }, [errors])
 
   return { errors }
 }

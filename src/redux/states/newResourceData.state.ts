@@ -1,6 +1,14 @@
 import { Sections } from '@/models/sections.model'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+export type Value = undefined | boolean | number | string
+
+export interface NewResourceAction {
+  sectionKey: string
+  fieldKey: string
+  value: Value
+}
+
 export interface NewResourceDataState {
   [key: string]: { [key: string]: any }
 }
@@ -18,14 +26,7 @@ export const newResourceDataSlice = createSlice({
   name: 'newResourceData',
   initialState,
   reducers: {
-    setNewResourceData: (
-      state,
-      action: PayloadAction<{
-        sectionKey: string
-        fieldKey: string
-        value: undefined | boolean | number | string
-      }>
-    ) => {
+    setNewResourceData: (state, action: PayloadAction<NewResourceAction>) => {
       const { sectionKey, fieldKey, value } = action.payload
       const stateCloned = JSON.parse(JSON.stringify(state))
 

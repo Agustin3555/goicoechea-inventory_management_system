@@ -1,13 +1,14 @@
 import { Input } from '@/components'
 import { AppStore } from '@/redux/store'
 import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
-import { ChangeEventHandler, InputHTMLAttributes, useEffect, useState } from 'react'
+import { ChangeEventHandler, InputHTMLAttributes, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import FieldName from '../FieldName/FieldName'
 import { StylizedInputField } from './InputField.styled'
 import { useValidateInput } from '../../hooks'
 import { Validation } from '../../tools'
 import { ErrorList } from '..'
+import { NewResourceAction } from '@/redux'
 
 const InputField = ({
   action,
@@ -17,11 +18,7 @@ const InputField = ({
   validations,
   inputExtraAttrs,
 }: {
-  action: ActionCreatorWithPayload<{
-    sectionKey: string
-    fieldKey: string
-    value: any
-  }>
+  action: ActionCreatorWithPayload<NewResourceAction>
   sectionKey: string
   fieldKey: string
   title: string
@@ -33,7 +30,7 @@ const InputField = ({
     (store: AppStore) => store.newResourceData[sectionKey][fieldKey]
   ) as string
   const [inputValue, setValue] = useState(initialInputValue || '')
-  const { errors } = useValidateInput(inputValue, validations)
+  const { errors } = useValidateInput({ inputValue, validations, sectionKey, fieldKey })
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = event => {
     const { value } = event.currentTarget

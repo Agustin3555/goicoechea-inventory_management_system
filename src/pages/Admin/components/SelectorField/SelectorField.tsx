@@ -55,7 +55,12 @@ const SelectorField = ({
   const [selectedOption, setSelectedOption] = useState<Option>()
   // TODO: iniciar con el valor del state de Redux
   const [inputValue, setInputValue] = useState('')
-  const { errors } = useValidateInput(inputValue, required ? [requiredValidation] : undefined)
+  const { errors } = useValidateInput({
+    inputValue,
+    validations: required ? [requiredValidation] : undefined,
+    sectionKey,
+    fieldKey,
+  })
   useSectionDependency(setOptions, dependentSectionKey)
 
   const handleEnter = async () => {
