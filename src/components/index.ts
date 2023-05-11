@@ -8,3 +8,4 @@ export { default as SinglePageOnCard } from './SinglePageOnCard/SinglePageOnCard
 export { default as Spinner } from './Spinner/Spinner'
 export { default as ToggleDarkMode } from './ToggleDarkMode/ToggleDarkMode'
 export { default as Snackbar } from './Snackbar/Snackbar'
+export { default as Background } from './Background/Background'

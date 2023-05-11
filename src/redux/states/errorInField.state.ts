@@ -28,8 +28,6 @@ export const errorInFieldSlice = createSlice({
       const { sectionKey, fieldKey, error } = action.payload
       const stateCloned = JSON.parse(JSON.stringify(state))
 
-      console.log(error)
-
       stateCloned[sectionKey][fieldKey] = error
 
       return stateCloned

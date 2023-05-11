@@ -3,7 +3,7 @@ import { Admin, Login } from './pages'
 import { Provider } from 'react-redux'
 import { AuthGuard } from './guards'
 import { PRIVATE_ROUTES, PUBLIC_ROUTES } from './routes'
-import { RoutesWithNotFound, Snackbar } from './components'
+import { Background, RoutesWithNotFound, Snackbar } from './components'
 import { GlobalStyle } from './styles'
 import { StylizedApp } from './App.styled'
 import { store } from './redux'
@@ -14,6 +14,7 @@ const App = () => {
       <Provider store={store}>
         <GlobalStyle />
         <BrowserRouter>
+          <Background />
           <RoutesWithNotFound>
             <Route path="/" element={<Navigate replace to={PRIVATE_ROUTES.admin} />} />
 

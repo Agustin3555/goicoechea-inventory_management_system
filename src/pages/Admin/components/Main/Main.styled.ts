@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import {
-  colorAdapter,
+  colorWithAlpha,
   fontSizeAdapter,
   microinteractionAdapter,
   notFontSizeAdapter,
@@ -25,7 +25,7 @@ export const mainStyleAdapter = (darkMode: boolean): MainStyleProvider => {
 
   return {
     padding: `${paddingTopBottom} ${paddingRight} ${paddingTopBottom} ${paddingLeft}`,
-    backgroundColor: colorAdapter(darkMode ? 'g-15' : 'g-2'),
+    backgroundColor: colorWithAlpha(darkMode ? 'g-17' : 'g-0', darkMode ? 0.8 : 0.7),
   }
 }
 
@@ -40,6 +40,7 @@ export const StylizedMain = styled.div<{ p: MainStyleProvider }>`
     border-radius: calc(${notFontSizeAdapter('4xs')} + ${fontSizeAdapter('xs')});
     background-color: ${({ p }) => p.backgroundColor};
     box-shadow: ${shadowAdapter(2)};
+    backdrop-filter: blur(7.5px);
     transition: border-radius ${microinteractionAdapter(2)} ease-out,
       background-color ${microinteractionAdapter(2)} ease-out;
 
