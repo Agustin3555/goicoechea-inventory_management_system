@@ -1,11 +1,10 @@
 import { Sections } from '@/models/sections.model'
+import { ResourceRef } from '@/pages/Admin/tools'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface Item {
   selected: boolean
-  data: {
-    id: number
-  }
+  data: ResourceRef
 }
 
 export interface SearchedDataState {
@@ -25,19 +24,22 @@ export const searchedDataSlice = createSlice({
   name: 'searchedData',
   initialState,
   reducers: {
-    setSearchedData: (state, action: PayloadAction<{ sectionId: string; data: any[] }>) => {
-      const { sectionId, data } = action.payload
+    setSearchedData: (
+      state,
+      action: PayloadAction<{ sectionKey: string; data: ResourceRef[] }>
+    ) => {
+      const { sectionKey, data } = action.payload
 
       const items: Item[] = data.map(item => ({ selected: false, data: item }))
 
-      const newState = { ...state, ...{ [sectionId]: items } }
+      const newState = { ...state, ...{ [sectionKey]: items } }
 
       return newState
     },
-    toggleSelectItem: (state, action: PayloadAction<{ sectionId: string; id: number }>) => {
-      const { sectionId, id } = action.payload
+    toggleSelectItem: (state, action: PayloadAction<{ sectionKey: string; id: number }>) => {
+      const { sectionKey, id } = action.payload
 
-      const item = state[sectionId].filter(item => item.data.id === id)[0]
+      const item = state[sectionKey].filter(item => item.data.id === id)[0]
 
       item.selected = !item.selected
 

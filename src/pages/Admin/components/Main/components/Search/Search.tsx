@@ -2,16 +2,33 @@ import { Button, Icon, Input, Separator, Spinner } from '@/components'
 import { useDarkMode } from '@/hooks'
 import { setSearchedData } from '@/redux/states/searchedData.state'
 import { AppStore } from '@/redux/store'
-import { FormEventHandler, useState } from 'react'
+import { FormEventHandler, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { Checkbox, Item } from './components'
 import { searchStyleAdapter, StylizedSearch } from './Search.styled'
+import { AppError } from '@/tools'
+import { ResourceRef } from '@/pages/Admin/tools'
 
-const Search = ({ sectionId }: { sectionId: string }) => {
+const Search = ({
+  sectionKey,
+  loadItems,
+}: {
+  sectionKey: string
+  loadItems: () => Promise<AppError | ResourceRef[]>
+}) => {
   const darkMode = useDarkMode()
   const [loading, setLoading] = useState(false)
-  const items = useSelector((store: AppStore) => store.searchedData['products'])
+  const items = useSelector((store: AppStore) => store.searchedData[sectionKey])
+  const selectedItems = useMemo(
+    () => items.filter(item => item.selected === true).length,
+    []
+    // [items]
+  )
+  // const selectedItems = useSelector(
+  //   (store: AppStore) =>
+  //     store.searchedData[sectionKey].filter(item => item.selected === true).length
+  // )
   const dispatch = useDispatch()
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event: any) => {
@@ -19,13 +36,13 @@ const Search = ({ sectionId }: { sectionId: string }) => {
 
     setLoading(true)
 
-    try {
-      // const products = await ProductsService.findAll()
-      // dispatch(setSearchedData({ sectionId: 'products', data: products }))
-    } catch (error) {
-    } finally {
-      setLoading(false)
+    const items = await loadItems()
+
+    if (items && !(items instanceof AppError)) {
+      dispatch(setSearchedData({ sectionKey, data: items }))
     }
+
+    setLoading(false)
   }
 
   return (
@@ -33,11 +50,11 @@ const Search = ({ sectionId }: { sectionId: string }) => {
       <div className="search-head">
         <Checkbox id="all" title="Todo" />
         <Icon iconName="fa-solid fa-cubes-stacked" style={{ size: 's' }} />
-        <div className="counter">3555</div>
+        <div className="counter">{selectedItems}</div>
         <Separator style={{ long: 'xs', backgroundColor: { dark: 'g-8' } }} />
         <form className="form" onSubmit={loading ? undefined : handleSubmit}>
           <Input
-            name={`search-${sectionId}`}
+            name={`search-${sectionKey}`}
             title="Buscar por nombre"
             showLabel={false}
             style={{ fontSize: 's' }}
@@ -78,7 +95,12 @@ const Search = ({ sectionId }: { sectionId: string }) => {
       </div>
       <div className="items">
         {items.map(item => (
-          <Item key={item.data.id} id={item.data.id as number} title={item.data.name} />
+          <Item
+            sectionKey={sectionKey}
+            id={item.data.id}
+            title={item.data.text}
+            key={item.data.id}
+          />
         ))}
       </div>
     </StylizedSearch>

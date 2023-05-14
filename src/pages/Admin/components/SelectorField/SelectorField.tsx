@@ -44,7 +44,7 @@ const SelectorField = ({
   title: string
   required?: boolean
   style?: SelectorFieldStyleProps
-  loadOptions: (name?: string) => Promise<AppError | Option[]>
+  loadOptions: () => Promise<AppError | Option[]>
 }) => {
   const darkMode = useDarkMode()
   const dispatch = useDispatch()

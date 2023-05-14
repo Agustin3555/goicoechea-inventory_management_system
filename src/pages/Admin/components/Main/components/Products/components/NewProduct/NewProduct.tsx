@@ -13,8 +13,12 @@ import {
 const sectionKey = Sections.PRODUCTS.key
 
 const NewProduct = () => {
+  const handleSend = async () => {
+    console.log('send')
+  }
+
   return (
-    <New title="Nuevo Producto">
+    <New title="Nuevo Producto" handleSend={handleSend}>
       <InputField
         action={setNewResourceData}
         sectionKey={sectionKey}

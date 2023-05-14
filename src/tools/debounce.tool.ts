@@ -23,7 +23,7 @@ export const debounce = <T extends Procedure>(
 
     lastArgs = args
 
-    function executeFunction() {
+    const executeFunction = () => {
       func.apply(thisAux, lastArgs!)
       lastExecutedTimestamp = now
       leadingExecuted = false
@@ -38,15 +38,11 @@ export const debounce = <T extends Procedure>(
       if (trailing) {
         timeoutId = setTimeout(() => {
           const timeSinceLastExecuted = now - lastExecutedTimestamp
-          if (timeSinceLastExecuted >= waitMilliseconds) {
-            executeFunction()
-          }
+          if (timeSinceLastExecuted >= waitMilliseconds) executeFunction()
         }, waitMilliseconds)
       } else {
         const timeSinceLastExecuted = now - lastExecutedTimestamp
-        if (timeSinceLastExecuted >= waitMilliseconds) {
-          executeFunction()
-        }
+        if (timeSinceLastExecuted >= waitMilliseconds) executeFunction()
       }
     }
   }

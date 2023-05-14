@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 import {
-  colorAdapter,
   fontSizeAdapter,
   microinteractionAdapter,
   notFontSizeAdapter,
   shadowAdapter,
 } from '@/styles'
+import { GAP, GLASS_BACKGROUND_COLOR, GLASS_BLUR } from '@/tools'
 
 interface NavStyleProvider {
   left: string
@@ -21,10 +21,8 @@ export const navStyleAdapter = (darkMode: boolean, show: boolean): NavStyleProvi
   return {
     left: show
       ? '0'
-      : `calc((${fontSizeAdapter('xs')} * 3 + ${fontSizeAdapter('s')} * 2 + ${fontSizeAdapter(
-          'm'
-        )}) * -1)`,
-    backgroundColor: colorAdapter(darkMode ? 'g-15' : 'g-2'),
+      : `calc((${GAP} * 3 + ${fontSizeAdapter('s')} * 2 + ${fontSizeAdapter('m')}) * -1)`,
+    backgroundColor: GLASS_BACKGROUND_COLOR(darkMode),
     boxShadow: shadowAdapter(show ? 3 : 2),
   }
 }
@@ -37,12 +35,13 @@ export const StylizedNav = styled.div<{ p: NavStyleProvider }>`
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  padding: ${fontSizeAdapter('xs')};
-  border-radius: calc(${notFontSizeAdapter('4xs')} + ${fontSizeAdapter('xs')});
+  padding: ${GAP};
+  border-radius: calc(${notFontSizeAdapter('4xs')} + ${GAP});
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   background-color: ${({ p }) => p.backgroundColor};
   box-shadow: ${({ p }) => p.boxShadow};
+  backdrop-filter: ${GLASS_BLUR};
   transition: inset ${microinteractionAdapter(2)} ease-out,
     background-color ${microinteractionAdapter(2)} ease-out,
     box-shadow ${microinteractionAdapter(2)} ease-out;
@@ -50,7 +49,7 @@ export const StylizedNav = styled.div<{ p: NavStyleProvider }>`
   .items {
     display: flex;
     flex-direction: column;
-    gap: ${fontSizeAdapter('xs')};
+    gap: ${GAP};
     margin: 0;
     padding: 0;
     list-style: none;
@@ -59,12 +58,12 @@ export const StylizedNav = styled.div<{ p: NavStyleProvider }>`
   .bottom {
     display: flex;
     flex-direction: column;
-    gap: ${fontSizeAdapter('xs')};
+    gap: ${GAP};
   }
 
   @media (min-width: 90rem) {
     left: 0;
-    top: ${fontSizeAdapter('xs')};
-    height: calc(100% - ${fontSizeAdapter('xs')} * 2);
+    top: ${GAP};
+    height: calc(100% - ${GAP} * 2);
   }
 `

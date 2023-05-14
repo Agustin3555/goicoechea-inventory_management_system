@@ -4,3 +4,4 @@ export { default as FractionFieldGroup } from './FractionFieldGroup/FractionFiel
 export { default as NewProduct } from './NewProduct/NewProduct'
 export { default as QuantityFieldGroup } from './QuantityFieldGroup/QuantityFieldGroup'
 export { default as StringFieldGroup } from './StringFieldGroup/StringFieldGroup'
+export { default as SearchProduct } from './SearchProduct/SearchProduct'

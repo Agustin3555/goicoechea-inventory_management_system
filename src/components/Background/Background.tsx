@@ -24,7 +24,9 @@ const Background = () => {
   }
 
   useEffect(() => {
-    const handleResizeDebounced = debounce(handleResize, 300, { leading: true })
+    handleResize()
+
+    const handleResizeDebounced = debounce(handleResize, 500)
 
     window.addEventListener('resize', handleResizeDebounced)
 

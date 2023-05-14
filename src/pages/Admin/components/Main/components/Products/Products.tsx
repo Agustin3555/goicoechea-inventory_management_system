@@ -1,7 +1,6 @@
 import { Sections } from '@/models'
-import Search from '../Search/Search'
 import Section from '../Section/Section'
-import { NewProduct } from './components'
+import { NewProduct, SearchProduct } from './components'
 
 const sectionKey = Sections.PRODUCTS.key
 
@@ -14,7 +13,7 @@ const Products = () => {
       views={[
         {
           ...Sections.PRODUCTS.views.SEARCH,
-          component: <Search />,
+          component: <SearchProduct />,
         },
         {
           ...Sections.PRODUCTS.views.NEW,

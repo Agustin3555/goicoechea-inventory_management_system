@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 import {
-  colorWithAlpha,
   fontSizeAdapter,
   microinteractionAdapter,
   notFontSizeAdapter,
   shadowAdapter,
 } from '@/styles'
+import { GAP, GLASS_BACKGROUND_COLOR, GLASS_BLUR } from '@/tools'
 
 interface MainStyleProvider {
   padding: string
@@ -15,17 +15,17 @@ interface MainStyleProvider {
 export const mainStyleAdapter = (darkMode: boolean): MainStyleProvider => {
   // #region Auxiliary vars
 
-  const paddingTopBottom = fontSizeAdapter('xs')
-  const paddingLeft = `calc(${fontSizeAdapter('xs')} * 3 + ${fontSizeAdapter(
-    's'
-  )} * 2 + ${fontSizeAdapter('m')})`
-  const paddingRight = `calc(${fontSizeAdapter('xs')} + 200px)`
+  const paddingTopBottom = GAP
+  const paddingLeft = `calc(${GAP} * 3 + ${fontSizeAdapter('s')} * 2 + ${fontSizeAdapter(
+    'm'
+  )})`
+  const paddingRight = `calc(${GAP} + 200px)`
 
   // #endregion
 
   return {
     padding: `${paddingTopBottom} ${paddingRight} ${paddingTopBottom} ${paddingLeft}`,
-    backgroundColor: colorWithAlpha(darkMode ? 'g-17' : 'g-0', darkMode ? 0.8 : 0.7),
+    backgroundColor: GLASS_BACKGROUND_COLOR(darkMode),
   }
 }
 
@@ -36,11 +36,11 @@ export const StylizedMain = styled.div<{ p: MainStyleProvider }>`
 
   .container {
     height: 100%;
-    padding: ${fontSizeAdapter('xs')};
-    border-radius: calc(${notFontSizeAdapter('4xs')} + ${fontSizeAdapter('xs')});
+    padding: ${GAP};
+    border-radius: calc(${notFontSizeAdapter('4xs')} + ${GAP});
     background-color: ${({ p }) => p.backgroundColor};
     box-shadow: ${shadowAdapter(2)};
-    backdrop-filter: blur(7.5px);
+    backdrop-filter: ${GLASS_BLUR};
     transition: border-radius ${microinteractionAdapter(2)} ease-out,
       background-color ${microinteractionAdapter(2)} ease-out;
 
@@ -67,8 +67,8 @@ export const StylizedMain = styled.div<{ p: MainStyleProvider }>`
   }
 
   @media (max-width: 89.9375rem) {
-    padding-right: ${fontSizeAdapter('xs')};
-    padding-left: ${fontSizeAdapter('xs')};
+    padding-right: ${GAP};
+    padding-left: ${GAP};
   }
 
   @media (max-width: 26.5625rem) {

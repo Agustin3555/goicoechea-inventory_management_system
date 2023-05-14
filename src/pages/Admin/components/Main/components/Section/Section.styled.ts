@@ -1,10 +1,6 @@
 import styled from 'styled-components'
-import {
-  colorAdapter,
-  fontSizeAdapter,
-  microinteractionAdapter,
-  notFontSizeAdapter,
-} from '@/styles'
+import { colorAdapter, fontSizeAdapter, microinteractionAdapter } from '@/styles'
+import { GAP } from '@/tools'
 
 interface SectionStyleProvider {
   head: {
@@ -25,13 +21,13 @@ export const sectionStyleAdapter = (darkMode: boolean): SectionStyleProvider => 
 export const StylizedSection = styled.div<{ p: SectionStyleProvider }>`
   display: flex;
   flex-direction: column;
-  gap: ${fontSizeAdapter('xs')};
+  gap: ${GAP};
   height: 100%;
 
   .head {
     display: flex;
     align-items: center;
-    gap: ${fontSizeAdapter('xs')};
+    gap: ${GAP};
     color: ${({ p }) => p.head.color};
     transition: color ${microinteractionAdapter(2)} ease-out;
 

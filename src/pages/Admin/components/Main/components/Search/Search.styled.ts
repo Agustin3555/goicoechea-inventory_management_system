@@ -1,10 +1,6 @@
 import styled from 'styled-components'
-import {
-  colorAdapter,
-  fontSizeAdapter,
-  microinteractionAdapter,
-  notFontSizeAdapter,
-} from '@/styles'
+import { colorAdapter, fontSizeAdapter, microinteractionAdapter } from '@/styles'
+import { GAP } from '@/tools'
 
 interface SearchStyleProvider {}
 
@@ -19,13 +15,13 @@ export const searchStyleAdapter = (darkMode: boolean): SearchStyleProvider => {
 export const StylizedSearch = styled.div<{ p: SearchStyleProvider }>`
   display: flex;
   flex-direction: column;
-  gap: ${fontSizeAdapter('xs')};
+  gap: ${GAP};
   height: 100%;
 
   .search-head {
     display: flex;
     align-items: center;
-    gap: ${fontSizeAdapter('xs')};
+    gap: ${GAP};
     color: ${colorAdapter('a')};
 
     .counter {
@@ -36,7 +32,7 @@ export const StylizedSearch = styled.div<{ p: SearchStyleProvider }>`
     .form {
       display: flex;
       align-items: center;
-      gap: ${fontSizeAdapter('xs')};
+      gap: ${GAP};
       width: 100%;
 
       .button-content {
@@ -65,9 +61,9 @@ export const StylizedSearch = styled.div<{ p: SearchStyleProvider }>`
   .items {
     display: flex;
     flex-direction: column;
-    gap: ${fontSizeAdapter('xs')};
-    height: calc(100% - ${fontSizeAdapter('xs')} - 114px);
+    gap: ${GAP};
+    height: calc(100% - ${GAP} - 114px);
     overflow-y: scroll;
-    padding-right: ${fontSizeAdapter('xs')};
+    padding-right: ${GAP};
   }
 `

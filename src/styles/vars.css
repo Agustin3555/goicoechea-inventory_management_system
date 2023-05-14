@@ -5,6 +5,9 @@
   --font-s: 'Cascadia Code', Segoe UI;
   --font-t: 'Inter', Segoe UI;
 
+  --size-font-3xs: 0.6875rem;
+  --size-font-2xs: 0.75rem;
+  /* Agregar estos ultimos estilos. O quisas pensar en una forma automatica de hacerlo */
   --size-font-xs: 0.8125rem;
   --size-font-s: 1rem;
   --size-font-m: 1.25rem;
