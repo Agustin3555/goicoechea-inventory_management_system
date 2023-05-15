@@ -1,6 +1,5 @@
 import { Button, Icon, Input, Separator, Spinner } from '@/components'
 import { useDarkMode } from '@/hooks'
-import { setSearchedData } from '@/redux/states/searchedData.state'
 import { AppStore } from '@/redux/store'
 import { FormEventHandler, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -9,6 +8,7 @@ import { Checkbox, Item } from './components'
 import { searchStyleAdapter, StylizedSearch } from './Search.styled'
 import { AppError } from '@/tools'
 import { ResourceRef } from '@/pages/Admin/tools'
+import { ItemData, setSearchedData, setSelectAll } from '@/redux'
 
 const Search = ({
   sectionKey,
@@ -18,18 +18,30 @@ const Search = ({
   loadItems: () => Promise<AppError | ResourceRef[]>
 }) => {
   const darkMode = useDarkMode()
-  const [loading, setLoading] = useState(false)
-  const items = useSelector((store: AppStore) => store.searchedData[sectionKey])
-  const selectedItems = useMemo(
-    () => items.filter(item => item.selected === true).length,
-    []
-    // [items]
-  )
-  // const selectedItems = useSelector(
-  //   (store: AppStore) =>
-  //     store.searchedData[sectionKey].filter(item => item.selected === true).length
-  // )
   const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false)
+
+  const items = useSelector((store: AppStore) => {
+    const keys = store.searchedData[sectionKey]
+
+    const array: { id: number; data: ItemData }[] = []
+
+    for (const key in keys) array.push({ id: parseInt(key), data: keys[key] })
+
+    return array
+  })
+
+  const selectedItems = useMemo(
+    () => items.filter(item => item.data.meta.selected === true).length,
+    [items]
+  )
+
+  const allSelected = useMemo(() => {
+    if (items.length === 0) return false
+    for (const item of items) if (!item.data.meta.selected) return false
+
+    return true
+  }, [items])
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event: any) => {
     event.preventDefault()
@@ -39,16 +51,20 @@ const Search = ({
     const items = await loadItems()
 
     if (items && !(items instanceof AppError)) {
-      dispatch(setSearchedData({ sectionKey, data: items }))
+      dispatch(setSearchedData({ sectionKey, items }))
     }
 
     setLoading(false)
   }
 
+  const handleSelectAll = () => {
+    dispatch(setSelectAll({ sectionKey, value: !allSelected }))
+  }
+
   return (
     <StylizedSearch p={searchStyleAdapter(darkMode)}>
       <div className="search-head">
-        <Checkbox id="all" title="Todo" />
+        <Checkbox id="all" title="Todo" checked={allSelected} handleChange={handleSelectAll} />
         <Icon iconName="fa-solid fa-cubes-stacked" style={{ size: 's' }} />
         <div className="counter">{selectedItems}</div>
         <Separator style={{ long: 'xs', backgroundColor: { dark: 'g-8' } }} />
@@ -97,9 +113,9 @@ const Search = ({
         {items.map(item => (
           <Item
             sectionKey={sectionKey}
-            id={item.data.id}
-            title={item.data.text}
-            key={item.data.id}
+            id={item.id}
+            title={item.data.meta.text}
+            key={item.id}
           />
         ))}
       </div>

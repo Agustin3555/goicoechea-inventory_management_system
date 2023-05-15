@@ -11,7 +11,7 @@ const Checkbox = ({
 }: {
   id: string
   title: string
-  checked: boolean
+  checked?: boolean
   handleChange: () => void
   style?: CheckboxStyleProps
 }) => {

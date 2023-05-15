@@ -5,8 +5,9 @@ import Checkbox from '../Checkbox/Checkbox'
 import CheckboxButton from '../CheckboxButton/CheckboxButton'
 import DimensionObserver from '../DimensionObserver/DimensionObserver'
 import { itemStyleAdapter, StylizedItem } from './Item.styled'
-import { useSelector } from 'react-redux'
 import { AppStore } from '@/redux/store'
+import { useDispatch, useSelector } from 'react-redux'
+import { toggleSelectItem } from '@/redux'
 
 const Item = ({
   sectionKey,
@@ -18,11 +19,14 @@ const Item = ({
   title: string
 }) => {
   const darkMode = useDarkMode()
-  const items = useSelector((store: AppStore) => store.searchedData[sectionKey])
+  const dispatch = useDispatch()
+  const item = useSelector((store: AppStore) => store.searchedData[sectionKey][id])
   const [expanded, setExpanded] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
-  const selectOne = () => {}
+  const selectOne = () => {
+    dispatch(toggleSelectItem({ sectionKey, id }))
+  }
 
   return (
     <StylizedItem p={itemStyleAdapter(darkMode, expanded, ref.current?.clientHeight)}>
@@ -30,7 +34,7 @@ const Item = ({
         <Checkbox
           id={id.toString()}
           title={title}
-          checked={}
+          checked={item.meta.selected}
           handleChange={selectOne}
           style={{
             width: '4xl',
