@@ -3,6 +3,7 @@ import { Search } from '../../..'
 import { AppError } from '@/tools'
 import { ProductServices } from '@/pages/Admin/services'
 import { ResourceRef } from '@/pages/Admin/tools'
+import { InputEdit } from '@/pages/Admin/components'
 
 const SearchProduct = () => {
   const loadItems = async () => {
@@ -16,7 +17,13 @@ const SearchProduct = () => {
     }))
   }
 
-  return <Search sectionKey={Sections.PRODUCTS.key} loadItems={loadItems} />
+  return (
+    <Search sectionKey={Sections.PRODUCTS.key} loadItems={loadItems}>
+      <InputEdit />
+      <InputEdit />
+      <InputEdit />
+    </Search>
+  )
 }
 
 export default SearchProduct

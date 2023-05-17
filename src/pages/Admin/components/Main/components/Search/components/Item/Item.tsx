@@ -1,9 +1,8 @@
 import { ConfirmationButton, Icon, Separator } from '@/components'
-import { useDarkMode } from '@/hooks'
-import { useRef, useState } from 'react'
+import { useChildAdjustment, useDarkMode } from '@/hooks'
+import { useState } from 'react'
 import Checkbox from '../Checkbox/Checkbox'
 import CheckboxButton from '../CheckboxButton/CheckboxButton'
-import DimensionObserver from '../DimensionObserver/DimensionObserver'
 import { itemStyleAdapter, StylizedItem } from './Item.styled'
 import { AppStore } from '@/redux/store'
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,23 +12,25 @@ const Item = ({
   sectionKey,
   id,
   title,
+  properties,
 }: {
   sectionKey: string
   id: number
   title: string
+  properties: JSX.Element | JSX.Element[]
 }) => {
   const darkMode = useDarkMode()
   const dispatch = useDispatch()
   const item = useSelector((store: AppStore) => store.searchedData[sectionKey][id])
   const [expanded, setExpanded] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
+  const { childRef, childHeight } = useChildAdjustment()
 
   const selectOne = () => {
     dispatch(toggleSelectItem({ sectionKey, id }))
   }
 
   return (
-    <StylizedItem p={itemStyleAdapter(darkMode, expanded, ref.current?.clientHeight)}>
+    <StylizedItem p={itemStyleAdapter(darkMode, expanded, childHeight)}>
       <div className="item-head" onClick={() => setExpanded(!expanded)}>
         <Checkbox
           id={id.toString()}
@@ -62,12 +63,9 @@ const Item = ({
       <div style={{ flexShrink: 1 }}>
         <Separator style={{ invert: true, backgroundColor: { dark: 'g-8' } }} />
       </div>
-      <div ref={ref} className="test">
-        {ref.current && ref.current.clientWidth}
+      <div ref={childRef} className="properties">
+        {properties}
       </div>
-      {/* <DimensionObserver ref={ref}>
-        <div className="test">{ref.current.}</div>
-      </DimensionObserver> */}
     </StylizedItem>
   )
 }

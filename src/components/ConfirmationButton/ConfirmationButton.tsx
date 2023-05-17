@@ -14,7 +14,7 @@ const ConfirmationButton = ({
   children,
 }: {
   title: string
-  trigger: (...args: any[]) => void
+  trigger: () => void
   style: ConfirmationButtonStyleProps
   extraAttrs?: ButtonHTMLAttributes<HTMLButtonElement>
   children: JSX.Element[] | JSX.Element

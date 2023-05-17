@@ -13,9 +13,11 @@ import { ItemData, setSearchedData, setSelectAll } from '@/redux'
 const Search = ({
   sectionKey,
   loadItems,
+  children,
 }: {
   sectionKey: string
   loadItems: () => Promise<AppError | ResourceRef[]>
+  children: JSX.Element | JSX.Element[]
 }) => {
   const darkMode = useDarkMode()
   const dispatch = useDispatch()
@@ -112,6 +114,7 @@ const Search = ({
       <div className="items">
         {items.map(item => (
           <Item
+            properties={children}
             sectionKey={sectionKey}
             id={item.id}
             title={item.data.meta.text}

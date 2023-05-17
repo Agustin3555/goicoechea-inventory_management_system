@@ -5,6 +5,7 @@ import {
   microinteractionAdapter,
   notFontSizeAdapter,
 } from '@/styles'
+import { GAP } from '@/tools'
 
 interface ItemStyleProvider {
   height: string
@@ -63,8 +64,8 @@ export const StylizedItem = styled.div<{ p: ItemStyleProvider }>`
     }
   }
 
-  .test {
-    width: 40px;
-    background-color: whitesmoke;
+  .properties {
+    display: flex;
+    gap: ${GAP};
   }
 `

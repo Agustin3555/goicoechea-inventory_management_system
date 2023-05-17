@@ -25,8 +25,8 @@ export const StylizedSearch = styled.div<{ p: SearchStyleProvider }>`
     color: ${colorAdapter('a')};
 
     .counter {
-      font-size: ${fontSizeAdapter('xs')};
-      line-height: ${fontSizeAdapter('xs')};
+      font-size: ${fontSizeAdapter('s')};
+      line-height: ${fontSizeAdapter('s')};
     }
 
     .form {

@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { FlattenSimpleInterpolation } from 'styled-components'
 import {
   Color,
   colorAdapter,
@@ -11,10 +11,7 @@ import {
   shadowAdapter,
 } from '@/styles'
 
-type ConfirmationButtonWidthProp = 'expanded' | NotFontSize
-
 export interface ConfirmationButtonStyleProps {
-  width?: ConfirmationButtonWidthProp
   padding?: FontSize
   tight?: boolean
   color?: {
@@ -27,6 +24,7 @@ export interface ConfirmationButtonStyleProps {
     bright?: Color
   }
   elevation?: Elevation
+  styled?: FlattenSimpleInterpolation
 }
 
 interface ConfirmationButtonNormalizedStyleProps {
@@ -45,7 +43,6 @@ interface ConfirmationButtonNormalizedStyleProps {
 }
 
 interface ConfirmationButtonStyleProvider {
-  width: string
   padding: string
   color: string
   borderRadius: string
@@ -56,6 +53,7 @@ interface ConfirmationButtonStyleProvider {
   active: {
     backgroundColor: string
   }
+  styled?: FlattenSimpleInterpolation
 }
 
 export const confirmationButtonStyleAdapter = (
@@ -64,7 +62,7 @@ export const confirmationButtonStyleAdapter = (
 ): ConfirmationButtonStyleProvider => {
   const normalizedProps: ConfirmationButtonNormalizedStyleProps = {
     padding: style.padding || 's',
-    tight: style.tight || false,
+    tight: style.tight || true,
     borderRadius: style.borderRadius || '3xs',
     color: {
       dark: style?.color?.dark || 'g-4',
@@ -84,7 +82,6 @@ export const confirmationButtonStyleAdapter = (
   // #endregion
 
   return {
-    width: '',
     padding: `${paddingTopBottom} ${
       normalizedProps.tight ? '' : `calc(${paddingTopBottom} * 2)`
     }`,
@@ -104,6 +101,7 @@ export const confirmationButtonStyleAdapter = (
         1
       ),
     },
+    styled: style?.styled,
   }
 }
 
@@ -111,7 +109,6 @@ export const StylizedConfirmationButton = styled.button<{
   p: ConfirmationButtonStyleProvider
 }>`
   position: relative;
-  width: ${({ p }) => p.width};
   padding: ${({ p }) => p.padding};
   color: ${({ p }) => p.color};
   border: none;
@@ -175,4 +172,6 @@ export const StylizedConfirmationButton = styled.button<{
   .content {
     position: relative;
   }
+
+  ${({ p }) => p.styled};
 `
