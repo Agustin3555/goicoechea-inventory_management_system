@@ -1,10 +1,10 @@
 import { useDarkMode } from '@/hooks'
-import { spinnerStyleAdapter, SpinnerStyleProps, StylizedSpinner } from './Spinner.styled'
+import { SpinnerStyled } from './Spinner.styled'
 
-const Spinner = ({ style }: { style?: SpinnerStyleProps }) => {
+const Spinner = ({ style }: { style?: SpinnerStyled.Props }) => {
   const darkMode = useDarkMode()
 
-  return <StylizedSpinner p={spinnerStyleAdapter(darkMode, style)} />
+  return <SpinnerStyled.Component p={SpinnerStyled.adapter(darkMode, style)} />
 }
 
 export default Spinner

@@ -5,12 +5,12 @@ import { AuthGuard } from './guards'
 import { PRIVATE_ROUTES, PUBLIC_ROUTES } from './routes'
 import { Background, RoutesWithNotFound, Snackbar } from './components'
 import { GlobalStyle } from './styles'
-import { StylizedApp } from './App.styled'
 import { store } from './redux'
+import { AppStyled } from './App.styled'
 
 const App = () => {
   return (
-    <StylizedApp>
+    <AppStyled.Component>
       <Provider store={store}>
         <GlobalStyle />
         <BrowserRouter>
@@ -29,7 +29,7 @@ const App = () => {
         </BrowserRouter>
         <Snackbar />
       </Provider>
-    </StylizedApp>
+    </AppStyled.Component>
   )
 }
 

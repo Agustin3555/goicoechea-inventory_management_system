@@ -1,10 +1,6 @@
 import { useDarkMode } from '@/hooks'
-import { ButtonHTMLAttributes, MouseEventHandler, useRef, useState } from 'react'
-import {
-  confirmationButtonStyleAdapter,
-  ConfirmationButtonStyleProps,
-  StylizedConfirmationButton,
-} from './ConfirmationButton.styled'
+import { ButtonHTMLAttributes } from 'react'
+import { ConfirmationButtonStyled } from './ConfirmationButton.styled'
 
 const ConfirmationButton = ({
   title,
@@ -15,7 +11,7 @@ const ConfirmationButton = ({
 }: {
   title: string
   trigger: () => void
-  style: ConfirmationButtonStyleProps
+  style: ConfirmationButtonStyled.Props
   extraAttrs?: ButtonHTMLAttributes<HTMLButtonElement>
   children: JSX.Element[] | JSX.Element
 }) => {
@@ -34,8 +30,8 @@ const ConfirmationButton = ({
   }
 
   return (
-    <StylizedConfirmationButton
-      p={confirmationButtonStyleAdapter(style, darkMode)}
+    <ConfirmationButtonStyled.Component
+      p={ConfirmationButtonStyled.adapter(style, darkMode)}
       title={title}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
@@ -45,7 +41,7 @@ const ConfirmationButton = ({
         <div className="loader" />
       </div>
       <div className="content">{children}</div>
-    </StylizedConfirmationButton>
+    </ConfirmationButtonStyled.Component>
   )
 }
 

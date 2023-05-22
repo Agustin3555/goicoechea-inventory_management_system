@@ -3,11 +3,11 @@ import FieldGroup from '../FieldGroup/FieldGroup'
 import { QuantityFields, propsInCommon } from '../../tools'
 import { AppError } from '@/tools'
 import { css } from 'styled-components'
-import { notFontSizeAdapter } from '@/styles'
 import { useMemo } from 'react'
 import { ProductServices } from '@/pages/Admin/services'
 import { useSelector } from 'react-redux'
 import { AppStore } from '@/redux/store'
+import { NOT_FONT_SIZE } from '@/styles'
 
 const QuantityFieldGroup = ({ index }: { index: number }) => {
   const keyFieldKey = useMemo(() => QuantityFields.getKey(index), [])
@@ -70,7 +70,7 @@ const QuantityFieldGroup = ({ index }: { index: number }) => {
         loadOptions={keyLoadOptions}
         style={{
           styled: css`
-            width: ${notFontSizeAdapter('3xl')};
+            width: ${NOT_FONT_SIZE['3xl']};
           `,
         }}
       />
@@ -85,7 +85,7 @@ const QuantityFieldGroup = ({ index }: { index: number }) => {
         loadOptions={valueLoadOptions}
         style={{
           styled: css`
-            width: ${notFontSizeAdapter('2xl')};
+            width: ${NOT_FONT_SIZE['2xl']};
           `,
         }}
       />
@@ -96,7 +96,7 @@ const QuantityFieldGroup = ({ index }: { index: number }) => {
         loadOptions={metricUnitLoadOptions}
         style={{
           styled: css`
-            width: ${notFontSizeAdapter('xl')};
+            width: ${NOT_FONT_SIZE.xl};
           `,
         }}
       />

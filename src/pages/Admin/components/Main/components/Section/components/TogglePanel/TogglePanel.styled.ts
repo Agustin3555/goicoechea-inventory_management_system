@@ -1,46 +1,41 @@
+import { COLOR, FONT_SIZE, MICROINTERACTION, Value } from '@/styles'
 import styled from 'styled-components'
-import {
-  colorAdapter,
-  fontSizeAdapter,
-  microinteractionAdapter,
-  notFontSizeAdapter,
-  shadowAdapter,
-} from '@/styles'
 
-interface TogglePanelProvider {
+interface Provider {
   buttonContent: {
-    color: string
+    color: Value
   }
 }
 
-export const togglePanelAdapter = (darkMode: boolean): TogglePanelProvider => {
-  // #region Auxiliary vars
+export namespace TogglePanelStyled {
+  export const adapter = (darkMode: boolean): Provider => {
+    // #region Auxiliary vars
 
-  return {
-    buttonContent: {
-      color: colorAdapter(darkMode ? 'g-4' : 'g-12'),
-    },
-  }
-}
-
-export const StylizedTogglePanel = styled.div<{ p: TogglePanelProvider }>`
-  .button-content {
-    display: flex;
-    gap: ${fontSizeAdapter('s')};
-    color: ${({ p }) => p.buttonContent.color};
-    transition: color ${microinteractionAdapter(2)} ease-out;
-
-    .text {
-      font-size: ${fontSizeAdapter('xs')};
-      line-height: ${fontSizeAdapter('xs')};
+    return {
+      buttonContent: {
+        color: darkMode ? COLOR.g_4 : COLOR.g_12,
+      },
     }
   }
 
-  @media (max-width: 48rem) {
+  export const Component = styled.div<{ p: Provider }>`
     .button-content {
-      .text {
-        display: none;
+      display: flex;
+      gap: ${FONT_SIZE.xs};
+      color: ${({ p }) => p.buttonContent.color};
+      transition: color ${MICROINTERACTION.s} ease-out;
+    }
+
+    @media (max-width: 48rem) {
+      .button-content {
+        .text {
+          display: none;
+        }
       }
     }
-  }
-`
+
+    @media (min-width: 90rem) {
+      display: none;
+    }
+  `
+}

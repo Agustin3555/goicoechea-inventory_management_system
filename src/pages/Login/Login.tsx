@@ -7,8 +7,9 @@ import { ChangeEventHandler, FormEventHandler, useEffect, useState } from 'react
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
-import { loginStyleAdapter, StylizedLogin } from './Login.styled'
 import { AppError, ERRORS, getErrorInterpretation } from '@/tools'
+import { COLOR, FONT_SIZE } from '@/styles'
+import { LoginStyled } from './Login.styled'
 
 const Login = () => {
   const darkMode = useDarkMode()
@@ -67,7 +68,7 @@ const Login = () => {
   }
 
   return (
-    <StylizedLogin p={loginStyleAdapter(darkMode)}>
+    <LoginStyled.Component p={LoginStyled.adapter(darkMode)}>
       <SinglePageOnCard title="Iniciar Sesión">
         <form className="content" onSubmit={loading ? undefined : handleSubmit}>
           <div className="fields">
@@ -99,7 +100,7 @@ const Login = () => {
             title="Acceder"
             style={{
               backgroundColor: {
-                dark: 'a',
+                dark: COLOR.a,
               },
             }}
             extraAttrs={{
@@ -120,7 +121,7 @@ const Login = () => {
                     <Spinner />
                   ) : (
                     <>
-                      <Icon iconName="fa-solid fa-arrow-right" style={{ size: 's' }} />
+                      <Icon iconName="fa-solid fa-arrow-right" style={{ size: FONT_SIZE.s }} />
                       <span className="text">Acceder</span>
                     </>
                   )}
@@ -130,7 +131,7 @@ const Login = () => {
           </Button>
         </form>
       </SinglePageOnCard>
-    </StylizedLogin>
+    </LoginStyled.Component>
   )
 }
 

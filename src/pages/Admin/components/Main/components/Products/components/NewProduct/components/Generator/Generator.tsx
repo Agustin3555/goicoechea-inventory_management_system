@@ -1,6 +1,7 @@
 import { Button, Icon } from '@/components'
-import { StylizedGenerator } from './Generator.styled'
+import { GeneratorStyled } from './Generator.styled'
 import { css } from 'styled-components'
+import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
 
 const Generator = ({
   title,
@@ -12,7 +13,7 @@ const Generator = ({
   children: JSX.Element | JSX.Element[]
 }) => {
   return (
-    <StylizedGenerator>
+    <GeneratorStyled.Component>
       <div className="generator-title">{title}</div>
       <div className="generator-container">
         {children}
@@ -24,9 +25,9 @@ const Generator = ({
           }}
           style={{
             tight: true,
-            padding: 'xs',
-            borderRadius: '4xs',
-            backgroundColor: { dark: 'g-14', bright: 'g-0' },
+            padding: FONT_SIZE.xs,
+            borderRadius: NOT_FONT_SIZE['4xs'],
+            backgroundColor: { dark: COLOR.g_14, bright: COLOR.g_0 },
             styled: css`
               width: fit-content;
             `,
@@ -34,11 +35,11 @@ const Generator = ({
         >
           <div className="add-button-content">
             <Icon iconName="fa-solid fa-plus" />
-            <div className="text">Agregar</div>
+            Agregar
           </div>
         </Button>
       </div>
-    </StylizedGenerator>
+    </GeneratorStyled.Component>
   )
 }
 

@@ -5,11 +5,6 @@ import { ChangeEventHandler, InputHTMLAttributes, useMemo, useState } from 'reac
 import { useDispatch, useSelector } from 'react-redux'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { ErrorList, FieldName } from '..'
-import {
-  StylizedInputSelectorField,
-  inputSelectorFieldAdapter,
-  InputSelectorFieldStyleProps,
-} from './InputSelectorField.styled'
 import { AppError } from '@/tools'
 import { useSectionDependency, useValidateInput } from '../../hooks'
 import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
@@ -22,7 +17,8 @@ import {
   requiredValidation,
 } from '../../tools'
 import { css } from 'styled-components'
-import { notFontSizeAdapter } from '@/styles'
+import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
+import { InputSelectorFieldStyled } from './InputSelectorField.styled'
 
 const InputSelectorField = ({
   action,
@@ -48,7 +44,7 @@ const InputSelectorField = ({
   required?: boolean
   validations?: Validation[]
   inputExtraAttrs?: InputHTMLAttributes<HTMLInputElement>
-  style?: InputSelectorFieldStyleProps
+  style?: InputSelectorFieldStyled.Props
   loadOptions: (name?: string) => Promise<AppError | Option[]>
 }) => {
   const darkMode = useDarkMode()
@@ -133,8 +129,8 @@ const InputSelectorField = ({
       <div className="spinner-container">
         <Spinner
           style={{
-            semicircleBackgroundColor: { dark: 'g-10', bright: 'g-4' },
-            lineBackgroundColor: { dark: 'g-2', bright: 'g-12' },
+            semicircleBackgroundColor: { dark: COLOR.g_10, bright: COLOR.g_4 },
+            lineBackgroundColor: { dark: COLOR.g_2, bright: COLOR.g_12 },
           }}
         />
       </div>
@@ -143,9 +139,9 @@ const InputSelectorField = ({
       <Icon
         iconName="fa-solid fa-xmark"
         style={{
-          size: 'm',
+          size: FONT_SIZE.m,
           styled: css`
-            margin-top: ${notFontSizeAdapter('4xs')};
+            margin-top: ${NOT_FONT_SIZE['4xs']};
           `,
         }}
       />
@@ -189,7 +185,7 @@ const InputSelectorField = ({
   }
 
   return (
-    <StylizedInputSelectorField p={inputSelectorFieldAdapter(darkMode, style)}>
+    <InputSelectorFieldStyled.Component p={InputSelectorFieldStyled.adapter(darkMode, style)}>
       <FieldName title={title} />
       <div className="box">
         <div
@@ -211,7 +207,7 @@ const InputSelectorField = ({
               onChange={handleInputChange}
             />
             <div className="icon-container" data-expanded={writing || selecting}>
-              <Icon iconName="fa-solid fa-chevron-down" style={{ size: 'xs' }} />
+              <Icon iconName="fa-solid fa-chevron-down" style={{ size: FONT_SIZE.xs }} />
             </div>
           </div>
           <SwitchTransition>
@@ -228,7 +224,7 @@ const InputSelectorField = ({
         </div>
       </div>
       <ErrorList errors={errors} />
-    </StylizedInputSelectorField>
+    </InputSelectorFieldStyled.Component>
   )
 }
 

@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 
-export const StylizedApp = styled.div`
-  height: 100vh;
-  overflow: hidden;
-`
+export namespace AppStyled {
+  export const Component = styled.div`
+    height: 100vh;
+    overflow: hidden;
+  `
+}

@@ -1,10 +1,10 @@
-import { iconStyleAdapter, StylizedIcon, IconStyleProps } from './Icon.styled'
+import { IconStyled } from './Icon.styled'
 
-const Icon = ({ iconName, style }: { iconName: string; style?: IconStyleProps }) => {
+const Icon = ({ iconName, style }: { iconName: string; style?: IconStyled.Props }) => {
   return (
-    <StylizedIcon p={iconStyleAdapter(style)}>
+    <IconStyled.Component p={IconStyled.adapter(style)}>
       <i className={`icon ${iconName}`} />
-    </StylizedIcon>
+    </IconStyled.Component>
   )
 }
 

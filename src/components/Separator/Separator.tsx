@@ -1,14 +1,10 @@
 import { useDarkMode } from '@/hooks'
-import {
-  separatorStyleAdapter,
-  StylizedSeparator,
-  SeparatorStyleProps,
-} from './Separator.styled'
+import { SeparatorStyled } from './Separator.styled'
 
-const Separator = ({ style }: { style: SeparatorStyleProps }) => {
+const Separator = ({ style }: { style: SeparatorStyled.Props }) => {
   const darkMode = useDarkMode()
 
-  return <StylizedSeparator p={separatorStyleAdapter(darkMode, style)} />
+  return <SeparatorStyled.Component p={SeparatorStyled.adapter(darkMode, style)} />
 }
 
 export default Separator

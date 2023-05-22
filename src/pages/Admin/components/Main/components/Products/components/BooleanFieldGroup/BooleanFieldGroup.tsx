@@ -3,9 +3,9 @@ import FieldGroup from '../FieldGroup/FieldGroup'
 import { getComplexFieldKey, propsInCommon } from '../../tools'
 import { AppError } from '@/tools'
 import { css } from 'styled-components'
-import { notFontSizeAdapter } from '@/styles'
 import { useMemo } from 'react'
 import { ProductServices } from '@/pages/Admin/services'
+import { NOT_FONT_SIZE } from '@/styles'
 
 const BooleanFieldGroup = ({ index }: { index: number }) => {
   const keysInCommon = useMemo(() => ['booleanChars', index], [])
@@ -31,7 +31,7 @@ const BooleanFieldGroup = ({ index }: { index: number }) => {
         }}
         style={{
           styled: css`
-            width: ${notFontSizeAdapter('3xl')};
+            width: ${NOT_FONT_SIZE['3xl']};
           `,
         }}
       />

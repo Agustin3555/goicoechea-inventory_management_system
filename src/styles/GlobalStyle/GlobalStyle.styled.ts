@@ -1,79 +1,76 @@
-import {
-  colorAdapter,
-  fontAdapter,
-  fontSizeAdapter,
-  microinteractionAdapter,
-  notFontSizeAdapter,
-} from '@/styles'
 import { createGlobalStyle } from 'styled-components'
+import { Value } from '../types'
+import { COLOR, FONT, FONT_SIZE, NOT_FONT_SIZE } from '../enums'
+import { MAIN_GAP } from '@/tools'
+// TODO: por que no puedo llamar directamente a '@/styles'?
 
-interface GlobalStyleProvider {
-  all: {
-    backgroundColor: string
-    color: string
-  }
-  scrollbar: {
-    width: string
-  }
-  scrollbarThumb: {
-    backgroundColor: string
-    hover: {
-      backgroundColor: string
-    }
-  }
-}
-
-export const GlobalStyleAdapter = (darkMode: boolean): GlobalStyleProvider => {
-  // #region Auxiliary vars
-
-  // #endregion
-
-  return {
+export namespace GlobalStyleStyled {
+  interface Provider {
     all: {
-      backgroundColor: colorAdapter(darkMode ? 'g-14' : 'g-4'),
-      color: colorAdapter(darkMode ? 'g-4' : 'g-16'),
-    },
-    scrollbar: {
-      width: notFontSizeAdapter('2xs'),
-    },
+      selection: {
+        backgroundColor: Value
+        color: Value
+      }
+    }
     scrollbarThumb: {
-      backgroundColor: colorAdapter(darkMode ? 'g-14' : 'g-4'),
+      backgroundColor: Value
       hover: {
-        backgroundColor: colorAdapter(darkMode ? 'g-12' : 'g-6'),
-      },
-    },
-  }
-}
-
-export const StylizedGlobalStyle = createGlobalStyle<{ p: GlobalStyleProvider }>`
-  * {
-    font-family: ${fontAdapter('p')};
-    font-size: ${fontSizeAdapter('s')};
-    line-height: ${fontSizeAdapter('s')};
-    letter-spacing: calc(${notFontSizeAdapter('6xs')} * 0.333);
-    word-spacing: ${notFontSizeAdapter('6xs')};
-  }
-
-  html {
-    scroll-behavior: smooth;
-  }
-
-  *::selection {
-    background-color: ${({ p }) => p.all.backgroundColor};
-    color: ${({ p }) => p.all.color};
-  }
-
-  ::-webkit-scrollbar {
-    width: ${({ p }) => p.scrollbar.width};
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: ${({ p }) => p.scrollbarThumb.backgroundColor};
-    border: 0;
-    border-radius: ${notFontSizeAdapter('6xl')};
-
-    :hover {
-      background-color: ${({ p }) => p.scrollbarThumb.hover.backgroundColor};
+        backgroundColor: Value
+      }
     }
   }
-`
+
+  export const adapter = (darkMode: boolean): Provider => {
+    // #region Auxiliary vars
+
+    // #endregion
+
+    return {
+      all: {
+        selection: {
+          backgroundColor: darkMode ? COLOR.g_14 : COLOR.g_4,
+          color: darkMode ? COLOR.g_4 : COLOR.g_16,
+        },
+      },
+      scrollbarThumb: {
+        backgroundColor: darkMode ? COLOR.g_14 : COLOR.g_4,
+        hover: {
+          backgroundColor: darkMode ? COLOR.g_12 : COLOR.g_6,
+        },
+      },
+    }
+  }
+
+  export const Component = createGlobalStyle<{ p: Provider }>`
+    html {
+      font-family: ${FONT.p};
+      scroll-behavior: smooth;
+
+      body * {
+        font-size: ${FONT_SIZE.xs};
+        line-height: ${MAIN_GAP};
+        letter-spacing: calc(${NOT_FONT_SIZE['6xs']} * 0.333);
+        word-spacing: ${NOT_FONT_SIZE['6xs']};
+
+        ::selection {
+          background-color: ${({ p }) => p.all.selection.backgroundColor};
+          color: ${({ p }) => p.all.selection.color};
+        }
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: ${NOT_FONT_SIZE['2xs']};
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: ${({ p }) => p.scrollbarThumb.backgroundColor};
+      border: 0;
+      border-radius: ${NOT_FONT_SIZE['6xl']};
+
+      :hover {
+        background-color: ${({ p }) => p.scrollbarThumb.hover.backgroundColor};
+      }
+    }
+  `
+}

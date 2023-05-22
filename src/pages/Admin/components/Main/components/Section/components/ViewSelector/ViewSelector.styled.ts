@@ -1,25 +1,27 @@
 import styled from 'styled-components'
 import {
-  colorAdapter,
-  fontSizeAdapter,
-  microinteractionAdapter,
-  notFontSizeAdapter,
+  COLOR,
+  FONT_SIZE,
+  MICROINTERACTION,
+  NOT_FONT_SIZE,
+  Value,
   shadowAdapter,
 } from '@/styles'
+import { BRIGHT_2, DARK_2, MAIN_BORDER_RADIUS, MAIN_GAP } from '@/tools'
 
-interface ViewSelectorProvider {
+interface Provider {
   viewSelectorContainer: {
-    color: string
-    backgroundColor: string
+    color: Value
+    backgroundColor: Value
     hover: {
-      height: string
+      height: Value
     }
     items: {
       item: {
         input: {
           hover: {
             fake: {
-              backgroundColor: string
+              backgroundColor: Value
             }
           }
         }
@@ -28,110 +30,106 @@ interface ViewSelectorProvider {
   }
 }
 
-export const viewSelectorAdapter = (
-  darkMode: boolean,
-  amountValues: number
-): ViewSelectorProvider => {
-  // #region Auxiliary vars
+const HEIGHT = `calc(${MAIN_GAP} * 3)`
 
-  return {
-    viewSelectorContainer: {
-      color: colorAdapter(darkMode ? 'g-4' : 'g-12'),
-      backgroundColor: colorAdapter(darkMode ? 'g-14' : 'g-0'),
-      hover: {
-        height: `calc(${fontSizeAdapter('xs')} * 3 * ${amountValues + 1})`,
-      },
-      items: {
-        item: {
-          input: {
-            hover: {
-              fake: {
-                backgroundColor: colorAdapter(darkMode ? 'g-13' : 'g-1'),
+export namespace ViewSelectorStyled {
+  export const adapter = (darkMode: boolean, amountValues: number): Provider => {
+    // #region Auxiliary vars
+
+    return {
+      viewSelectorContainer: {
+        color: darkMode ? COLOR.g_4 : COLOR.g_12,
+        backgroundColor: darkMode ? DARK_2 : BRIGHT_2,
+        hover: {
+          height: `calc(${MAIN_GAP} * 3 * ${amountValues + 1})`,
+        },
+        items: {
+          item: {
+            input: {
+              hover: {
+                fake: {
+                  backgroundColor: darkMode ? COLOR.g_13 : COLOR.g_1,
+                },
               },
             },
           },
         },
       },
-    },
-  }
-}
-
-export const StylizedViewSelector = styled.div<{ p: ViewSelectorProvider }>`
-  position: relative;
-  height: calc(${fontSizeAdapter('xs')} * 3);
-
-  .view-selector-container {
-    display: flex;
-    flex-direction: column;
-    height: calc(${fontSizeAdapter('xs')} * 3);
-    border-radius: ${notFontSizeAdapter('3xs')};
-    color: ${({ p }) => p.viewSelectorContainer.color};
-    background-color: ${({ p }) => p.viewSelectorContainer.backgroundColor};
-    overflow: hidden;
-    transition: box-shadow ${microinteractionAdapter(2)} ease-out,
-      height ${microinteractionAdapter(2)} ease-out,
-      background-color ${microinteractionAdapter(2)} ease-out;
-
-    .selected {
-      display: flex;
-      gap: ${fontSizeAdapter('xs')};
-      padding: ${fontSizeAdapter('xs')};
-
-      .group {
-        display: flex;
-        gap: ${fontSizeAdapter('xs')};
-        width: 100%;
-        transition: color ${microinteractionAdapter(2)} ease-out;
-      }
     }
+  }
 
-    .items {
+  export const Component = styled.div<{ p: Provider }>`
+    position: relative;
+    height: ${HEIGHT};
+
+    .main-container {
       display: flex;
       flex-direction: column;
-      height: 0;
+      height: ${HEIGHT};
+      border-radius: ${MAIN_BORDER_RADIUS};
+      color: ${({ p }) => p.viewSelectorContainer.color};
+      background-color: ${({ p }) => p.viewSelectorContainer.backgroundColor};
+      overflow: hidden;
+      transition: box-shadow ${MICROINTERACTION.s} ease-out,
+        height ${MICROINTERACTION.s} ease-out, background-color ${MICROINTERACTION.s} ease-out;
 
-      .item {
-        position: relative;
+      :hover {
+        box-shadow: ${shadowAdapter(2)};
+        height: ${({ p }) => p.viewSelectorContainer.hover.height};
+      }
 
-        .input {
-          position: absolute;
-          z-index: 1;
-          width: 100%;
-          height: 100%;
-          opacity: 0;
-          cursor: pointer;
+      .selected {
+        display: flex;
+        gap: ${MAIN_GAP};
+        padding: ${MAIN_GAP};
+        align-items: center;
 
-          :checked {
-            cursor: default;
-          }
-
-          :hover + .fake {
-            background-color: ${({ p }) =>
-              p.viewSelectorContainer.items.item.input.hover.fake.backgroundColor};
-          }
-        }
-
-        .fake {
+        .group {
           display: flex;
-          gap: ${fontSizeAdapter('xs')};
-          padding: ${fontSizeAdapter('xs')};
-          transition: background-color ${microinteractionAdapter(2)} ease-out;
+          gap: ${MAIN_GAP};
+          width: 100%;
+          transition: color ${MICROINTERACTION.s} ease-out;
+        }
+      }
 
-          .separation {
-            width: calc(${fontSizeAdapter('xs')} * 2 + ${notFontSizeAdapter('6xs')});
+      .items {
+        display: flex;
+        flex-direction: column;
+        height: 0;
+
+        .item {
+          position: relative;
+
+          .input {
+            position: absolute;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+
+            :checked {
+              cursor: default;
+            }
+
+            :hover + .fake {
+              background-color: ${({ p }) =>
+                p.viewSelectorContainer.items.item.input.hover.fake.backgroundColor};
+            }
+          }
+
+          .fake {
+            display: flex;
+            gap: ${MAIN_GAP};
+            padding: ${MAIN_GAP};
+            transition: background-color ${MICROINTERACTION.s} ease-out;
+
+            .separation {
+              width: calc(${MAIN_GAP} * 2 + ${NOT_FONT_SIZE['6xs']});
+            }
           }
         }
       }
     }
-
-    .text {
-      font-size: ${fontSizeAdapter('xs')};
-      line-height: ${fontSizeAdapter('xs')};
-    }
-
-    :hover {
-      box-shadow: ${shadowAdapter(2)};
-      height: ${({ p }) => p.viewSelectorContainer.hover.height};
-    }
-  }
-`
+  `
+}

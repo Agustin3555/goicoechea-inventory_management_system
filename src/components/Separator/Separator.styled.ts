@@ -2,25 +2,17 @@ import styled, { FlattenSimpleInterpolation } from 'styled-components'
 import {
   Color,
   colorAdapter,
-  microinteractionAdapter,
+  FontSize,
+  MICROINTERACTION,
+  NOT_FONT_SIZE,
   NotFontSize,
-  notFontSizeAdapter,
+  Value,
 } from '@/styles'
 
-type SeparatorLongProp = 'expanded' | NotFontSize
+type Long = 'expanded' | NotFontSize | FontSize
 
-export interface SeparatorStyleProps {
-  long?: SeparatorLongProp
-  invert?: boolean
-  backgroundColor: {
-    dark: Color
-    bright?: Color
-  }
-  styled?: FlattenSimpleInterpolation
-}
-
-interface SeparatorNormalizedStyleProps {
-  long: SeparatorLongProp
+interface NormalizedProps {
+  long: Long
   invert: boolean
   backgroundColor: {
     dark: Color
@@ -28,50 +20,60 @@ interface SeparatorNormalizedStyleProps {
   }
 }
 
-interface SeparatorStyleProvider {
-  width: string
-  height: string
-  backgroundColor: string
+interface Provider {
+  width: Value
+  height: Value
+  backgroundColor: Value
   styled?: FlattenSimpleInterpolation
 }
 
-export const separatorStyleAdapter = (
-  darkMode: boolean,
-  style: SeparatorStyleProps
-): SeparatorStyleProvider => {
-  const normalizedProps: SeparatorNormalizedStyleProps = {
-    long: style.long || 'expanded',
-    invert: style.invert || false,
+export namespace SeparatorStyled {
+  export interface Props {
+    long?: Long
+    invert?: boolean
     backgroundColor: {
-      dark: style.backgroundColor.dark,
-      bright: style.backgroundColor.bright || style.backgroundColor.dark,
-    },
+      dark: Color
+      bright?: Color
+    }
+    styled?: FlattenSimpleInterpolation
   }
 
-  // #region Auxiliary vars
+  export const adapter = (darkMode: boolean, style: Props): Provider => {
+    const normalizedProps: NormalizedProps = {
+      long: style.long || 'expanded',
+      invert: style.invert || false,
+      backgroundColor: {
+        dark: style.backgroundColor.dark,
+        bright: style.backgroundColor.bright || style.backgroundColor.dark,
+      },
+    }
 
-  const thickness = notFontSizeAdapter('6xs')
-  const long =
-    normalizedProps.long === 'expanded' ? '100%' : notFontSizeAdapter(normalizedProps.long)
+    // #region Auxiliary vars
 
-  // #endregion
+    const thickness = NOT_FONT_SIZE['6xs']
+    const long = normalizedProps.long === 'expanded' ? '100%' : normalizedProps.long
 
-  return {
-    width: normalizedProps.invert ? long : thickness,
-    height: normalizedProps.invert ? thickness : long,
-    backgroundColor: colorAdapter(
-      darkMode ? normalizedProps.backgroundColor.dark : normalizedProps.backgroundColor.bright
-    ),
-    styled: style?.styled,
+    // #endregion
+
+    return {
+      width: normalizedProps.invert ? long : thickness,
+      height: normalizedProps.invert ? thickness : long,
+      backgroundColor: colorAdapter(
+        darkMode
+          ? normalizedProps.backgroundColor.dark
+          : normalizedProps.backgroundColor.bright
+      ),
+      styled: style?.styled,
+    }
   }
+
+  export const Component = styled.div<{ p: Provider }>`
+    width: ${({ p }) => p.width};
+    height: ${({ p }) => p.height};
+    border-radius: ${NOT_FONT_SIZE['6xl']};
+    background-color: ${({ p }) => p.backgroundColor};
+    transition: background-color ${MICROINTERACTION.s} ease-out;
+
+    ${({ p }) => p.styled};
+  `
 }
-
-export const StylizedSeparator = styled.div<{ p: SeparatorStyleProvider }>`
-  width: ${({ p }) => p.width};
-  height: ${({ p }) => p.height};
-  border-radius: ${notFontSizeAdapter('6xl')};
-  background-color: ${({ p }) => p.backgroundColor};
-  transition: background-color ${microinteractionAdapter(2)} ease-out;
-
-  ${({ p }) => p.styled};
-`

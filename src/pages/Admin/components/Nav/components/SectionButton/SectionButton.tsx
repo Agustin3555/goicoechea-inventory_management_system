@@ -4,7 +4,8 @@ import { setSectionActive } from '@/redux/states/sectionActive.state'
 import { AppStore } from '@/redux/store'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { sectionButtonStyleAdapter, StylizedSectionButton } from './SectionButton.styled'
+import { FONT_SIZE } from '@/styles'
+import { SectionButtonStyled } from './SectionButton.styled'
 
 const SectionButton = ({
   id,
@@ -24,7 +25,7 @@ const SectionButton = ({
   }, [])
 
   return (
-    <StylizedSectionButton p={sectionButtonStyleAdapter(darkMode, active)}>
+    <SectionButtonStyled.Component p={SectionButtonStyled.adapter(darkMode, active)}>
       <label className="label" htmlFor={id} />
       <input
         className="input"
@@ -36,9 +37,9 @@ const SectionButton = ({
         onChange={handleChange}
       />
       <div className="fake-button">
-        <Icon iconName={iconName} style={{ size: 'm' }} />
+        <Icon iconName={iconName} style={{ size: FONT_SIZE.m }} />
       </div>
-    </StylizedSectionButton>
+    </SectionButtonStyled.Component>
   )
 }
 

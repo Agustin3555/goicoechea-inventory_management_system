@@ -1,69 +1,70 @@
 import styled from 'styled-components'
 import {
-  colorAdapter,
-  fontSizeAdapter,
-  microinteractionAdapter,
-  notFontSizeAdapter,
+  COLOR,
+  FONT_SIZE,
+  MICROINTERACTION,
+  NOT_FONT_SIZE,
+  Value,
   shadowAdapter,
 } from '@/styles'
 
-interface SinglePageOnCardStyleProvider {
+interface Provider {
   card: {
-    backgroundColor: string
+    backgroundColor: Value
     title: {
-      color: string
+      color: Value
     }
   }
 }
 
-export const singlePageOnCardStyleAdapter = (
-  darkMode: boolean
-): SinglePageOnCardStyleProvider => {
-  // #region Auxiliary vars
+export namespace SinglePageOnCardStyled {
+  export const adapter = (darkMode: boolean): Provider => {
+    // #region Auxiliary vars
 
-  // #endregion
+    // #endregion
 
-  return {
-    card: {
-      backgroundColor: colorAdapter(darkMode ? 'g-15' : 'g-0'),
-      title: {
-        color: colorAdapter(darkMode ? 'g-2' : 'g-12'),
+    return {
+      card: {
+        backgroundColor: darkMode ? COLOR.g_15 : COLOR.g_0,
+        title: {
+          color: darkMode ? COLOR.g_2 : COLOR.g_12,
+        },
       },
-    },
-  }
-}
-
-export const StylizedSinglePageOnCard = styled.div<{ p: SinglePageOnCardStyleProvider }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  padding: ${notFontSizeAdapter('xs')};
-
-  .card {
-    display: flex;
-    flex-direction: column;
-    gap: calc(${notFontSizeAdapter('m')} * 2);
-    width: calc(${notFontSizeAdapter('4xl')} - ${notFontSizeAdapter('xl')});
-    padding: ${notFontSizeAdapter('m')};
-    background-color: ${({ p }) => p.card.backgroundColor};
-    border-radius: ${notFontSizeAdapter('2xs')};
-    box-shadow: ${shadowAdapter(2)};
-    transition: background-color ${microinteractionAdapter(2)} ease-out;
-
-    .title {
-      font-size: ${fontSizeAdapter('l')};
-      line-height: ${fontSizeAdapter('l')};
-      font-weight: 700;
-      color: ${({ p }) => p.card.title.color};
-      transition: color ${microinteractionAdapter(2)} ease-out;
     }
   }
 
-  .dark-mode-container {
-    position: absolute;
-    left: ${notFontSizeAdapter('xs')};
-    bottom: ${notFontSizeAdapter('xs')};
-  }
-`
+  export const Component = styled.div<{ p: Provider }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: ${NOT_FONT_SIZE.xs};
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: calc(${NOT_FONT_SIZE.m} * 2);
+      width: calc(${NOT_FONT_SIZE['4xl']} - ${NOT_FONT_SIZE.xl});
+      padding: ${NOT_FONT_SIZE.m};
+      background-color: ${({ p }) => p.card.backgroundColor};
+      border-radius: ${NOT_FONT_SIZE['2xs']};
+      box-shadow: ${shadowAdapter(2)};
+      transition: background-color ${MICROINTERACTION.s} ease-out;
+
+      .title {
+        font-size: ${FONT_SIZE.l};
+        line-height: ${FONT_SIZE.l};
+        font-weight: 700;
+        color: ${({ p }) => p.card.title.color};
+        transition: color ${MICROINTERACTION.s} ease-out;
+      }
+    }
+
+    .dark-mode-container {
+      position: absolute;
+      left: ${NOT_FONT_SIZE.xs};
+      bottom: ${NOT_FONT_SIZE.xs};
+    }
+  `
+}

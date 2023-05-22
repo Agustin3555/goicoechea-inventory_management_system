@@ -1,7 +1,9 @@
 import { Button, Icon } from '@/components'
 import { useDarkMode } from '@/hooks'
-import { MouseEventHandler } from 'react'
-import { StylizedTogglePanel, togglePanelAdapter } from './TogglePanel.styled'
+import { FONT_SIZE } from '@/styles'
+import { TogglePanelStyled } from './TogglePanel.styled'
+import { css } from 'styled-components'
+import { BRIGHT_2, DARK_2, MAIN_BORDER_RADIUS, MAIN_GAP } from '@/tools'
 
 const TogglePanel = ({
   title,
@@ -11,7 +13,7 @@ const TogglePanel = ({
   invert = false,
 }: {
   title: string
-  handleClick: MouseEventHandler<HTMLButtonElement>
+  handleClick: () => void
   iconName: string
   text: string
   invert?: boolean
@@ -19,25 +21,31 @@ const TogglePanel = ({
   const darkMode = useDarkMode()
 
   return (
-    <StylizedTogglePanel p={togglePanelAdapter(darkMode)}>
+    <TogglePanelStyled.Component p={TogglePanelStyled.adapter(darkMode)}>
       <Button
         handleClick={handleClick}
         title={title}
         style={{
-          padding: 'xs',
+          padding: MAIN_GAP,
           tight: true,
-          borderRadius: '4xs',
-          backgroundColor: { dark: 'g-14', bright: 'g-0' },
+          borderRadius: MAIN_BORDER_RADIUS,
+          backgroundColor: { dark: DARK_2, bright: BRIGHT_2 },
         }}
       >
         <div className="button-content">
-          <div className="icon-container" style={{ order: invert ? 1 : undefined }}>
-            <Icon iconName={iconName} style={{ size: 'xs' }} />
-          </div>
-          <span className="text">{text}</span>
+          <Icon
+            iconName={iconName}
+            style={{
+              size: FONT_SIZE.xs,
+              styled: css`
+                order: ${invert ? 1 : undefined};
+              `,
+            }}
+          />
+          {text}
         </div>
       </Button>
-    </StylizedTogglePanel>
+    </TogglePanelStyled.Component>
   )
 }
 

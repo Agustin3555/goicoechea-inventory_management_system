@@ -1,9 +1,6 @@
 import { ToggleDarkMode } from '@/components'
 import { useDarkMode } from '@/hooks'
-import {
-  singlePageOnCardStyleAdapter,
-  StylizedSinglePageOnCard,
-} from './SinglePageOnCard.styled'
+import { SinglePageOnCardStyled } from './SinglePageOnCard.styled'
 
 const SinglePageOnCard = ({
   title,
@@ -15,7 +12,7 @@ const SinglePageOnCard = ({
   const darkMode = useDarkMode()
 
   return (
-    <StylizedSinglePageOnCard p={singlePageOnCardStyleAdapter(darkMode)}>
+    <SinglePageOnCardStyled.Component p={SinglePageOnCardStyled.adapter(darkMode)}>
       <div className="card">
         <h1 className="title">{title}</h1>
         {children}
@@ -23,7 +20,7 @@ const SinglePageOnCard = ({
       <div className="dark-mode-container">
         <ToggleDarkMode />
       </div>
-    </StylizedSinglePageOnCard>
+    </SinglePageOnCardStyled.Component>
   )
 }
 

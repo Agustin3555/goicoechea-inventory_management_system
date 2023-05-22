@@ -3,11 +3,11 @@ import FieldGroup from '../FieldGroup/FieldGroup'
 import { FractionFields, propsInCommon } from '../../tools'
 import { AppError } from '@/tools'
 import { css } from 'styled-components'
-import { notFontSizeAdapter } from '@/styles'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { AppStore } from '@/redux/store'
 import { ProductServices } from '@/pages/Admin/services'
+import { NOT_FONT_SIZE } from '@/styles'
 
 const FractionFieldGroup = ({ index }: { index: number }) => {
   const keyFieldKey = useMemo(() => FractionFields.getKey(index), [])
@@ -84,7 +84,7 @@ const FractionFieldGroup = ({ index }: { index: number }) => {
         loadOptions={keyLoadOptions}
         style={{
           styled: css`
-            width: ${notFontSizeAdapter('3xl')};
+            width: ${NOT_FONT_SIZE['3xl']};
           `,
         }}
       />
@@ -99,7 +99,7 @@ const FractionFieldGroup = ({ index }: { index: number }) => {
         loadOptions={numeratorValueLoadOptions}
         style={{
           styled: css`
-            width: ${notFontSizeAdapter('xl')};
+            width: ${NOT_FONT_SIZE.xl};
           `,
         }}
       />
@@ -114,7 +114,7 @@ const FractionFieldGroup = ({ index }: { index: number }) => {
         loadOptions={denominatorValueLoadOptions}
         style={{
           styled: css`
-            width: ${notFontSizeAdapter('xl')};
+            width: ${NOT_FONT_SIZE.xl};
           `,
         }}
       />
@@ -125,7 +125,7 @@ const FractionFieldGroup = ({ index }: { index: number }) => {
         loadOptions={metricUnitLoadOptions}
         style={{
           styled: css`
-            width: ${notFontSizeAdapter('xl')};
+            width: ${NOT_FONT_SIZE.xl};
           `,
         }}
       />

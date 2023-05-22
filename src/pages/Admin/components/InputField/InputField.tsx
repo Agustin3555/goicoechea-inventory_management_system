@@ -4,11 +4,11 @@ import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
 import { ChangeEventHandler, InputHTMLAttributes, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import FieldName from '../FieldName/FieldName'
-import { StylizedInputField } from './InputField.styled'
 import { useValidateInput } from '../../hooks'
 import { Validation } from '../../tools'
 import { ErrorList } from '..'
 import { NewResourceAction } from '@/redux'
+import { InputFieldStyled } from './InputField.styled'
 
 const InputField = ({
   action,
@@ -43,13 +43,12 @@ const InputField = ({
   }
 
   return (
-    <StylizedInputField>
+    <InputFieldStyled.Component>
       <FieldName title={title} />
       <Input
         showLabel={false}
         name={fieldKey}
         title={title}
-        style={{ width: '3xl' }}
         extraAttrs={{
           onChange: handleInputChange,
           onBlur: handleInputBlur,
@@ -58,7 +57,7 @@ const InputField = ({
         }}
       />
       <ErrorList errors={errors} />
-    </StylizedInputField>
+    </InputFieldStyled.Component>
   )
 }
 

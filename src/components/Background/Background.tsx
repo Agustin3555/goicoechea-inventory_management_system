@@ -1,8 +1,8 @@
 import { useDarkMode } from '@/hooks'
-import { StylizedBackground, backgroundStyleAdapter } from './Background.styled'
 import { useEffect, useRef, useState } from 'react'
 import Particle from './components/Particle/Particle'
 import { debounce } from '@/tools'
+import { BackgroundStyled } from './Background.styled'
 
 const GAP_BETWEEN_PARTICLES = 350
 
@@ -36,11 +36,11 @@ const Background = () => {
   }, [])
 
   return (
-    <StylizedBackground ref={divRef} p={backgroundStyleAdapter(darkMode)}>
+    <BackgroundStyled.Component ref={divRef} p={BackgroundStyled.adapter(darkMode)}>
       {particles.map(item => (
         <Particle style={{ xPosition: item }} key={item} />
       ))}
-    </StylizedBackground>
+    </BackgroundStyled.Component>
   )
 }
 

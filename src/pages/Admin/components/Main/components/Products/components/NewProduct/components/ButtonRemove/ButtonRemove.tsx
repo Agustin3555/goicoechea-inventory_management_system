@@ -1,5 +1,5 @@
 import { Button, Icon } from '@/components'
-import { fontSizeAdapter } from '@/styles'
+import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
 import { css } from 'styled-components'
 
 // TODO: cambiarlo por un ConfirmationButton
@@ -12,11 +12,11 @@ const ButtonRemove = ({ handleClick }: { handleClick: () => void }) => {
       extraAttrs={{ type: 'button' }}
       style={{
         tight: true,
-        padding: 'xs',
-        borderRadius: '4xs',
-        backgroundColor: { dark: 'g-14', bright: 'g-0' },
+        padding: FONT_SIZE.xs,
+        borderRadius: NOT_FONT_SIZE['4xs'],
+        backgroundColor: { dark: COLOR.g_14, bright: COLOR.g_0 },
         styled: css`
-          margin-top: calc(${fontSizeAdapter('xs')} * 2);
+          margin-top: calc(${FONT_SIZE.xs} * 2);
           align-self: flex-start;
         `,
       }}

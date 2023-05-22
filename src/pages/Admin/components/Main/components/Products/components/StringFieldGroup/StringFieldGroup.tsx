@@ -3,11 +3,11 @@ import FieldGroup from '../FieldGroup/FieldGroup'
 import { StringFields, propsInCommon } from '../../tools'
 import { AppError } from '@/tools'
 import { css } from 'styled-components'
-import { notFontSizeAdapter } from '@/styles'
 import { useMemo } from 'react'
 import { AppStore } from '@/redux/store'
 import { useSelector } from 'react-redux'
 import { ProductServices } from '@/pages/Admin/services'
+import { NOT_FONT_SIZE } from '@/styles'
 
 const StringFieldGroup = ({ index }: { index: number }) => {
   const keyFieldKey = useMemo(() => StringFields.getKey(index), [])
@@ -54,7 +54,7 @@ const StringFieldGroup = ({ index }: { index: number }) => {
         loadOptions={keyLoadOptions}
         style={{
           styled: css`
-            width: ${notFontSizeAdapter('3xl')};
+            width: ${NOT_FONT_SIZE['3xl']};
           `,
         }}
       />
@@ -66,7 +66,7 @@ const StringFieldGroup = ({ index }: { index: number }) => {
         loadOptions={valueLoadOptions}
         style={{
           styled: css`
-            width: ${notFontSizeAdapter('3xl')};
+            width: ${NOT_FONT_SIZE['3xl']};
           `,
         }}
       />

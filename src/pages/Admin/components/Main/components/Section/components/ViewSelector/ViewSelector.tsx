@@ -4,13 +4,14 @@ import { setActiveViews } from '@/redux/states/activeViews.state'
 import { AppStore } from '@/redux/store'
 import { ChangeEventHandler, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { StylizedViewSelector, viewSelectorAdapter } from './ViewSelector.styled'
+import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
+import { ViewSelectorStyled } from './ViewSelector.styled'
 
 const ViewSelector = ({
-  sectionId,
+  sectionKey,
   views,
 }: {
-  sectionId: string
+  sectionKey: string
   views: {
     id: string
     title: string
@@ -21,7 +22,7 @@ const ViewSelector = ({
   const dispatch = useDispatch()
 
   const initialView = useSelector(
-    (store: AppStore) => views.filter(view => view.id === store.activeViews[sectionId])[0]
+    (store: AppStore) => views.filter(view => view.id === store.activeViews[sectionKey])[0]
   )
 
   const [selected, setSelected] = useState(initialView)
@@ -31,20 +32,20 @@ const ViewSelector = ({
 
     const value = views.filter(value => value.id === id)[0]
 
-    dispatch(setActiveViews({ [sectionId]: value.id }))
+    dispatch(setActiveViews({ [sectionKey]: value.id }))
     setSelected(value)
   }
 
   return (
-    <StylizedViewSelector p={viewSelectorAdapter(darkMode, views.length)}>
-      <div className="view-selector-container">
+    <ViewSelectorStyled.Component p={ViewSelectorStyled.adapter(darkMode, views.length)}>
+      <div className="main-container">
         <div className="selected" title="Vistas">
           <div className="group">
-            <Icon iconName={selected.iconName} style={{ size: 'xs' }} />
+            <Icon iconName={selected.iconName} style={{ size: FONT_SIZE.xs }} />
             <span className="text">{selected.title}</span>
           </div>
-          <Separator style={{ backgroundColor: { dark: 'g-8' } }} />
-          <Icon iconName="fa-solid fa-chevron-down" style={{ size: 'xs' }} />
+          <Separator style={{ long: 'expanded', backgroundColor: { dark: COLOR.g_8 } }} />
+          <Icon iconName="fa-solid fa-chevron-down" style={{ size: FONT_SIZE.xs }} />
         </div>
         <div className="items">
           {views.map(value => (
@@ -60,7 +61,7 @@ const ViewSelector = ({
                 onChange={handleChange}
               />
               <div className="fake">
-                <Icon iconName={value.iconName} style={{ size: 'xs' }} />
+                <Icon iconName={value.iconName} style={{ size: FONT_SIZE.xs }} />
                 <span className="text">{value.title}</span>
                 <div className="separation" />
               </div>
@@ -68,7 +69,7 @@ const ViewSelector = ({
           ))}
         </div>
       </div>
-    </StylizedViewSelector>
+    </ViewSelectorStyled.Component>
   )
 }
 

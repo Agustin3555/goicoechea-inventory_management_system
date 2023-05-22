@@ -1,6 +1,6 @@
 import { Icon } from '@/components'
 import { useDarkMode } from '@/hooks'
-import { checkboxStyleAdapter, CheckboxStyleProps, StylizedCheckbox } from './Checkbox.styled'
+import { CheckboxStyled } from './Checkbox.styled'
 
 const Checkbox = ({
   id,
@@ -13,12 +13,12 @@ const Checkbox = ({
   title: string
   checked?: boolean
   handleChange: () => void
-  style?: CheckboxStyleProps
+  style?: CheckboxStyled.Props
 }) => {
   const darkMode = useDarkMode()
 
   return (
-    <StylizedCheckbox p={checkboxStyleAdapter(darkMode, style)}>
+    <CheckboxStyled.Component p={CheckboxStyled.adapter(darkMode, style)}>
       <label htmlFor={id} />
       <input
         className="input"
@@ -36,7 +36,7 @@ const Checkbox = ({
         </div>
         <span className="text">{title}</span>
       </div>
-    </StylizedCheckbox>
+    </CheckboxStyled.Component>
   )
 }
 

@@ -1,19 +1,13 @@
 import { Icon, Spinner } from '@/components'
 import { useDarkMode } from '@/hooks'
-import { AppStore } from '@/redux/store'
-import { ChangeEventHandler, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { ChangeEventHandler, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { ErrorList, FieldName } from '..'
-import {
-  StylizedSelectorField,
-  selectorFieldAdapter,
-  SelectorFieldStyleProps,
-} from './SelectorField.styled'
 import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
 import { AppError } from '@/tools'
 import { css } from 'styled-components'
-import { notFontSizeAdapter } from '@/styles'
+import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
 import {
   BLANK_SELECTION,
   Option,
@@ -22,6 +16,7 @@ import {
   requiredValidation,
 } from '../../tools'
 import { useSectionDependency, useValidateInput } from '../../hooks'
+import { SelectorFieldStyled } from './SelectorField.styled'
 
 const SelectorField = ({
   action,
@@ -43,7 +38,7 @@ const SelectorField = ({
   fieldKey: string
   title: string
   required?: boolean
-  style?: SelectorFieldStyleProps
+  style?: SelectorFieldStyled.Props
   loadOptions: () => Promise<AppError | Option[]>
 }) => {
   const darkMode = useDarkMode()
@@ -133,8 +128,8 @@ const SelectorField = ({
       <div className="spinner-container">
         <Spinner
           style={{
-            semicircleBackgroundColor: { dark: 'g-10', bright: 'g-4' },
-            lineBackgroundColor: { dark: 'g-2', bright: 'g-12' },
+            semicircleBackgroundColor: { dark: COLOR.g_10, bright: COLOR.g_4 },
+            lineBackgroundColor: { dark: COLOR.g_2, bright: COLOR.g_12 },
           }}
         />
       </div>
@@ -143,9 +138,9 @@ const SelectorField = ({
       <Icon
         iconName="fa-solid fa-xmark"
         style={{
-          size: 'm',
+          size: FONT_SIZE.m,
           styled: css`
-            margin-top: ${notFontSizeAdapter('4xs')};
+            margin-top: ${NOT_FONT_SIZE['4xs']};
           `,
         }}
       />
@@ -189,7 +184,7 @@ const SelectorField = ({
   }
 
   return (
-    <StylizedSelectorField p={selectorFieldAdapter(darkMode, style)}>
+    <SelectorFieldStyled.Component p={SelectorFieldStyled.adapter(darkMode, style)}>
       <FieldName title={title} />
       <div className="box">
         <div
@@ -210,7 +205,7 @@ const SelectorField = ({
               onChange={handleInputChange}
             />
             <div className="icon-container" data-expanded={writing || selecting}>
-              <Icon iconName="fa-solid fa-chevron-down" style={{ size: 'xs' }} />
+              <Icon iconName="fa-solid fa-chevron-down" style={{ size: FONT_SIZE.xs }} />
             </div>
           </div>
           <SwitchTransition>
@@ -227,7 +222,7 @@ const SelectorField = ({
         </div>
       </div>
       <ErrorList errors={errors} />
-    </StylizedSelectorField>
+    </SelectorFieldStyled.Component>
   )
 }
 

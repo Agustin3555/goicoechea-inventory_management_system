@@ -1,24 +1,7 @@
 import styled from 'styled-components'
-import {
-  Color,
-  colorAdapter,
-  fontSizeAdapter,
-  notFontSizeAdapter,
-  shadowAdapter,
-} from '@/styles'
+import { COLOR, Color, FONT_SIZE, NOT_FONT_SIZE, Value, colorAdapter } from '@/styles'
 
-export interface SpinnerStyleProps {
-  semicircleBackgroundColor?: {
-    dark?: Color
-    bright?: Color
-  }
-  lineBackgroundColor?: {
-    dark?: Color
-    bright?: Color
-  }
-}
-
-interface SpinnerNormalizedStyleProps {
+interface NormalizedProps {
   semicircleBackgroundColor: {
     dark: Color
     bright: Color
@@ -29,83 +12,93 @@ interface SpinnerNormalizedStyleProps {
   }
 }
 
-interface SpinnerStyleProvider {
+interface Provider {
   before: {
-    backgroundColor: string
+    backgroundColor: Value
   }
   after: {
-    backgroundColor: string
+    backgroundColor: Value
   }
 }
 
-export const spinnerStyleAdapter = (
-  darkMode: boolean,
-  style?: SpinnerStyleProps
-): SpinnerStyleProvider => {
-  const normalizedProps: SpinnerNormalizedStyleProps = {
-    semicircleBackgroundColor: {
-      dark: style?.semicircleBackgroundColor?.dark || 'g-0',
-      bright: style?.semicircleBackgroundColor?.bright || 'g-0',
-    },
-    lineBackgroundColor: {
-      dark: style?.lineBackgroundColor?.dark || 'g-14',
-      bright: style?.lineBackgroundColor?.bright || 'g-14',
-    },
-  }
-
-  // #region Auxiliary vars
-
-  // #endregion
-
-  return {
-    before: {
-      backgroundColor: colorAdapter(
-        darkMode
-          ? normalizedProps.semicircleBackgroundColor.dark
-          : normalizedProps.semicircleBackgroundColor.bright
-      ),
-    },
-    after: {
-      backgroundColor: colorAdapter(
-        darkMode
-          ? normalizedProps.lineBackgroundColor.dark
-          : normalizedProps.lineBackgroundColor.bright
-      ),
-    },
-  }
-}
-
-export const StylizedSpinner = styled.div<{ p: SpinnerStyleProvider }>`
-  width: ${fontSizeAdapter('s')};
-  height: ${fontSizeAdapter('s')};
-  animation: rotate 1.6s ease-in infinite alternate;
-
-  ::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: ${fontSizeAdapter('s')};
-    height: calc(${fontSizeAdapter('s')} * 0.5);
-    background-color: ${({ p }) => p.before.backgroundColor};
-    border-radius: 0 0 ${notFontSizeAdapter('6xl')} ${notFontSizeAdapter('6xl')};
-  }
-
-  ::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 10%;
-    width: ${notFontSizeAdapter('5xs')};
-    height: ${fontSizeAdapter('s')};
-    border-radius: ${notFontSizeAdapter('6xl')};
-    background-color: ${({ p }) => p.after.backgroundColor};
-    animation: rotate 1.3s linear infinite alternate-reverse;
-  }
-
-  @keyframes rotate {
-    to {
-      transform: rotate(360deg);
+export namespace SpinnerStyled {
+  export interface Props {
+    semicircleBackgroundColor?: {
+      dark?: Color
+      bright?: Color
+    }
+    lineBackgroundColor?: {
+      dark?: Color
+      bright?: Color
     }
   }
-`
+
+  export const adapter = (darkMode: boolean, style?: Props): Provider => {
+    const normalizedProps: NormalizedProps = {
+      semicircleBackgroundColor: {
+        dark: style?.semicircleBackgroundColor?.dark || COLOR.g_0,
+        bright: style?.semicircleBackgroundColor?.bright || COLOR.g_0,
+      },
+      lineBackgroundColor: {
+        dark: style?.lineBackgroundColor?.dark || COLOR.g_14,
+        bright: style?.lineBackgroundColor?.bright || COLOR.g_14,
+      },
+    }
+
+    // #region Auxiliary vars
+
+    // #endregion
+
+    return {
+      before: {
+        backgroundColor: colorAdapter(
+          darkMode
+            ? normalizedProps.semicircleBackgroundColor.dark
+            : normalizedProps.semicircleBackgroundColor.bright
+        ),
+      },
+      after: {
+        backgroundColor: colorAdapter(
+          darkMode
+            ? normalizedProps.lineBackgroundColor.dark
+            : normalizedProps.lineBackgroundColor.bright
+        ),
+      },
+    }
+  }
+
+  export const Component = styled.div<{ p: Provider }>`
+    width: ${FONT_SIZE.s};
+    height: ${FONT_SIZE.s};
+    animation: rotate 1.6s ease-in infinite alternate;
+
+    ::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: ${FONT_SIZE.s};
+      height: calc(${FONT_SIZE.s} * 0.5);
+      background-color: ${({ p }) => p.before.backgroundColor};
+      border-radius: 0 0 ${NOT_FONT_SIZE['6xl']} ${NOT_FONT_SIZE['6xl']};
+    }
+
+    ::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 10%;
+      width: ${NOT_FONT_SIZE['5xs']};
+      height: ${FONT_SIZE.s};
+      border-radius: ${NOT_FONT_SIZE['6xl']};
+      background-color: ${({ p }) => p.after.backgroundColor};
+      animation: rotate 1.3s linear infinite alternate-reverse;
+    }
+
+    @keyframes rotate {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  `
+}

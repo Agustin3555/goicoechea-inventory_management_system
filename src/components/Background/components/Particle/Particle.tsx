@@ -1,10 +1,10 @@
 import { useDarkMode } from '@/hooks'
-import { ParticleStyleProps, StylizedParticle, particleStyleAdapter } from './Particle.styled'
+import { ParticleStyled } from './Particle.styled'
 
-const Particle = ({ style }: { style: ParticleStyleProps }) => {
+const Particle = ({ style }: { style: ParticleStyled.Props }) => {
   const darkMode = useDarkMode()
 
-  return <StylizedParticle p={particleStyleAdapter(style, darkMode)} />
+  return <ParticleStyled.Component p={ParticleStyled.adapter(style, darkMode)} />
 }
 
 export default Particle

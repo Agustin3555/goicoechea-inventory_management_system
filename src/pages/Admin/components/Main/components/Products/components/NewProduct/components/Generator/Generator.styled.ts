@@ -1,47 +1,39 @@
+import { COLOR, FONT_SIZE, MICROINTERACTION, NOT_FONT_SIZE } from '@/styles'
 import styled from 'styled-components'
-import {
-  colorAdapter,
-  fontSizeAdapter,
-  microinteractionAdapter,
-  notFontSizeAdapter,
-} from '@/styles'
 
-export const StylizedGenerator = styled.form`
-  display: flex;
-  flex-direction: column;
-
-  .generator-title {
-    margin: ${fontSizeAdapter('s')} 0;
-    font-size: ${fontSizeAdapter('s')};
-    line-height: ${fontSizeAdapter('s')};
-    color: ${colorAdapter('g-4')};
-  }
-
-  .generator-container {
+export namespace GeneratorStyled {
+  export const Component = styled.form`
     display: flex;
     flex-direction: column;
-    gap: ${fontSizeAdapter('xs')};
-    padding: ${fontSizeAdapter('xs')};
-    border-width: ${notFontSizeAdapter('6xs')};
-    border-style: solid;
-    border-color: ${colorAdapter('g-13')};
-    border-radius: ${notFontSizeAdapter('4xs')};
 
-    .generator-item {
-      display: flex;
-      gap: ${fontSizeAdapter('xs')};
+    .generator-title {
+      margin: ${FONT_SIZE.s} 0;
+      font-size: ${FONT_SIZE.s};
+      line-height: ${FONT_SIZE.s};
+      color: ${COLOR.g_4};
     }
 
-    .add-button-content {
+    .generator-container {
       display: flex;
-      gap: ${fontSizeAdapter('xs')};
-      color: ${colorAdapter('g-4')};
-      transition: color ${microinteractionAdapter(2)} ease-out;
+      flex-direction: column;
+      gap: ${FONT_SIZE.xs};
+      padding: ${FONT_SIZE.xs};
+      border-width: ${NOT_FONT_SIZE['6xs']};
+      border-style: solid;
+      border-color: ${COLOR.g_13};
+      border-radius: ${NOT_FONT_SIZE['4xs']};
 
-      .text {
-        font-size: ${fontSizeAdapter('xs')};
-        line-height: ${fontSizeAdapter('xs')};
+      .generator-item {
+        display: flex;
+        gap: ${FONT_SIZE.xs};
+      }
+
+      .add-button-content {
+        display: flex;
+        gap: ${FONT_SIZE.xs};
+        color: ${COLOR.g_4};
+        transition: color ${MICROINTERACTION.s} ease-out;
       }
     }
-  }
-`
+  `
+}

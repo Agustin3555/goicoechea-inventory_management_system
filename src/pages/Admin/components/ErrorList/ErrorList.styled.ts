@@ -1,19 +1,20 @@
 import styled from 'styled-components'
-import { colorAdapter, fontSizeAdapter, microinteractionAdapter } from '@/styles'
+import { COLOR, FONT_SIZE, MICROINTERACTION } from '@/styles'
 
-export const StylizedErrorList = styled.div`
-  color: ${colorAdapter('a')};
+export namespace ErrorListStyled {
+  export const Component = styled.div`
+    color: ${COLOR.a};
 
-  .item {
-    font-size: ${fontSizeAdapter('xs')};
-    line-height: calc(${fontSizeAdapter('xs')} * 1.5);
-    opacity: 0;
-    animation: show ${microinteractionAdapter(3)} ease-out forwards;
+    .item {
+      line-height: calc(${FONT_SIZE.xs} * 1.5);
+      opacity: 0;
+      animation: show ${MICROINTERACTION.m} ease-out forwards;
 
-    @keyframes show {
-      to {
-        opacity: 1;
+      @keyframes show {
+        to {
+          opacity: 1;
+        }
       }
     }
-  }
-`
+  `
+}

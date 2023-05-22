@@ -1,17 +1,19 @@
+import { FONT_SIZE } from '@/styles'
 import styled from 'styled-components'
-import { fontSizeAdapter } from '@/styles'
 
-interface FieldGroupStyleProvider {}
+interface Provider {}
 
-export const fieldGroupAdapter = (): FieldGroupStyleProvider => {
-  // #region Auxiliary vars
+export namespace FieldGroupStyled {
+  export const adapter = (): Provider => {
+    // #region Auxiliary vars
 
-  // #endregion
+    // #endregion
 
-  return {}
+    return {}
+  }
+
+  export const Component = styled.form<{ p: Provider }>`
+    display: flex;
+    gap: ${FONT_SIZE.xs};
+  `
 }
-
-export const StylizedFieldGroup = styled.form<{ p: FieldGroupStyleProvider }>`
-  display: flex;
-  gap: ${fontSizeAdapter('xs')};
-`

@@ -1,34 +1,16 @@
-import styled from 'styled-components'
+import styled, { FlattenSimpleInterpolation } from 'styled-components'
 import {
+  COLOR,
   Color,
-  colorAdapter,
-  fontSizeAdapter,
-  insetBorderAdapter,
-  microinteractionAdapter,
-  NotFontSize,
-  notFontSizeAdapter,
+  FONT_SIZE,
+  MICROINTERACTION,
+  NOT_FONT_SIZE,
+  Value,
+  colorAlphaAdapter,
   shadowAdapter,
 } from '@/styles'
 
-type CheckboxWidthProp = 'content' | 'expanded' | NotFontSize
-type CheckboxFontSize = 'xs' | 's'
-
-export interface CheckboxStyleProps {
-  width?: CheckboxWidthProp
-  fontSize?: CheckboxFontSize
-  color?: {
-    dark?: Color
-    bright?: Color
-  }
-  backgroundColor?: {
-    dark?: Color
-    bright?: Color
-  }
-}
-
-interface CheckboxNormalizedStyleProps {
-  width: CheckboxWidthProp
-  fontSize: CheckboxFontSize
+interface NormalizedProps {
   color: {
     dark: Color
     bright: Color
@@ -39,147 +21,150 @@ interface CheckboxNormalizedStyleProps {
   }
 }
 
-interface CheckboxStyleProvider {
-  width: string
+interface Provider {
   fakeInput: {
-    gap: string
-    padding: string
-    paddingRight: string
-    backgroundColor: string
+    gap: Value
+    padding: Value
+    paddingRight: Value
+    backgroundColor: Value
     text: {
-      color: string
+      color: Value
     }
   }
+  styled?: FlattenSimpleInterpolation
 }
 
-export const checkboxStyleAdapter = (
-  darkMode: boolean,
-  style?: CheckboxStyleProps
-): CheckboxStyleProvider => {
-  const normalizedProps: CheckboxNormalizedStyleProps = {
-    width: style?.width || 'content',
-    fontSize: style?.fontSize || 'xs',
-    color: {
-      dark: style?.color?.dark || 'g-4',
-      bright: style?.color?.bright || 'g-12',
-    },
-    backgroundColor: {
-      dark: style?.backgroundColor?.dark || 'g-14',
-      bright: style?.backgroundColor?.bright || 'g-0',
-    },
+export namespace CheckboxStyled {
+  export interface Props {
+    color?: {
+      dark?: Color
+      bright?: Color
+    }
+    backgroundColor?: {
+      dark?: Color
+      bright?: Color
+    }
+    styled?: FlattenSimpleInterpolation
   }
 
-  // #region Auxiliary vars
-
-  const checkboxDimension = fontSizeAdapter('m')
-  const fontSize = fontSizeAdapter(normalizedProps.fontSize)
-  const internalDif = `calc((${checkboxDimension} - ${fontSize}) * 0.5)`
-  const padding = `calc(${fontSize} - ${internalDif})`
-  const gap = `calc(${internalDif} + ${padding})`
-
-  // #endregion
-
-  return {
-    width:
-      normalizedProps.width === 'content'
-        ? ''
-        : normalizedProps.width === 'expanded'
-        ? '100%'
-        : notFontSizeAdapter(normalizedProps.width),
-    fakeInput: {
-      gap,
-      padding,
-      paddingRight: gap,
-      backgroundColor: colorAdapter(
-        darkMode
-          ? normalizedProps.backgroundColor.dark
-          : normalizedProps.backgroundColor.bright
-      ),
-      text: {
-        color: colorAdapter(
-          darkMode ? normalizedProps.color.dark : normalizedProps.color.bright
-        ),
+  export const adapter = (darkMode: boolean, style?: Props): Provider => {
+    const normalizedProps: NormalizedProps = {
+      color: {
+        dark: style?.color?.dark || COLOR.g_4,
+        bright: style?.color?.bright || COLOR.g_12,
       },
-    },
+      backgroundColor: {
+        dark: style?.backgroundColor?.dark || COLOR.g_14,
+        bright: style?.backgroundColor?.bright || COLOR.g_0,
+      },
+    }
+
+    // #region Auxiliary vars
+
+    const checkboxDimension = FONT_SIZE.m
+    const fontSize = FONT_SIZE['2xs']
+    const internalDif = `calc((${checkboxDimension} - ${fontSize}) * 0.5)`
+    const padding = `calc(${fontSize} - ${internalDif})`
+    const gap = `calc(${internalDif} + ${padding})`
+
+    // #endregion
+
+    return {
+      fakeInput: {
+        gap,
+        padding,
+        paddingRight: gap,
+        backgroundColor: darkMode
+          ? normalizedProps.backgroundColor.dark
+          : normalizedProps.backgroundColor.bright,
+        text: {
+          color: darkMode ? normalizedProps.color.dark : normalizedProps.color.bright,
+        },
+      },
+      styled: style?.styled,
+    }
   }
-}
 
-export const StylizedCheckbox = styled.div<{ p: CheckboxStyleProvider }>`
-  position: relative;
-  width: ${({ p }) => p.width};
+  export const Component = styled.div<{ p: Provider }>`
+    position: relative;
 
-  :hover .fake-input {
-    box-shadow: ${shadowAdapter(2)};
-  }
+    :hover .fake-input {
+      box-shadow: ${shadowAdapter(2)};
+    }
 
-  .input {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
+    .input {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
 
-    :checked + .fake-input {
-      background-color: ${colorAdapter('a')};
+      :checked + .fake-input {
+        background-color: ${COLOR.a};
+
+        .checkbox {
+          background-color: ${COLOR.g_0};
+          // TODO: test
+          border-color: ${colorAlphaAdapter(COLOR.a, 0)};
+
+          .icon-container {
+            opacity: 1;
+            transform: initial;
+          }
+        }
+
+        .text {
+          color: ${COLOR.g_0};
+        }
+      }
+    }
+
+    .fake-input {
+      display: flex;
+      align-items: center;
+      gap: ${({ p }) => p.fakeInput.gap};
+      padding: ${({ p }) => p.fakeInput.padding};
+      padding-right: ${({ p }) => p.fakeInput.paddingRight};
+      border-radius: ${NOT_FONT_SIZE['4xs']};
+      background-color: ${({ p }) => p.fakeInput.backgroundColor};
+      overflow: hidden;
+      transition: background-color ${MICROINTERACTION.s} ease-out,
+        box-shadow ${MICROINTERACTION.s} ease-out;
 
       .checkbox {
-        background-color: ${colorAdapter('g-0')};
-        box-shadow: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 0;
+        flex-shrink: 0;
+        width: ${FONT_SIZE.m};
+        height: ${FONT_SIZE.m};
+        background-color: transparent;
+        border-width: ${NOT_FONT_SIZE['6xs']};
+        border-style: solid;
+        border-color: ${colorAlphaAdapter(COLOR.a, 1)};
+        border-radius: ${NOT_FONT_SIZE['5xs']};
+        transition: background-color ${MICROINTERACTION.s} ease-out,
+          border-color ${MICROINTERACTION.s} ease-out;
 
         .icon-container {
-          opacity: 1;
-          transform: initial;
+          color: ${COLOR.a};
+          opacity: 0;
+          transform: scale(0);
+          transition: opacity ${MICROINTERACTION.s} ease-out,
+            transform ${MICROINTERACTION.s} ease-out;
         }
       }
 
       .text {
-        color: ${colorAdapter('g-0')};
-      }
-    }
-  }
-
-  .fake-input {
-    display: flex;
-    align-items: center;
-    gap: ${({ p }) => p.fakeInput.gap};
-    padding: ${({ p }) => p.fakeInput.padding};
-    padding-right: ${({ p }) => p.fakeInput.paddingRight};
-    border-radius: ${notFontSizeAdapter('4xs')};
-    background-color: ${({ p }) => p.fakeInput.backgroundColor};
-    overflow: hidden;
-    transition: background-color ${microinteractionAdapter(2)} ease-out,
-      box-shadow ${microinteractionAdapter(2)} ease-out;
-
-    .checkbox {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-grow: 0;
-      flex-shrink: 0;
-      width: ${fontSizeAdapter('m')};
-      height: ${fontSizeAdapter('m')};
-      border-radius: ${notFontSizeAdapter('5xs')};
-      background-color: transparent;
-      box-shadow: ${insetBorderAdapter('6xs', 'a', 1)};
-      transition: background-color ${microinteractionAdapter(2)} ease-out,
-        box-shadow ${microinteractionAdapter(2)} ease-out;
-
-      .icon-container {
-        color: ${colorAdapter('a')};
-        opacity: 0;
-        transform: scale(0);
-        transition: opacity ${microinteractionAdapter(2)} ease-out,
-          transform ${microinteractionAdapter(2)} ease-out;
+        color: ${({ p }) => p.fakeInput.text.color};
+        text-overflow: ellipsis;
+        overflow: hidden;
+        transition: color ${MICROINTERACTION.s} ease-out;
       }
     }
 
-    .text {
-      font-size: ${fontSizeAdapter('xs')};
-      color: ${({ p }) => p.fakeInput.text.color};
-      text-overflow: ellipsis;
-      overflow: hidden;
-      transition: color ${microinteractionAdapter(2)} ease-out;
-    }
-  }
-`
+    ${({ p }) => p.styled};
+  `
+}

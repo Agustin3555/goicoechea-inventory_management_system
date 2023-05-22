@@ -3,10 +3,10 @@ import { AppStore } from '@/redux/store'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
-import { StylizedSnackbar, snackbarAdapter, SnackbarStyleProps } from './Snackbar.styled'
 import { MessageType, dequeueMessage } from '@/redux/states'
 import { css } from 'styled-components'
-import { microinteractionAdapter } from '@/styles'
+import { COLOR, FONT_SIZE, MICROINTERACTION } from '@/styles'
+import { SnackbarStyled } from './Snackbar.styled'
 
 const styleByType: {
   [key: number]: {
@@ -16,19 +16,19 @@ const styleByType: {
 } = {
   [MessageType.info]: {
     iconName: 'fa-solid fa-info',
-    backgroundColor: '#2b488a',
+    backgroundColor: COLOR.b,
   },
   [MessageType.warning]: {
     iconName: 'fa-solid fa-triangle-exclamation',
-    backgroundColor: '#af7529',
+    backgroundColor: COLOR.c_d1,
   },
   [MessageType.error]: {
     iconName: 'fa-solid fa-exclamation',
-    backgroundColor: '#af4129',
+    backgroundColor: COLOR.a_d1,
   },
 }
 
-const Snackbar = ({ style }: { style?: SnackbarStyleProps }) => {
+const Snackbar = ({ style }: { style?: SnackbarStyled.Props }) => {
   const dispatch = useDispatch()
   const currentMessage = useSelector((store: AppStore) => store.snackbar.messages[0])
   const currentMessageStyle = styleByType[currentMessage?.info.type]
@@ -44,7 +44,7 @@ const Snackbar = ({ style }: { style?: SnackbarStyleProps }) => {
   }, [currentMessage])
 
   return (
-    <StylizedSnackbar p={snackbarAdapter(style)}>
+    <SnackbarStyled.Component p={SnackbarStyled.adapter(style)}>
       <SwitchTransition>
         <CSSTransition
           key={currentMessage ? currentMessage.id : 'blank'}
@@ -62,12 +62,11 @@ const Snackbar = ({ style }: { style?: SnackbarStyleProps }) => {
                 <Icon
                   iconName={currentMessageStyle?.iconName}
                   style={{
-                    size: 'l',
+                    size: FONT_SIZE.l,
                     styled: css`
                       flex-grow: 1;
                       flex-shrink: 0;
-                      animation: dance ease-in-out ${microinteractionAdapter(5)} infinite
-                        reverse;
+                      animation: dance ease-in-out ${MICROINTERACTION.xl} infinite reverse;
 
                       @keyframes dance {
                         0%,
@@ -95,7 +94,7 @@ const Snackbar = ({ style }: { style?: SnackbarStyleProps }) => {
           </div>
         </CSSTransition>
       </SwitchTransition>
-    </StylizedSnackbar>
+    </SnackbarStyled.Component>
   )
 }
 

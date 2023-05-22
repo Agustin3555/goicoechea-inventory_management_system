@@ -1,32 +1,32 @@
 import styled from 'styled-components'
-import { colorAdapter, fontSizeAdapter, microinteractionAdapter } from '@/styles'
-import { GAP } from '@/tools'
+import { MAIN_GAP } from '@/tools'
+import { COLOR, FONT_SIZE } from '@/styles'
 
-interface ItemPropertyStyleProvider {}
+interface Provider {}
 
-export const itemPropertyStyleAdapter = (darkMode: boolean): ItemPropertyStyleProvider => {
-  // #region Auxiliary vars
+export namespace ItemPropertyStyled {
+  export const adapter = (darkMode: boolean): Provider => {
+    // #region Auxiliary vars
 
-  // #endregion
+    // #endregion
 
-  return {}
-}
+    return {}
+  }
 
-export const StylizedItemProperty = styled.div<{ p: ItemPropertyStyleProvider }>`
-  display: flex;
-  flex-direction: column;
-  gap: ${GAP};
-
-  .top,
-  .bottom {
+  export const Component = styled.div<{ p: Provider }>`
     display: flex;
-    gap: ${GAP};
-    align-items: center;
-  }
+    flex-direction: column;
+    gap: ${MAIN_GAP};
 
-  .top .value {
-    line-height: ${fontSizeAdapter('xs')};
-    font-size: ${fontSizeAdapter('xs')};
-    color: ${colorAdapter('g-0')};
-  }
-`
+    .top,
+    .bottom {
+      display: flex;
+      gap: ${MAIN_GAP};
+      align-items: center;
+    }
+
+    .top .value {
+      color: ${COLOR.g_0};
+    }
+  `
+}

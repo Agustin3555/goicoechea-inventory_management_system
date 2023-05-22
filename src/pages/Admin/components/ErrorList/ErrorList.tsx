@@ -1,14 +1,14 @@
-import { StylizedErrorList } from './ErrorList.styled'
+import { ErrorListStyled } from './ErrorList.styled'
 
 const ErrorList = ({ errors }: { errors: string[] }) => {
   return (
-    <StylizedErrorList>
+    <ErrorListStyled.Component>
       {errors.map((error, index) => (
         <p className="item" key={index}>
           {error}
         </p>
       ))}
-    </StylizedErrorList>
+    </ErrorListStyled.Component>
   )
 }
 

@@ -5,7 +5,7 @@ import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { Categories, Manufacturers, Me, Offers, Products, Sales, Users } from './components'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
-import { mainStyleAdapter, StylizedMain } from './Main.styled'
+import { MainStyled } from './Main.styled'
 
 const Main = () => {
   const darkMode = useDarkMode()
@@ -26,7 +26,7 @@ const Main = () => {
   const sectionActiveState = useSelector((store: AppStore) => store.sectionActive)
 
   return (
-    <StylizedMain p={mainStyleAdapter(darkMode)}>
+    <MainStyled.Component p={MainStyled.adapter(darkMode)}>
       <div className="container">
         <SwitchTransition>
           <CSSTransition
@@ -40,7 +40,7 @@ const Main = () => {
           </CSSTransition>
         </SwitchTransition>
       </div>
-    </StylizedMain>
+    </MainStyled.Component>
   )
 }
 

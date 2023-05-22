@@ -1,6 +1,6 @@
 import { useDarkMode } from '@/hooks'
 import { ButtonHTMLAttributes, MouseEventHandler } from 'react'
-import { buttonStyleAdapter, ButtonStyleProps, StylizedButton } from './Button.styled'
+import { ButtonStyled } from './Button.styled'
 
 const Button = ({
   title,
@@ -11,21 +11,21 @@ const Button = ({
 }: {
   title: string
   handleClick?: MouseEventHandler<HTMLButtonElement>
-  style: ButtonStyleProps
+  style: ButtonStyled.Props
   extraAttrs?: ButtonHTMLAttributes<HTMLButtonElement>
   children: JSX.Element[] | JSX.Element
 }) => {
   const darkMode = useDarkMode()
 
   return (
-    <StylizedButton
-      p={buttonStyleAdapter(style, darkMode)}
+    <ButtonStyled.Component
+      p={ButtonStyled.adapter(style, darkMode)}
       onClick={handleClick}
       title={title}
       {...extraAttrs}
     >
       {children}
-    </StylizedButton>
+    </ButtonStyled.Component>
   )
 }
 

@@ -1,9 +1,5 @@
 import { useDarkMode } from '@/hooks'
-import {
-  checkboxButtonStyleAdapter,
-  CheckboxButtonStyleProps,
-  StylizedCheckboxButton,
-} from './CheckboxButton.styled'
+import { CheckboxButtonStyled } from './CheckboxButton.styled'
 
 const CheckboxButton = ({
   id,
@@ -13,17 +9,17 @@ const CheckboxButton = ({
 }: {
   id: string
   title: string
-  style?: CheckboxButtonStyleProps
+  style?: CheckboxButtonStyled.Props
   children: JSX.Element[] | JSX.Element
 }) => {
   const darkMode = useDarkMode()
 
   return (
-    <StylizedCheckboxButton p={checkboxButtonStyleAdapter(darkMode, style)}>
-      <label htmlFor={id}></label>
+    <CheckboxButtonStyled.Component p={CheckboxButtonStyled.adapter(darkMode, style)}>
+      <label htmlFor={id} />
       <input className="input" type="checkbox" id={id} title={title} />
       <div className="fake-input">{children}</div>
-    </StylizedCheckboxButton>
+    </CheckboxButtonStyled.Component>
   )
 }
 

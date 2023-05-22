@@ -1,44 +1,46 @@
 import styled from 'styled-components'
-import { colorAdapter, fontSizeAdapter, microinteractionAdapter } from '@/styles'
-import { GAP } from '@/tools'
+import { COLOR, FONT_SIZE, MICROINTERACTION, Value, colorAdapter } from '@/styles'
+import { MAIN_GAP } from '@/tools'
 
-interface NewStyleProvider {
+interface Provider {
   title: {
-    color: string
+    color: Value
   }
 }
 
-export const newStyleAdapter = (darkMode: boolean): NewStyleProvider => {
-  // #region Auxiliary vars
+export namespace NewStyled {
+  export const adapter = (darkMode: boolean): Provider => {
+    // #region Auxiliary vars
 
-  // #endregion
+    // #endregion
 
-  return {
-    title: {
-      color: colorAdapter(darkMode ? 'g-2' : 'g-14'),
-    },
+    return {
+      title: {
+        color: colorAdapter(darkMode ? COLOR.g_2 : COLOR.g_14),
+      },
+    }
   }
+
+  export const Component = styled.form<{ p: Provider }>`
+    max-height: calc(100% - 53px - ${MAIN_GAP});
+    padding-right: ${MAIN_GAP};
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    .title {
+      margin-top: ${MAIN_GAP};
+      margin-bottom: calc(${FONT_SIZE.m} * 2);
+      font-size: ${FONT_SIZE.m};
+      line-height: ${FONT_SIZE.m};
+      font-weight: 500;
+      color: ${({ p }) => p.title.color};
+      transition: color ${MICROINTERACTION.s} ease-out;
+    }
+
+    .fields {
+      display: flex;
+      flex-wrap: wrap;
+      gap: ${MAIN_GAP};
+    }
+  `
 }
-
-export const StylizedNew = styled.form<{ p: NewStyleProvider }>`
-  max-height: calc(100% - 53px - ${GAP});
-  padding-right: ${GAP};
-  overflow-y: scroll;
-  overflow-x: hidden;
-
-  .title {
-    margin-top: ${GAP};
-    margin-bottom: calc(${fontSizeAdapter('m')} * 2);
-    font-size: ${fontSizeAdapter('m')};
-    line-height: ${fontSizeAdapter('m')};
-    font-weight: 500;
-    color: ${({ p }) => p.title.color};
-    transition: color ${microinteractionAdapter(2)} ease-out;
-  }
-
-  .fields {
-    display: flex;
-    flex-wrap: wrap;
-    gap: ${GAP};
-  }
-`

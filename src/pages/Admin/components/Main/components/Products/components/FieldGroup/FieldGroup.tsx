@@ -1,7 +1,11 @@
-import { StylizedFieldGroup, fieldGroupAdapter } from './FieldGroup.styled'
+import { FieldGroupStyled } from './FieldGroup.styled'
 
 const FieldGroup = ({ children }: { children: JSX.Element | JSX.Element[] }) => {
-  return <StylizedFieldGroup p={fieldGroupAdapter()}>{children}</StylizedFieldGroup>
+  return (
+    <FieldGroupStyled.Component p={FieldGroupStyled.adapter()}>
+      {children}
+    </FieldGroupStyled.Component>
+  )
 }
 
 export default FieldGroup

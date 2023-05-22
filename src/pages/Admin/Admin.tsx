@@ -3,7 +3,6 @@ import { toggleShowRightPanel } from '@/redux/states/showRightPanel.state'
 import { AppStore } from '@/redux/store'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { StylizedAdmin } from './Admin.styled'
 import { Main, Nav, RightPanel } from './components'
 import { io } from 'socket.io-client'
 import { getErrorInterpretation } from '@/tools'
@@ -14,6 +13,7 @@ import {
   setConnection,
   tickSectionUpdate,
 } from '@/redux'
+import { AdminStyled } from './Admin.styled'
 
 const Admin = () => {
   const dispatch = useDispatch()
@@ -78,7 +78,7 @@ const Admin = () => {
   }
 
   return (
-    <StylizedAdmin>
+    <AdminStyled.Component>
       <Main />
       <div
         className="deep-touch"
@@ -87,7 +87,7 @@ const Admin = () => {
       />
       <Nav />
       <RightPanel />
-    </StylizedAdmin>
+    </AdminStyled.Component>
   )
 }
 

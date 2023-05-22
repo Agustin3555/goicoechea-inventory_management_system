@@ -1,7 +1,8 @@
 import { useDarkMode } from '@/hooks'
 import { useDispatch } from 'react-redux'
-import { newStyleAdapter, StylizedNew } from './New.styled'
+import { NewStyled } from './New.styled'
 import { ConfirmationButton, Icon } from '@/components'
+import { COLOR } from '@/styles'
 
 const New = ({
   title,
@@ -16,21 +17,21 @@ const New = ({
   const dispatch = useDispatch()
 
   return (
-    <StylizedNew p={newStyleAdapter(darkMode)}>
+    <NewStyled.Component p={NewStyled.adapter(darkMode)}>
       <h2 className="title">{title}</h2>
       <div className="fields">{children}</div>
       <ConfirmationButton
         title="Crear"
         trigger={handleSend}
         extraAttrs={{ type: 'button' }}
-        style={{ backgroundColor: { dark: 'g-10' } }}
+        style={{ backgroundColor: { dark: COLOR.g_10 } }}
       >
         <div className="content">
           <span className="text">Crear</span>
           <Icon iconName="" />
         </div>
       </ConfirmationButton>
-    </StylizedNew>
+    </NewStyled.Component>
   )
 }
 

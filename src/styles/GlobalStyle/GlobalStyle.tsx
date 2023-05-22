@@ -1,8 +1,8 @@
 import { useDarkMode } from '@/hooks'
-import { GlobalStyleAdapter, StylizedGlobalStyle } from './GlobalStyle.styled'
+import { GlobalStyleStyled } from './GlobalStyle.styled'
 
 export const GlobalStyle = () => {
   const darkMode = useDarkMode()
 
-  return <StylizedGlobalStyle p={GlobalStyleAdapter(darkMode)} />
+  return <GlobalStyleStyled.Component p={GlobalStyleStyled.adapter(darkMode)} />
 }

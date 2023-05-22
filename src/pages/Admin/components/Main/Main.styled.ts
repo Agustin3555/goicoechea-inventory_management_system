@@ -1,81 +1,78 @@
 import styled from 'styled-components'
-import {
-  fontSizeAdapter,
-  microinteractionAdapter,
-  notFontSizeAdapter,
-  shadowAdapter,
-} from '@/styles'
-import { GAP, GLASS_BACKGROUND_COLOR, GLASS_BLUR } from '@/tools'
+import { FONT_SIZE, MICROINTERACTION, NOT_FONT_SIZE, Value, shadowAdapter } from '@/styles'
+import { MAIN_GAP, glassBackgroundColorAdapter, BLUR } from '@/tools'
 
-interface MainStyleProvider {
-  padding: string
-  backgroundColor: string
+interface Provider {
+  padding: Value
+  backgroundColor: Value
 }
 
-export const mainStyleAdapter = (darkMode: boolean): MainStyleProvider => {
-  // #region Auxiliary vars
+const PADDING = MAIN_GAP
 
-  const paddingTopBottom = GAP
-  const paddingLeft = `calc(${GAP} * 3 + ${fontSizeAdapter('s')} * 2 + ${fontSizeAdapter(
-    'm'
-  )})`
-  const paddingRight = `calc(${GAP} + 200px)`
+const paddingLeft = `calc(${MAIN_GAP} * 3 + ${FONT_SIZE.s} * 2 + ${FONT_SIZE.m})`
+const paddingRight = `calc(${MAIN_GAP} + 200px)`
+const padding = `${PADDING} ${paddingRight} ${PADDING} ${paddingLeft}`
 
-  // #endregion
+export namespace MainStyled {
+  export const adapter = (darkMode: boolean): Provider => {
+    // #region Auxiliary vars
 
-  return {
-    padding: `${paddingTopBottom} ${paddingRight} ${paddingTopBottom} ${paddingLeft}`,
-    backgroundColor: GLASS_BACKGROUND_COLOR(darkMode),
+    // #endregion
+
+    return {
+      padding,
+      backgroundColor: glassBackgroundColorAdapter(darkMode),
+    }
   }
-}
 
-export const StylizedMain = styled.div<{ p: MainStyleProvider }>`
-  height: 100%;
-  padding: ${({ p }) => p.padding};
-  transition: padding ${microinteractionAdapter(2)} ease-out;
-
-  .container {
+  export const Component = styled.div<{ p: Provider }>`
     height: 100%;
-    padding: ${GAP};
-    border-radius: calc(${notFontSizeAdapter('4xs')} + ${GAP});
-    background-color: ${({ p }) => p.backgroundColor};
-    box-shadow: ${shadowAdapter(2)};
-    backdrop-filter: ${GLASS_BLUR};
-    transition: border-radius ${microinteractionAdapter(2)} ease-out,
-      background-color ${microinteractionAdapter(2)} ease-out;
-
-    .animation-container {
-      height: 100%;
-      transition: opacity ${microinteractionAdapter(1)} ease-out;
-    }
-
-    .fade-enter {
-      opacity: 0;
-    }
-
-    .fade-exit {
-      opacity: 1;
-    }
-
-    .fade-enter-active {
-      opacity: 1;
-    }
-
-    .fade-exit-active {
-      opacity: 0;
-    }
-  }
-
-  @media (max-width: 89.9375rem) {
-    padding-right: ${GAP};
-    padding-left: ${GAP};
-  }
-
-  @media (max-width: 26.5625rem) {
-    padding: 0;
+    padding: ${({ p }) => p.padding};
+    transition: padding ${MICROINTERACTION.s} ease-out;
 
     .container {
-      border-radius: 0;
+      height: 100%;
+      padding: ${MAIN_GAP};
+      border-radius: calc(${NOT_FONT_SIZE['4xs']} + ${MAIN_GAP});
+      background-color: ${({ p }) => p.backgroundColor};
+      box-shadow: ${shadowAdapter(2)};
+      backdrop-filter: ${BLUR};
+      transition: border-radius ${MICROINTERACTION.s} ease-out,
+        background-color ${MICROINTERACTION.s} ease-out;
+
+      .animation-container {
+        height: 100%;
+        transition: opacity ${MICROINTERACTION.xs} ease-out;
+      }
+
+      .fade-enter {
+        opacity: 0;
+      }
+
+      .fade-exit {
+        opacity: 1;
+      }
+
+      .fade-enter-active {
+        opacity: 1;
+      }
+
+      .fade-exit-active {
+        opacity: 0;
+      }
     }
-  }
-`
+
+    @media (max-width: 89.9375rem) {
+      padding-right: ${MAIN_GAP};
+      padding-left: ${MAIN_GAP};
+    }
+
+    @media (max-width: 26.5625rem) {
+      padding: 0;
+
+      .container {
+        border-radius: 0;
+      }
+    }
+  `
+}

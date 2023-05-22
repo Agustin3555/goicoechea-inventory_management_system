@@ -1,56 +1,59 @@
 import styled, { FlattenSimpleInterpolation } from 'styled-components'
-import { FontSize, fontSizeAdapter, microinteractionAdapter } from '@/styles'
+import { FONT_SIZE, FontSize, MICROINTERACTION, Value } from '@/styles'
 
-export interface IconStyleProps {
-  size?: FontSize
-  styled?: FlattenSimpleInterpolation
-}
-
-interface IconNormalizedStyleProps {
+interface NormalizedProps {
   size: FontSize
 }
 
-interface IconStyleProvider {
-  width: string
-  height: string
+interface Provider {
+  width: Value
+  height: Value
   icon: {
-    fontSize: string
+    fontSize: Value
   }
   styled?: FlattenSimpleInterpolation
 }
 
-export const iconStyleAdapter = (style?: IconStyleProps): IconStyleProvider => {
-  const normalizedProps: IconNormalizedStyleProps = {
-    size: style?.size || 'xs',
+export namespace IconStyled {
+  export interface Props {
+    size?: FontSize
+    styled?: FlattenSimpleInterpolation
   }
 
-  // #region Auxiliary vars
+  export const adapter = (style?: Props): Provider => {
+    const normalizedProps: NormalizedProps = {
+      size: style?.size || FONT_SIZE.xs,
+    }
 
-  const size = fontSizeAdapter(normalizedProps.size)
+    // #region Auxiliary vars
 
-  // #endregion
+    const size = normalizedProps.size
+    const dimensions = size === FONT_SIZE.xs ? FONT_SIZE['2xs'] : size
 
-  return {
-    width: size,
-    height: size,
-    icon: {
-      fontSize: size,
-    },
-    styled: style?.styled,
+    // #endregion
+
+    return {
+      width: dimensions,
+      height: dimensions,
+      icon: {
+        fontSize: size,
+      },
+      styled: style?.styled,
+    }
   }
+
+  export const Component = styled.div<{ p: Provider }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: ${({ p }) => p.width};
+    height: ${({ p }) => p.height};
+
+    .icon {
+      font-size: ${({ p }) => p.icon.fontSize};
+      transition: color ${MICROINTERACTION.s} ease-out;
+    }
+
+    ${({ p }) => p.styled};
+  `
 }
-
-export const StylizedIcon = styled.div<{ p: IconStyleProvider }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: ${({ p }) => p.width};
-  height: ${({ p }) => p.height};
-
-  .icon {
-    font-size: ${({ p }) => p.icon.fontSize};
-    transition: color ${microinteractionAdapter(2)} ease-out;
-  }
-
-  ${({ p }) => p.styled};
-`

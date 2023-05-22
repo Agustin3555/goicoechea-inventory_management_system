@@ -6,7 +6,7 @@ import { exclude } from '@/tools'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { SectionButton } from './components'
-import { navStyleAdapter, StylizedNav } from './Nav.styled'
+import { NavStyled } from './Nav.styled'
 
 const sections = {
   [Sections.SALES.key]: {
@@ -64,7 +64,7 @@ const Nav = () => {
   }, [])
 
   return (
-    <StylizedNav p={navStyleAdapter(darkMode, showNavState)}>
+    <NavStyled.Component p={NavStyled.adapter(darkMode, showNavState)}>
       <nav className="top">
         <ul className="items">
           {allowedUserSections.map(section => (
@@ -92,7 +92,7 @@ const Nav = () => {
           </ul>
         </nav>
       </div>
-    </StylizedNav>
+    </NavStyled.Component>
   )
 }
 

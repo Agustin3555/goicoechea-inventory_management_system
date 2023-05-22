@@ -1,8 +1,9 @@
-import { toggleDarkModeStyleAdapter, StylizedToggleDarkMode } from './ToggleDarkMode.styled'
 import { Icon } from '@/components'
 import { useDispatch } from 'react-redux'
 import { useDarkMode } from '@/hooks'
-import { toggleDarkMode } from '@/redux/states/darkMode.state'
+import { FONT_SIZE } from '@/styles'
+import { toggleDarkMode } from '@/redux'
+import { ToggleDarkModeStyled } from './ToggleDarkMode.styled'
 
 const ToggleDarkMode = () => {
   const darkMode = useDarkMode()
@@ -11,13 +12,13 @@ const ToggleDarkMode = () => {
   const handleToggle = () => dispatch(toggleDarkMode())
 
   return (
-    <StylizedToggleDarkMode p={toggleDarkModeStyleAdapter(darkMode)}>
+    <ToggleDarkModeStyled.Component p={ToggleDarkModeStyled.adapter(darkMode)}>
       <div className="fake-button">
         <div className="sun">
-          <Icon iconName="fa-solid fa-sun" style={{ size: 'm' }} />
+          <Icon iconName="fa-solid fa-sun" style={{ size: FONT_SIZE.m }} />
         </div>
         <div className="moon">
-          <Icon iconName="fa-solid fa-moon" style={{ size: 'm' }} />
+          <Icon iconName="fa-solid fa-moon" style={{ size: FONT_SIZE.m }} />
         </div>
       </div>
       <label htmlFor="darkMode" />
@@ -29,7 +30,7 @@ const ToggleDarkMode = () => {
         title="Alternar tema"
         checked={darkMode}
       />
-    </StylizedToggleDarkMode>
+    </ToggleDarkModeStyled.Component>
   )
 }
 

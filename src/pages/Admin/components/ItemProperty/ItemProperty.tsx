@@ -1,9 +1,10 @@
 import { ConfirmationButton, Icon } from '@/components'
-import { StylizedItemProperty, itemPropertyStyleAdapter } from './ItemProperty.styled'
+import { ItemPropertyStyled } from './ItemProperty.styled'
 import { useChildAdjustment, useDarkMode } from '@/hooks'
 import FieldName from '../FieldName/FieldName'
 import { css } from 'styled-components'
 import { CheckboxButton } from '../Main/components/Search/components'
+import { COLOR, FONT_SIZE } from '@/styles'
 
 const ItemProperty = ({
   name,
@@ -18,16 +19,16 @@ const ItemProperty = ({
   const { childRef, childHeight } = useChildAdjustment()
 
   return (
-    <StylizedItemProperty p={itemPropertyStyleAdapter(darkMode)}>
+    <ItemPropertyStyled.Component p={ItemPropertyStyled.adapter(darkMode)}>
       <FieldName title={name} />
       <div className="top">
         <div className="value">{value}</div>
         <CheckboxButton
           title="Editar"
           id="edit"
-          style={{ backgroundColor: { dark: 'g-13', bright: 'g-1' } }}
+          style={{ backgroundColor: { dark: COLOR.g_13, bright: COLOR.g_1 } }}
         >
-          <Icon iconName="fa-solid fa-pen" style={{ size: 'xs' }} />
+          <Icon iconName="fa-solid fa-pen" style={{ size: FONT_SIZE.xs }} />
         </CheckboxButton>
       </div>
       <Icon
@@ -43,15 +44,15 @@ const ItemProperty = ({
           title="Confirmar"
           trigger={() => {}}
           style={{
-            padding: 'xs',
-            backgroundColor: { dark: 'g-13', bright: 'g-1' },
+            padding: FONT_SIZE.xs,
+            backgroundColor: { dark: COLOR.g_13, bright: COLOR.g_1 },
           }}
         >
           <Icon iconName="fa-solid fa-check" />
         </ConfirmationButton>
         {children}
       </div>
-    </StylizedItemProperty>
+    </ItemPropertyStyled.Component>
   )
 }
 

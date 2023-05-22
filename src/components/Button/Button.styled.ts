@@ -3,118 +3,118 @@ import {
   Color,
   colorAdapter,
   Elevation,
+  FONT_SIZE,
   FontSize,
-  fontSizeAdapter,
-  microinteractionAdapter,
+  MICROINTERACTION,
+  NOT_FONT_SIZE,
   NotFontSize,
-  notFontSizeAdapter,
   shadowAdapter,
+  Value,
 } from '@/styles'
 
-export interface ButtonStyleProps {
-  padding?: FontSize
-  tight?: boolean
-  borderRadius?: NotFontSize
-  backgroundColor: {
-    dark: Color
-    bright?: Color
-  }
-  elevation?: Elevation
-  styled?: FlattenSimpleInterpolation
-}
-
-interface ButtonNormalizedStyleProps {
-  padding: FontSize
-  tight: boolean
-  borderRadius: NotFontSize
-  backgroundColor: {
-    dark: Color
-    bright: Color
-  }
-  elevation: Elevation
-}
-
-interface ButtonStyleProvider {
-  padding: string
-  borderRadius: string
-  backgroundColor: string
-  hover: {
-    boxShadow: string
-  }
-  active: {
-    backgroundColor: string
-  }
-  styled?: FlattenSimpleInterpolation
-}
-
-export const buttonStyleAdapter = (
-  style: ButtonStyleProps,
-  darkMode: boolean
-): ButtonStyleProvider => {
-  const normalizedProps: ButtonNormalizedStyleProps = {
-    padding: style.padding || 's',
-    tight: style.tight || false,
-    borderRadius: style.borderRadius || '3xs',
+export namespace ButtonStyled {
+  export interface Props {
+    padding?: FontSize
+    tight?: boolean
+    borderRadius?: NotFontSize
     backgroundColor: {
-      dark: style.backgroundColor.dark,
-      bright: style.backgroundColor.bright || style.backgroundColor.dark,
-    },
-    elevation: style.elevation || 2,
+      dark: Color
+      bright?: Color
+    }
+    elevation?: Elevation
+    styled?: FlattenSimpleInterpolation
   }
 
-  // #region Auxiliary vars
+  interface NormalizedProps {
+    padding: FontSize
+    tight: boolean
+    borderRadius: NotFontSize
+    backgroundColor: {
+      dark: Color
+      bright: Color
+    }
+    elevation: Elevation
+  }
 
-  const paddingTopBottom = fontSizeAdapter(normalizedProps.padding)
-
-  // #endregion
-
-  return {
-    padding: `${paddingTopBottom} ${
-      normalizedProps.tight ? '' : `calc(${paddingTopBottom} * 2)`
-    }`,
-    borderRadius: notFontSizeAdapter(normalizedProps.borderRadius),
-    backgroundColor: colorAdapter(
-      darkMode ? normalizedProps.backgroundColor.dark : normalizedProps.backgroundColor.bright
-    ),
+  interface Provider {
+    padding: Value
+    borderRadius: Value
+    backgroundColor: Value
     hover: {
-      boxShadow: shadowAdapter(normalizedProps.elevation),
-    },
+      boxShadow: Value
+    }
     active: {
-      backgroundColor: colorAdapter(
-        darkMode
-          ? normalizedProps.backgroundColor.dark
-          : normalizedProps.backgroundColor.bright,
-        1
-      ),
-    },
-    styled: style?.styled,
+      backgroundColor: Value
+    }
+    styled?: FlattenSimpleInterpolation
   }
+
+  export const adapter = (style: Props, darkMode: boolean): Provider => {
+    const normalizedProps: NormalizedProps = {
+      padding: style.padding || FONT_SIZE.s,
+      tight: style.tight || false,
+      borderRadius: style.borderRadius || NOT_FONT_SIZE['4xs'],
+      backgroundColor: {
+        dark: style.backgroundColor.dark,
+        bright: style.backgroundColor.bright || style.backgroundColor.dark,
+      },
+      elevation: style.elevation || 2,
+    }
+
+    // #region Auxiliary vars
+
+    const paddingTopBottom = normalizedProps.padding
+
+    // #endregion
+
+    return {
+      padding: `${paddingTopBottom} ${
+        normalizedProps.tight ? '' : `calc(${paddingTopBottom} * 2)`
+      }`,
+      borderRadius: normalizedProps.borderRadius,
+      backgroundColor: darkMode
+        ? normalizedProps.backgroundColor.dark
+        : normalizedProps.backgroundColor.bright,
+      hover: {
+        boxShadow: shadowAdapter(normalizedProps.elevation),
+      },
+      active: {
+        backgroundColor: colorAdapter(
+          darkMode
+            ? normalizedProps.backgroundColor.dark
+            : normalizedProps.backgroundColor.bright,
+          1
+        ),
+      },
+      styled: style?.styled,
+    }
+  }
+
+  export const Component = styled.button<{ p: Provider }>`
+    padding: ${({ p }) => p.padding};
+    border: none;
+    border-radius: ${({ p }) => p.borderRadius};
+    background-color: ${({ p }) => p.backgroundColor};
+    cursor: pointer;
+    transition: background-color ${MICROINTERACTION.s} ease-out,
+      box-shadow ${MICROINTERACTION.s} ease-out;
+
+    :hover {
+      box-shadow: ${({ p }) => p.hover.boxShadow};
+    }
+
+    :active {
+      background-color: ${({ p }) => p.active.backgroundColor};
+      box-shadow: none;
+    }
+
+    :disabled {
+      color: initial;
+      background-color: default;
+      box-shadow: none;
+      cursor: default;
+    }
+
+    ${({ p }) => p.styled};
+  `
 }
-
-export const StylizedButton = styled.button<{ p: ButtonStyleProvider }>`
-  padding: ${({ p }) => p.padding};
-  border: none;
-  border-radius: ${({ p }) => p.borderRadius};
-  background-color: ${({ p }) => p.backgroundColor};
-  cursor: pointer;
-  transition: background-color ${microinteractionAdapter(2)} ease-out,
-    box-shadow ${microinteractionAdapter(2)} ease-out;
-
-  :hover {
-    box-shadow: ${({ p }) => p.hover.boxShadow};
-  }
-
-  :active {
-    background-color: ${({ p }) => p.active.backgroundColor};
-    box-shadow: none;
-  }
-
-  :disabled {
-    color: initial;
-    background-color: default;
-    box-shadow: none;
-    cursor: default;
-  }
-
-  ${({ p }) => p.styled};
-`

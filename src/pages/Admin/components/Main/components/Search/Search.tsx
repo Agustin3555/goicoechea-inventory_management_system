@@ -5,10 +5,12 @@ import { FormEventHandler, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { Checkbox, Item } from './components'
-import { searchStyleAdapter, StylizedSearch } from './Search.styled'
 import { AppError } from '@/tools'
 import { ResourceRef } from '@/pages/Admin/tools'
 import { ItemData, setSearchedData, setSelectAll } from '@/redux'
+import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
+import { SearchStyled } from './Search.styled'
+import { css } from 'styled-components'
 
 const Search = ({
   sectionKey,
@@ -64,26 +66,31 @@ const Search = ({
   }
 
   return (
-    <StylizedSearch p={searchStyleAdapter(darkMode)}>
+    <SearchStyled.Component p={SearchStyled.adapter(darkMode)}>
       <div className="search-head">
         <Checkbox id="all" title="Todo" checked={allSelected} handleChange={handleSelectAll} />
-        <Icon iconName="fa-solid fa-cubes-stacked" style={{ size: 's' }} />
+        <Icon iconName="fa-solid fa-cubes-stacked" style={{ size: FONT_SIZE.s }} />
         <div className="counter">{selectedItems}</div>
-        <Separator style={{ long: 'xs', backgroundColor: { dark: 'g-8' } }} />
+        <Separator style={{ long: NOT_FONT_SIZE.xs, backgroundColor: { dark: COLOR.g_8 } }} />
         <form className="form" onSubmit={loading ? undefined : handleSubmit}>
           <Input
             name={`search-${sectionKey}`}
             title="Buscar por nombre"
             showLabel={false}
-            style={{ fontSize: 's' }}
             extraAttrs={{ placeholder: 'Buscar...' }}
+            style={{
+              fontSize: 's',
+              styled: css`
+                width: 100%;
+              `,
+            }}
           />
           <Button
-            title="Acceder"
+            title="Buscar"
             style={{
               tight: true,
               backgroundColor: {
-                dark: 'a',
+                dark: COLOR.a,
               },
             }}
             extraAttrs={{
@@ -103,7 +110,10 @@ const Search = ({
                   {loading ? (
                     <Spinner />
                   ) : (
-                    <Icon iconName="fa-solid fa-magnifying-glass" style={{ size: 's' }} />
+                    <Icon
+                      iconName="fa-solid fa-magnifying-glass"
+                      style={{ size: FONT_SIZE.s }}
+                    />
                   )}
                 </div>
               </CSSTransition>
@@ -122,7 +132,7 @@ const Search = ({
           />
         ))}
       </div>
-    </StylizedSearch>
+    </SearchStyled.Component>
   )
 }
 

@@ -3,7 +3,8 @@ import { useDarkMode } from '@/hooks'
 import { PRIVATE_ROUTES } from '@/routes'
 import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { notFoundStyleAdapter, StylizedNotFound } from './NotFound.styled'
+import { COLOR, FONT_SIZE } from '@/styles'
+import { NotFoundStyled } from './NotFound.styled'
 
 const NotFound = () => {
   const darkMode = useDarkMode()
@@ -12,7 +13,7 @@ const NotFound = () => {
   const handleGoBack = useCallback(() => navigate(PRIVATE_ROUTES.admin, { replace: true }), [])
 
   return (
-    <StylizedNotFound p={notFoundStyleAdapter(darkMode)}>
+    <NotFoundStyled.Component p={NotFoundStyled.adapter(darkMode)}>
       <SinglePageOnCard title="Error 404">
         <div className="content">
           <p className="description">
@@ -25,19 +26,19 @@ const NotFound = () => {
             title="Volver"
             style={{
               backgroundColor: {
-                dark: 'a',
+                dark: COLOR.a,
               },
             }}
             handleClick={handleGoBack}
           >
             <div className="button-content">
-              <Icon iconName="fa-solid fa-arrow-left" style={{ size: 's' }} />
+              <Icon iconName="fa-solid fa-arrow-left" style={{ size: FONT_SIZE.s }} />
               <span className="text">Volver</span>
             </div>
           </Button>
         </div>
       </SinglePageOnCard>
-    </StylizedNotFound>
+    </NotFoundStyled.Component>
   )
 }
 

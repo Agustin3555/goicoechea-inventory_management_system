@@ -4,7 +4,9 @@ import { AppStore } from '@/redux/store'
 import { useSelector } from 'react-redux'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { ToggleNav, ToggleRightPanel, ViewSelector } from './components'
-import { sectionStyleAdapter, StylizedSection } from './Section.styled'
+import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
+import { SectionStyled } from './Section.styled'
+import { css } from 'styled-components'
 
 const Section = ({
   id,
@@ -28,30 +30,37 @@ const Section = ({
   )
 
   return (
-    <StylizedSection p={sectionStyleAdapter(darkMode)}>
+    <SectionStyled.Component p={SectionStyled.adapter(darkMode)}>
       <div className="head">
-        <div className="toggle-container">
-          <ToggleNav />
-        </div>
+        <ToggleNav />
         <div className="separator-container">
-          <Separator style={{ long: 'xs', backgroundColor: { dark: 'g-8' } }} />
+          <Separator
+            style={{ long: NOT_FONT_SIZE.xs, backgroundColor: { dark: COLOR.g_8 } }}
+          />
         </div>
         <div className="icon-container">
-          <Icon iconName={iconName} style={{ size: 's' }} />
+          <Icon iconName={iconName} style={{ size: FONT_SIZE.s }} />
         </div>
         <h1 className="title">{title}</h1>
-        <ViewSelector sectionId={id} views={views} />
+        <ViewSelector sectionKey={id} views={views} />
         <div className="separator-container">
-          <Separator style={{ long: 'xs', backgroundColor: { dark: 'g-8' } }} />
+          <Separator
+            style={{ long: NOT_FONT_SIZE.xs, backgroundColor: { dark: COLOR.g_8 } }}
+          />
         </div>
-        <div className="toggle-container">
-          <ToggleRightPanel />
-        </div>
+        <ToggleRightPanel />
       </div>
-      {/* TODO: con esto se muestra el separator  */}
-      <div style={{ flexShrink: 1 }}>
-        <Separator style={{ invert: true, backgroundColor: { dark: 'g-8' } }} />
-      </div>
+      <Separator
+        style={{
+          invert: true,
+          backgroundColor: { dark: COLOR.g_8 },
+          styled: css`
+            /* TODO: solo asi se puede ver, despues de que se carguen los items */
+            flex-grow: 1;
+            flex-shrink: 0;
+          `,
+        }}
+      />
       <SwitchTransition>
         <CSSTransition
           key={activeView.id}
@@ -61,7 +70,7 @@ const Section = ({
           <div className="animation-container">{activeView.component}</div>
         </CSSTransition>
       </SwitchTransition>
-    </StylizedSection>
+    </SectionStyled.Component>
   )
 }
 

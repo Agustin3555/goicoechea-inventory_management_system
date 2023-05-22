@@ -1,33 +1,19 @@
 import styled, { FlattenSimpleInterpolation } from 'styled-components'
 import {
+  COLOR,
   Color,
   colorAdapter,
   Elevation,
+  FONT_SIZE,
   FontSize,
-  fontSizeAdapter,
-  microinteractionAdapter,
+  MICROINTERACTION,
+  NOT_FONT_SIZE,
   NotFontSize,
-  notFontSizeAdapter,
   shadowAdapter,
+  Value,
 } from '@/styles'
 
-export interface ConfirmationButtonStyleProps {
-  padding?: FontSize
-  tight?: boolean
-  color?: {
-    dark?: Color
-    bright?: Color
-  }
-  borderRadius?: NotFontSize
-  backgroundColor: {
-    dark: Color
-    bright?: Color
-  }
-  elevation?: Elevation
-  styled?: FlattenSimpleInterpolation
-}
-
-interface ConfirmationButtonNormalizedStyleProps {
+interface NormalizedProps {
   padding: FontSize
   tight: boolean
   color: {
@@ -42,136 +28,146 @@ interface ConfirmationButtonNormalizedStyleProps {
   elevation: Elevation
 }
 
-interface ConfirmationButtonStyleProvider {
-  padding: string
-  color: string
-  borderRadius: string
-  backgroundColor: string
+interface Provider {
+  padding: Value
+  color: Value
+  borderRadius: Value
+  backgroundColor: Value
   hover: {
-    boxShadow: string
+    boxShadow: Value
   }
   active: {
-    backgroundColor: string
+    backgroundColor: Value
   }
   styled?: FlattenSimpleInterpolation
 }
 
-export const confirmationButtonStyleAdapter = (
-  style: ConfirmationButtonStyleProps,
-  darkMode: boolean
-): ConfirmationButtonStyleProvider => {
-  const normalizedProps: ConfirmationButtonNormalizedStyleProps = {
-    padding: style.padding || 's',
-    tight: style.tight || true,
-    borderRadius: style.borderRadius || '3xs',
-    color: {
-      dark: style?.color?.dark || 'g-4',
-      bright: style?.color?.bright || 'g-12',
-    },
+export namespace ConfirmationButtonStyled {
+  export interface Props {
+    padding?: FontSize
+    tight?: boolean
+    color?: {
+      dark?: Color
+      bright?: Color
+    }
+    borderRadius?: NotFontSize
     backgroundColor: {
-      dark: style.backgroundColor.dark,
-      bright: style.backgroundColor.bright || style.backgroundColor.dark,
-    },
-    elevation: style.elevation || 2,
+      dark: Color
+      bright?: Color
+    }
+    elevation?: Elevation
+    styled?: FlattenSimpleInterpolation
   }
 
-  // #region Auxiliary vars
+  export const adapter = (style: Props, darkMode: boolean): Provider => {
+    const normalizedProps: NormalizedProps = {
+      padding: style.padding || FONT_SIZE.s,
+      tight: style.tight || true,
+      borderRadius: style.borderRadius || NOT_FONT_SIZE['3xs'],
+      color: {
+        dark: style?.color?.dark || COLOR.g_4,
+        bright: style?.color?.bright || COLOR.g_12,
+      },
+      backgroundColor: {
+        dark: style.backgroundColor.dark,
+        bright: style.backgroundColor.bright || style.backgroundColor.dark,
+      },
+      elevation: style.elevation || 2,
+    }
 
-  const paddingTopBottom = fontSizeAdapter(normalizedProps.padding)
+    // #region Auxiliary vars
 
-  // #endregion
+    const paddingTopBottom = normalizedProps.padding
 
-  return {
-    padding: `${paddingTopBottom} ${
-      normalizedProps.tight ? '' : `calc(${paddingTopBottom} * 2)`
-    }`,
-    color: colorAdapter(darkMode ? normalizedProps.color.dark : normalizedProps.color.bright),
-    borderRadius: notFontSizeAdapter(normalizedProps.borderRadius),
-    backgroundColor: colorAdapter(
-      darkMode ? normalizedProps.backgroundColor.dark : normalizedProps.backgroundColor.bright
-    ),
-    hover: {
-      boxShadow: shadowAdapter(normalizedProps.elevation),
-    },
-    active: {
-      backgroundColor: colorAdapter(
-        darkMode
-          ? normalizedProps.backgroundColor.dark
-          : normalizedProps.backgroundColor.bright,
-        1
-      ),
-    },
-    styled: style?.styled,
+    // #endregion
+
+    return {
+      padding: `${paddingTopBottom} ${
+        normalizedProps.tight ? '' : `calc(${paddingTopBottom} * 2)`
+      }`,
+      color: darkMode ? normalizedProps.color.dark : normalizedProps.color.bright,
+      borderRadius: normalizedProps.borderRadius,
+      backgroundColor: darkMode
+        ? normalizedProps.backgroundColor.dark
+        : normalizedProps.backgroundColor.bright,
+      hover: {
+        boxShadow: shadowAdapter(normalizedProps.elevation),
+      },
+      active: {
+        backgroundColor: colorAdapter(
+          darkMode
+            ? normalizedProps.backgroundColor.dark
+            : normalizedProps.backgroundColor.bright,
+          1
+        ),
+      },
+      styled: style?.styled,
+    }
   }
-}
 
-export const StylizedConfirmationButton = styled.button<{
-  p: ConfirmationButtonStyleProvider
-}>`
-  position: relative;
-  padding: ${({ p }) => p.padding};
-  color: ${({ p }) => p.color};
-  border: none;
-  border-radius: ${({ p }) => p.borderRadius};
-  background-color: ${({ p }) => p.backgroundColor};
-  cursor: pointer;
-  transition: background-color ${microinteractionAdapter(2)} ease-out,
-    box-shadow ${microinteractionAdapter(2)} ease-out;
+  export const Component = styled.button<{ p: Provider }>`
+    position: relative;
+    padding: ${({ p }) => p.padding};
+    color: ${({ p }) => p.color};
+    border: none;
+    border-radius: ${({ p }) => p.borderRadius};
+    background-color: ${({ p }) => p.backgroundColor};
+    cursor: pointer;
+    transition: background-color ${MICROINTERACTION.s} ease-out,
+      box-shadow ${MICROINTERACTION.s} ease-out;
 
-  :hover {
-    box-shadow: ${({ p }) => p.hover.boxShadow};
-  }
+    :hover {
+      box-shadow: ${({ p }) => p.hover.boxShadow};
+    }
 
-  :active {
-    color: ${colorAdapter('g-0')};
-    background-color: ${({ p }) => p.active.backgroundColor};
-    box-shadow: none;
+    :active {
+      color: ${COLOR.g_0};
+      background-color: ${({ p }) => p.active.backgroundColor};
+      box-shadow: none;
 
-    .loader-container .loader {
+      .loader-container .loader {
+        width: 100%;
+        height: 100%;
+        border-radius: ${({ p }) => p.borderRadius};
+        opacity: 1;
+        transition: width ${MICROINTERACTION.xl} ease-out,
+          height ${MICROINTERACTION.xl} ease-out, border-radius ${MICROINTERACTION.xl} ease-out,
+          opacity ${MICROINTERACTION.xl} ease-out;
+      }
+    }
+
+    :disabled {
+      color: initial;
+      background-color: default;
+      box-shadow: none;
+      cursor: default;
+    }
+
+    .loader-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       width: 100%;
       height: 100%;
-      border-radius: ${({ p }) => p.borderRadius};
-      opacity: 1;
-      transition: width ${microinteractionAdapter(5)} ease-out,
-        height ${microinteractionAdapter(5)} ease-out,
-        border-radius ${microinteractionAdapter(5)} ease-out,
-        opacity ${microinteractionAdapter(5)} ease-out;
+
+      .loader {
+        width: 0;
+        height: 0;
+        border-radius: ${NOT_FONT_SIZE.xs};
+        background-color: ${COLOR.a};
+        opacity: 0;
+        transition: width ${MICROINTERACTION.s} ease-out, height ${MICROINTERACTION.s} ease-out,
+          border-radius ${MICROINTERACTION.s} ease-out, opacity ${MICROINTERACTION.s} ease-out;
+      }
     }
-  }
 
-  :disabled {
-    color: initial;
-    background-color: default;
-    box-shadow: none;
-    cursor: default;
-  }
-
-  .loader-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-
-    .loader {
-      width: 0;
-      height: 0;
-      border-radius: ${notFontSizeAdapter('xs')};
-      background-color: ${colorAdapter('a')};
-      opacity: 0;
-      transition: width ${microinteractionAdapter(2)} ease-out,
-        height ${microinteractionAdapter(2)} ease-out,
-        border-radius ${microinteractionAdapter(2)} ease-out,
-        opacity ${microinteractionAdapter(2)} ease-out;
+    .content {
+      position: relative;
     }
-  }
 
-  .content {
-    position: relative;
-  }
-
-  ${({ p }) => p.styled};
-`
+    ${({ p }) => p.styled};
+  `
+}

@@ -1,85 +1,80 @@
 import styled, { FlattenSimpleInterpolation } from 'styled-components'
-import {
-  colorAdapter,
-  fontSizeAdapter,
-  microinteractionAdapter,
-  notFontSizeAdapter,
-  shadowAdapter,
-} from '@/styles'
+import { COLOR, FONT_SIZE, MICROINTERACTION, NOT_FONT_SIZE, shadowAdapter } from '@/styles'
 
-export interface SnackbarStyleProps {
+interface Provider {
   styled?: FlattenSimpleInterpolation
 }
 
-interface SnackbarProvider {
-  styled?: FlattenSimpleInterpolation
-}
-
-export const snackbarAdapter = (style?: SnackbarStyleProps): SnackbarProvider => {
-  // #region Auxiliary vars
-
-  // #endregion
-
-  return {
-    styled: style?.styled,
+export namespace SnackbarStyled {
+  export interface Props {
+    styled?: FlattenSimpleInterpolation
   }
-}
 
-export const StylizedSnackbar = styled.div<{ p: SnackbarProvider }>`
-  color: ${colorAdapter('g-0')};
+  export const adapter = (style?: Props): Provider => {
+    // #region Auxiliary vars
 
-  .animation-container {
-    display: flex;
-    justify-content: center;
-    transition: opacity ${microinteractionAdapter(3)} ease,
-      transform ${microinteractionAdapter(3)} ease-out;
+    // #endregion
 
-    .message {
-      position: fixed;
-      bottom: 0;
+    return {
+      styled: style?.styled,
+    }
+  }
+
+  export const Component = styled.div<{ p: Provider }>`
+    color: ${COLOR.g_0};
+
+    .animation-container {
       display: flex;
-      align-items: center;
-      gap: ${fontSizeAdapter('m')};
-      margin: ${fontSizeAdapter('xs')};
-      padding: ${fontSizeAdapter('s')};
-      border-radius: ${notFontSizeAdapter('3xs')};
-      box-shadow: ${shadowAdapter(3)};
+      justify-content: center;
+      transition: opacity ${MICROINTERACTION.m} ease, transform ${MICROINTERACTION.m} ease-out;
 
-      .text {
-        line-height: calc(${fontSizeAdapter('s')} * 1.5);
-      }
+      .message {
+        position: fixed;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        gap: ${FONT_SIZE.m};
+        margin: ${FONT_SIZE.xs};
+        padding: ${FONT_SIZE.s};
+        border-radius: ${NOT_FONT_SIZE['3xs']};
+        box-shadow: ${shadowAdapter(3)};
 
-      .close-button {
-        align-self: start;
+        .text {
+          line-height: calc(${FONT_SIZE.s} * 1.5);
+        }
+
+        .close-button {
+          align-self: start;
+        }
       }
     }
-  }
 
-  .fade-enter {
-    opacity: 0;
-    transform: scale(1.05) translateY(${notFontSizeAdapter('xl')});
-  }
-
-  .fade-exit {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-
-  .fade-enter-active {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-
-  .fade-exit-active {
-    opacity: 0;
-    transform: scale(1.05) translateY(${notFontSizeAdapter('xl')});
-  }
-
-  @media (min-width: 90rem) {
-    .animation-container .message {
-      max-width: 50%;
+    .fade-enter {
+      opacity: 0;
+      transform: scale(1.05) translateY(${NOT_FONT_SIZE.xl});
     }
-  }
 
-  ${({ p }) => p.styled};
-`
+    .fade-exit {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    .fade-enter-active {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    .fade-exit-active {
+      opacity: 0;
+      transform: scale(1.05) translateY(${NOT_FONT_SIZE.xl});
+    }
+
+    @media (min-width: 90rem) {
+      .animation-container .message {
+        max-width: 50%;
+      }
+    }
+
+    ${({ p }) => p.styled};
+  `
+}

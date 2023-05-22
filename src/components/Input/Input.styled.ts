@@ -1,111 +1,105 @@
-import styled from 'styled-components'
+import styled, { FlattenSimpleInterpolation } from 'styled-components'
 import {
-  colorAdapter,
-  colorWithAlpha,
-  fontSizeAdapter,
-  microinteractionAdapter,
-  NotFontSize,
-  notFontSizeAdapter,
+  COLOR,
+  colorAlphaAdapter,
+  FONT_SIZE,
+  MICROINTERACTION,
+  NOT_FONT_SIZE,
+  Value,
 } from '@/styles'
 
-type InputFontSize = 'xs' | 's'
-type InputWidthProp = 'expanded' | NotFontSize
+type Size = 'xs' | 's'
 
-export interface InputStyleProps {
-  width?: InputWidthProp
-  fontSize?: InputFontSize
+interface NormalizedProps {
+  size: Size
 }
 
-interface InputNormalizedStyleProps {
-  width: InputWidthProp
-  fontSize: InputFontSize
-}
-
-interface InputStyleProvider {
-  width: string
+interface Provider {
   label: {
-    color: string
+    color: Value
   }
   input: {
-    padding: string
-    height: string
-    fontSize: string
-    color: string
+    padding: Value
+    height: Value
+    fontSize: Value
+    color: Value
     placeholder: {
-      color: string
+      color: Value
     }
   }
+  styled?: FlattenSimpleInterpolation
 }
 
-export const inputStyleAdapter = (
-  darkMode: boolean,
-  style?: InputStyleProps
-): InputStyleProvider => {
-  const normalizedProps: InputNormalizedStyleProps = {
-    width: style?.width || 'expanded',
-    fontSize: style?.fontSize || 'xs',
+export namespace InputStyled {
+  export interface Props {
+    fontSize?: Size
+    styled?: FlattenSimpleInterpolation
   }
 
-  // #region Auxiliary vars
+  export const adapter = (darkMode: boolean, style?: Props): Provider => {
+    const normalizedProps: NormalizedProps = {
+      size: style?.fontSize || 'xs',
+    }
 
-  const fontSize = fontSizeAdapter(normalizedProps.fontSize)
+    // #region Auxiliary vars
 
-  // #endregion
+    const fontSize = FONT_SIZE[normalizedProps.size]
 
-  return {
-    width:
-      normalizedProps.width === 'expanded'
-        ? '100%'
-        : notFontSizeAdapter(normalizedProps.width),
-    label: {
-      color: colorAdapter(darkMode ? 'g-2' : 'g-18'),
-    },
-    input: {
-      padding: fontSize,
-      height: `calc(${fontSize} * 3)`,
-      fontSize,
-      color: colorAdapter(darkMode ? 'g-0' : 'g-19'),
-      placeholder: {
-        color: colorAdapter(darkMode ? 'g-8' : 'g-8'),
+    // #endregion
+
+    return {
+      label: {
+        color: darkMode ? COLOR.g_2 : COLOR.g_18,
       },
-    },
+      input: {
+        padding: fontSize,
+        height: `calc(${fontSize} * 3)`,
+        fontSize,
+        color: darkMode ? COLOR.g_0 : COLOR.g_19,
+        placeholder: {
+          color: darkMode ? COLOR.g_8 : COLOR.g_8,
+        },
+      },
+      styled: style?.styled,
+    }
   }
+
+  export const Component = styled.div<{ p: Provider }>`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: ${FONT_SIZE.xs};
+
+    .label {
+      font-size: ${FONT_SIZE.xs};
+      line-height: ${FONT_SIZE.xs};
+      color: ${({ p }) => p.label.color};
+      cursor: pointer;
+    }
+
+    .input {
+      width: 100%;
+      padding: ${({ p }) => p.input.padding};
+      height: ${({ p }) => p.input.height};
+      font-size: ${({ p }) => p.input.fontSize};
+      color: ${({ p }) => p.input.color};
+      background: transparent;
+      border-width: ${NOT_FONT_SIZE['6xs']};
+      border-style: solid;
+      border-color: ${colorAlphaAdapter(COLOR.a, 0.375)};
+      border-radius: ${NOT_FONT_SIZE['4xs']};
+      transition: border-color ${MICROINTERACTION.s} ease-out;
+
+      :focus {
+        border-color: ${colorAlphaAdapter(COLOR.a, 1)};
+        outline: none;
+      }
+
+      ::placeholder {
+        color: ${({ p }) => p.input.placeholder.color};
+      }
+    }
+
+    ${({ p }) => p.styled};
+  `
 }
-
-export const StylizedInput = styled.div<{ p: InputStyleProvider }>`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: ${fontSizeAdapter('xs')};
-  width: ${({ p }) => p.width};
-
-  .label {
-    font-size: ${fontSizeAdapter('xs')};
-    line-height: ${fontSizeAdapter('xs')};
-    color: ${({ p }) => p.label.color};
-    cursor: pointer;
-  }
-
-  .input {
-    width: 100%;
-    padding: ${({ p }) => p.input.padding};
-    height: ${({ p }) => p.input.height};
-    font-size: ${({ p }) => p.input.fontSize};
-    color: ${({ p }) => p.input.color};
-    background: transparent;
-    border-width: ${notFontSizeAdapter('6xs')};
-    border-style: solid;
-    border-color: ${colorWithAlpha('a', 0.375)};
-    border-radius: ${notFontSizeAdapter('4xs')};
-    transition: border-color ${microinteractionAdapter(2)} ease-out;
-
-    :focus {
-      border-color: ${colorWithAlpha('a', 1)};
-      outline: none;
-    }
-
-    ::placeholder {
-      color: ${({ p }) => p.input.placeholder.color};
-    }
-  }
-`

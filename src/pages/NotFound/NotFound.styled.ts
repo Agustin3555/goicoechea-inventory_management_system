@@ -1,49 +1,51 @@
 import styled from 'styled-components'
-import { colorAdapter, fontSizeAdapter, notFontSizeAdapter } from '@/styles'
+import { COLOR, FONT_SIZE, NOT_FONT_SIZE, Value, colorAdapter } from '@/styles'
 
-interface NotFoundStyleProvider {
+interface Provider {
   content: {
     description: {
-      color: string
+      color: Value
     }
   }
 }
 
-export const notFoundStyleAdapter = (darkMode: boolean): NotFoundStyleProvider => {
-  // #region Auxiliary vars
+export namespace NotFoundStyled {
+  export const adapter = (darkMode: boolean): Provider => {
+    // #region Auxiliary vars
 
-  // #endregion
+    // #endregion
 
-  return {
-    content: {
-      description: {
-        color: colorAdapter(darkMode ? 'g-4' : 'g-16'),
+    return {
+      content: {
+        description: {
+          color: colorAdapter(darkMode ? COLOR.g_4 : COLOR.g_16),
+        },
       },
-    },
-  }
-}
-
-export const StylizedNotFound = styled.div<{ p: NotFoundStyleProvider }>`
-  width: 100%;
-  height: 100%;
-
-  .content {
-    display: flex;
-    flex-direction: column;
-    gap: calc(${notFontSizeAdapter('m')} * 2);
-
-    .description {
-      line-height: calc(${fontSizeAdapter('s')} * 1.5);
-      color: ${({ p }) => p.content.description.color};
     }
+  }
 
-    .button-content {
+  export const Component = styled.div<{ p: Provider }>`
+    width: 100%;
+    height: 100%;
+
+    .content {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: ${fontSizeAdapter('s')};
-      height: ${fontSizeAdapter('s')};
-      color: ${colorAdapter('g-0')};
+      flex-direction: column;
+      gap: calc(${NOT_FONT_SIZE.m} * 2);
+
+      .description {
+        line-height: calc(${FONT_SIZE.s} * 1.5);
+        color: ${({ p }) => p.content.description.color};
+      }
+
+      .button-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: ${FONT_SIZE.s};
+        height: ${FONT_SIZE.s};
+        color: ${COLOR.g_0};
+      }
     }
-  }
-`
+  `
+}

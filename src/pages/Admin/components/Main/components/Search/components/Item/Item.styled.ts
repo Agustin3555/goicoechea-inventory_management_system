@@ -1,71 +1,64 @@
 import styled from 'styled-components'
-import {
-  colorAdapter,
-  fontSizeAdapter,
-  microinteractionAdapter,
-  notFontSizeAdapter,
-} from '@/styles'
-import { GAP } from '@/tools'
+import { COLOR, FONT_SIZE, MICROINTERACTION, NOT_FONT_SIZE, Value } from '@/styles'
+import { MAIN_GAP } from '@/tools'
 
-interface ItemStyleProvider {
-  height: string
-  backgroundColor: string
+interface Provider {
+  height: Value
+  backgroundColor: Value
 }
 
-export const itemStyleAdapter = (
-  darkMode: boolean,
-  expanded: boolean,
-  height: number
-): ItemStyleProvider => {
-  // #region Auxiliary vars
+export namespace ItemStyled {
+  export const adapter = (darkMode: boolean, expanded: boolean, height: number): Provider => {
+    // #region Auxiliary vars
 
-  // #endregion
+    // #endregion
 
-  return {
-    height: `calc(${fontSizeAdapter('xs')} * 4 ${
-      expanded ? `+ ${notFontSizeAdapter('6xs')} + ${fontSizeAdapter('xs')} + ${height}px` : ''
-    })`,
-    backgroundColor: colorAdapter(darkMode ? 'g-14' : 'g-0'),
+    return {
+      height: `calc(${FONT_SIZE.xs} * 4 ${
+        expanded ? `+ ${NOT_FONT_SIZE['6xs']} + ${FONT_SIZE.xs} + ${height}px` : ''
+      })`,
+      backgroundColor: darkMode ? COLOR.g_14 : COLOR.g_0,
+    }
   }
-}
 
-export const StylizedItem = styled.div<{ p: ItemStyleProvider }>`
-  display: flex;
-  flex-direction: column;
-  gap: calc(${fontSizeAdapter('xs')} * 0.5);
-  min-height: ${({ p }) => p.height};
-  padding: calc(${fontSizeAdapter('xs')} * 0.5);
-  border-radius: ${notFontSizeAdapter('3xs')};
-  background-color: ${({ p }) => p.backgroundColor};
-  overflow: hidden;
-  transition: min-height ${microinteractionAdapter(2)} ease-out,
-    background-color ${microinteractionAdapter(2)} ease-out;
-
-  .item-head {
+  export const Component = styled.div<{ p: Provider }>`
     display: flex;
-    justify-content: space-between;
-    gap: calc(${fontSizeAdapter('xs')} * 0.5);
+    flex-direction: column;
+    gap: calc(${FONT_SIZE.xs} * 0.5);
+    min-height: ${({ p }) => p.height};
+    padding: calc(${FONT_SIZE.xs} * 0.5);
+    border-radius: ${NOT_FONT_SIZE['3xs']};
+    background-color: ${({ p }) => p.backgroundColor};
+    overflow: hidden;
+    transition: min-height ${MICROINTERACTION.s} ease-out,
+      background-color ${MICROINTERACTION.s} ease-out;
 
-    .actions {
+    .item-head {
       display: flex;
-      gap: calc(${fontSizeAdapter('xs')} * 0.5);
-      opacity: 0;
-      transition: opacity ${microinteractionAdapter(2)} ease-out;
-    }
+      justify-content: space-between;
+      gap: calc(${FONT_SIZE.xs} * 0.5);
 
-    :hover .actions {
-      opacity: 1;
-    }
-
-    @media (pointer: coarse) {
       .actions {
+        display: flex;
+        gap: calc(${FONT_SIZE.xs} * 0.5);
+        opacity: 0;
+        transition: opacity ${MICROINTERACTION.s} ease-out;
+      }
+
+      :hover .actions {
         opacity: 1;
       }
-    }
-  }
 
-  .properties {
-    display: flex;
-    gap: ${GAP};
-  }
-`
+      @media (pointer: coarse) {
+        .actions {
+          opacity: 1;
+        }
+      }
+    }
+
+    .properties {
+      display: flex;
+      gap: ${MAIN_GAP};
+    }
+  `
+}

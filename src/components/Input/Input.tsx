@@ -1,6 +1,6 @@
 import { useDarkMode } from '@/hooks'
 import { InputHTMLAttributes } from 'react'
-import { inputStyleAdapter, StylizedInput, InputStyleProps } from './Input.styled'
+import { InputStyled } from './Input.styled'
 
 const Input = ({
   name,
@@ -13,20 +13,20 @@ const Input = ({
   title: string
   showLabel?: boolean
   extraAttrs?: InputHTMLAttributes<HTMLInputElement>
-  style?: InputStyleProps
+  style?: InputStyled.Props
 }) => {
   const darkMode = useDarkMode()
 
   return (
-    <StylizedInput
+    <InputStyled.Component
       style={{ gap: showLabel ? undefined : 0 }}
-      p={inputStyleAdapter(darkMode, style)}
+      p={InputStyled.adapter(darkMode, style)}
     >
       <label className="label" htmlFor={name}>
         {showLabel && title}
       </label>
       <input className="input" name={name} title={title} {...extraAttrs} />
-    </StylizedInput>
+    </InputStyled.Component>
   )
 }
 
