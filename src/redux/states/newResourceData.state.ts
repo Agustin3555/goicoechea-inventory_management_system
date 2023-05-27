@@ -1,38 +1,24 @@
-import { Sections } from '@/models/sections.model'
+import { getDeepCopy, ResourceAction, Value } from '@/tools'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-export type Value = undefined | boolean | number | string
-
-export interface NewResourceAction {
-  sectionKey: string
-  fieldKey: string
-  value: Value
-}
-
 export interface NewResourceDataState {
-  [key: string]: { [key: string]: any }
-}
-
-const initialState: NewResourceDataState = {
-  [Sections.SALES.key]: {},
-  [Sections.OFFERS.key]: {},
-  [Sections.PRODUCTS.key]: {},
-  [Sections.MANUFACTURERS.key]: {},
-  [Sections.CATEGORIES.key]: {},
-  [Sections.USERS.key]: {},
+  [key: string]: { [key: string]: Value }
 }
 
 export const newResourceDataSlice = createSlice({
   name: 'newResourceData',
-  initialState,
+  initialState: {} as NewResourceDataState,
   reducers: {
-    setNewResourceData: (state, action: PayloadAction<NewResourceAction>) => {
+    setNewResourceData: (state, action: PayloadAction<ResourceAction>) => {
       const { sectionKey, fieldKey, value } = action.payload
-      const stateCloned = JSON.parse(JSON.stringify(state))
+      const stateCopy = getDeepCopy(state)
 
-      stateCloned[sectionKey][fieldKey] = value
+      // Inicializar como objeto vacío si no existe
+      if (!stateCopy[sectionKey]) stateCopy[sectionKey] = {}
 
-      return stateCloned
+      stateCopy[sectionKey][fieldKey] = value
+
+      return stateCopy
     },
   },
 })

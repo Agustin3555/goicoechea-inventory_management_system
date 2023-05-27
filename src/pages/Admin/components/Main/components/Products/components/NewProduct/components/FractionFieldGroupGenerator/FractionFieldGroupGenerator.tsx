@@ -11,6 +11,7 @@ const FractionFieldGroupGenerator = () => {
     <Generator title="Características por fracción" handleAdd={addButtonHandleClick}>
       {items.map(index => (
         <GeneratorItem
+          key={index}
           fieldGroup={<FractionFieldGroup index={index} />}
           handleRemove={() => {
             const keyFieldKey = FractionFields.getKey(index)

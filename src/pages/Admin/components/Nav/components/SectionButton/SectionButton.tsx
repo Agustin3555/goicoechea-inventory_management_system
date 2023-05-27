@@ -6,38 +6,31 @@ import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FONT_SIZE } from '@/styles'
 import { SectionButtonStyled } from './SectionButton.styled'
+import { SECTIONS, SECTION_KEYS } from '@/models'
 
-const SectionButton = ({
-  id,
-  title,
-  iconName,
-}: {
-  id: string
-  title: string
-  iconName: string
-}) => {
+const SectionButton = ({ sectionKey }: { sectionKey: SECTION_KEYS }) => {
   const darkMode = useDarkMode()
   const dispatch = useDispatch()
-  const active = useSelector((store: AppStore) => store.sectionActive === id)
+  const active = useSelector((store: AppStore) => store.sectionActive === sectionKey)
 
   const handleChange = useCallback(() => {
-    dispatch(setSectionActive(id))
+    dispatch(setSectionActive(sectionKey))
   }, [])
 
   return (
     <SectionButtonStyled.Component p={SectionButtonStyled.adapter(darkMode, active)}>
-      <label className="label" htmlFor={id} />
+      <label className="label" htmlFor={sectionKey} />
       <input
         className="input"
         type="radio"
         name="section"
-        id={id}
-        title={title}
+        id={sectionKey}
+        title={SECTIONS[sectionKey].title}
         checked={active}
         onChange={handleChange}
       />
       <div className="fake-button">
-        <Icon iconName={iconName} style={{ size: FONT_SIZE.m }} />
+        <Icon iconName={SECTIONS[sectionKey].iconName} style={{ size: FONT_SIZE.m }} />
       </div>
     </SectionButtonStyled.Component>
   )

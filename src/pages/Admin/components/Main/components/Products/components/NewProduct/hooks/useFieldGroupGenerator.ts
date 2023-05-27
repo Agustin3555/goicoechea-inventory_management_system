@@ -1,9 +1,9 @@
-import { Sections } from '@/models'
+import { SECTION_KEYS } from '@/models'
 import { setErrorInField, setNewResourceData, store } from '@/redux'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-const sectionKey = Sections.PRODUCTS.key
+const sectionKey = SECTION_KEYS.products
 
 export const useFieldGroupGenerator = () => {
   const dispatch = useDispatch()
@@ -11,23 +11,17 @@ export const useFieldGroupGenerator = () => {
   const [items, setItems] = useState<number[]>([])
 
   const addButtonHandleClick = () => {
-    setItems([...items, index])
-    setIndex(index + 1)
+    setItems(prevItems => [...prevItems, index])
+    setIndex(prevIndex => prevIndex + 1)
   }
 
+  // TODO: test
   const removeItem = (index: number) => {
-    const itemsCopy = [...items]
-
-    itemsCopy.splice(
-      itemsCopy.findIndex(item => item === index),
-      1
-    )
-
-    setItems(itemsCopy)
+    setItems(prevItems => prevItems.filter(item => item !== index))
   }
 
   const clearField = (fieldKey: string) => {
-    if (store.getState().newResourceData[sectionKey][fieldKey] !== undefined)
+    if (store.getState().newResourceData[sectionKey]?.[fieldKey] !== undefined)
       dispatch(setNewResourceData({ sectionKey, fieldKey, value: undefined }))
 
     dispatch(setErrorInField({ sectionKey, fieldKey, error: undefined }))

@@ -1,39 +1,27 @@
 import { Icon, Separator } from '@/components'
 import { useDarkMode } from '@/hooks'
-import { setActiveViews } from '@/redux/states/activeViews.state'
-import { AppStore } from '@/redux/store'
-import { ChangeEventHandler, useState } from 'react'
+import { ChangeEventHandler } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
+import { COLOR, FONT_SIZE } from '@/styles'
 import { ViewSelectorStyled } from './ViewSelector.styled'
+import { SECTIONS, SECTION_KEYS } from '@/models'
+import { AppStore, setActiveViews } from '@/redux'
 
-const ViewSelector = ({
-  sectionKey,
-  views,
-}: {
-  sectionKey: string
-  views: {
-    id: string
-    title: string
-    iconName: string
-  }[]
-}) => {
+const ViewSelector = ({ sectionKey }: { sectionKey: SECTION_KEYS }) => {
   const darkMode = useDarkMode()
   const dispatch = useDispatch()
+  const viewSelectedKey = useSelector((store: AppStore) => store.activeViews[sectionKey])
+  const viewSelected = SECTIONS[sectionKey].views[viewSelectedKey]
 
-  const initialView = useSelector(
-    (store: AppStore) => views.filter(view => view.id === store.activeViews[sectionKey])[0]
-  )
-
-  const [selected, setSelected] = useState(initialView)
+  const views = Object.keys(SECTIONS[sectionKey].views).map(key => ({
+    viewKey: key,
+    ...SECTIONS[sectionKey].views[key],
+  }))
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = event => {
     const { id } = event.target
 
-    const value = views.filter(value => value.id === id)[0]
-
-    dispatch(setActiveViews({ [sectionKey]: value.id }))
-    setSelected(value)
+    dispatch(setActiveViews({ sectionKey, viewKey: id }))
   }
 
   return (
@@ -41,28 +29,28 @@ const ViewSelector = ({
       <div className="main-container">
         <div className="selected" title="Vistas">
           <div className="group">
-            <Icon iconName={selected.iconName} style={{ size: FONT_SIZE.xs }} />
-            <span className="text">{selected.title}</span>
+            <Icon iconName={viewSelected.iconName} style={{ size: FONT_SIZE.xs }} />
+            <span className="text">{viewSelected.title}</span>
           </div>
           <Separator style={{ long: 'expanded', backgroundColor: { dark: COLOR.g_8 } }} />
           <Icon iconName="fa-solid fa-chevron-down" style={{ size: FONT_SIZE.xs }} />
         </div>
         <div className="items">
-          {views.map(value => (
-            <div className="item" key={value.id}>
-              <label htmlFor={value.id} />
+          {views.map(item => (
+            <div className="item" key={item.viewKey}>
+              <label htmlFor={item.viewKey} />
               <input
                 className="input"
                 type="radio"
                 name="view"
-                id={value.id}
-                title={value.title}
-                checked={selected.id === value.id}
+                id={item.viewKey}
+                title={item.title}
+                checked={viewSelectedKey === item.viewKey}
                 onChange={handleChange}
               />
               <div className="fake">
-                <Icon iconName={value.iconName} style={{ size: FONT_SIZE.xs }} />
-                <span className="text">{value.title}</span>
+                <Icon iconName={item.iconName} style={{ size: FONT_SIZE.xs }} />
+                <span className="text">{item.title}</span>
                 <div className="separation" />
               </div>
             </div>

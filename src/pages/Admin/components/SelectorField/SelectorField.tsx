@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { ErrorList, FieldName } from '..'
 import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
-import { AppError } from '@/tools'
+import { AppError, ResourceAction } from '@/tools'
 import { css } from 'styled-components'
 import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
 import {
@@ -15,29 +15,30 @@ import {
   reorderBySearch,
   requiredValidation,
 } from '../../tools'
-import { useSectionDependency, useValidateInput } from '../../hooks'
+import { FieldDependency, useDependency, useValidateInput } from '../../hooks'
 import { SelectorFieldStyled } from './SelectorField.styled'
+import { SECTION_KEYS } from '@/models'
 
 const SelectorField = ({
   action,
   sectionKey,
-  dependentSectionKey,
+  sectionDependency = [],
   fieldKey,
+  fieldDependency = [],
   title,
   required,
+  label = false,
   style,
   loadOptions,
 }: {
-  action: ActionCreatorWithPayload<{
-    sectionKey: string
-    fieldKey: string
-    value: any
-  }>
-  sectionKey: string
-  dependentSectionKey: string
+  action: ActionCreatorWithPayload<ResourceAction>
+  sectionKey: SECTION_KEYS
+  sectionDependency?: SECTION_KEYS[]
   fieldKey: string
+  fieldDependency?: FieldDependency
   title: string
   required?: boolean
+  label?: boolean
   style?: SelectorFieldStyled.Props
   loadOptions: () => Promise<AppError | Option[]>
 }) => {
@@ -50,13 +51,15 @@ const SelectorField = ({
   const [selectedOption, setSelectedOption] = useState<Option>()
   // TODO: iniciar con el valor del state de Redux
   const [inputValue, setInputValue] = useState('')
+
   const { errors } = useValidateInput({
     inputValue,
     validations: required ? [requiredValidation] : undefined,
     sectionKey,
     fieldKey,
   })
-  useSectionDependency(setOptions, dependentSectionKey)
+
+  // useDependency({ setOptions, sectionKey, sectionDependency, fieldDependency })
 
   const handleEnter = async () => {
     setSelecting(true)

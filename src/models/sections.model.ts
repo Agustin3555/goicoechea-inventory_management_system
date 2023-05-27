@@ -1,120 +1,122 @@
-export const Sections = {
-  SALES: {
-    key: 'sales',
+export enum SECTION_KEYS {
+  sales = 'sales',
+  offers = 'offers',
+  products = 'products',
+  manufacturers = 'manufacturers',
+  categories = 'categories',
+  users = 'users',
+  me = 'me',
+}
+
+export enum VIEW_KEYS {
+  search = 'search',
+  new = 'new',
+  profile = 'profile',
+}
+
+export const SECTIONS: {
+  [key: string]: {
+    title: string
+    iconName: string
+    views: {
+      [key: string]: {
+        title: string
+        iconName: string
+      }
+    }
+  }
+} = {
+  [SECTION_KEYS.sales]: {
     title: 'Ventas',
     iconName: 'fa-solid fa-cash-register',
     views: {
-      SEARCH: {
-        id: 'search',
+      [VIEW_KEYS.search]: {
         title: 'Buscar',
         iconName: 'fa-solid fa-magnifying-glass',
       },
-      NEW: {
-        id: 'new',
+      [VIEW_KEYS.new]: {
         title: 'Nuevo',
         iconName: 'fa-solid fa-plus',
       },
     },
   },
-  OFFERS: {
-    key: 'offers',
+  [SECTION_KEYS.offers]: {
     title: 'Ofertas',
     iconName: 'fa-solid fa-fire',
     views: {
-      SEARCH: {
-        id: 'search',
+      [VIEW_KEYS.search]: {
         title: 'Buscar',
         iconName: 'fa-solid fa-magnifying-glass',
       },
-      NEW: {
-        id: 'new',
+      [VIEW_KEYS.new]: {
         title: 'Nuevo',
         iconName: 'fa-solid fa-plus',
       },
     },
   },
-  PRODUCTS: {
-    key: 'products',
+  [SECTION_KEYS.products]: {
     title: 'Productos',
     iconName: 'fa-solid fa-boxes-stacked',
     views: {
-      SEARCH: {
-        id: 'search',
+      [VIEW_KEYS.search]: {
         title: 'Buscar',
         iconName: 'fa-solid fa-magnifying-glass',
       },
-      NEW: {
-        id: 'new',
+      [VIEW_KEYS.new]: {
         title: 'Nuevo',
         iconName: 'fa-solid fa-plus',
       },
     },
   },
-  MANUFACTURERS: {
-    key: 'manufacturers',
+  [SECTION_KEYS.manufacturers]: {
     title: 'Fabricantes',
     iconName: 'fa-solid fa-industry',
     views: {
-      SEARCH: {
-        id: 'search',
+      [VIEW_KEYS.search]: {
         title: 'Buscar',
         iconName: 'fa-solid fa-magnifying-glass',
       },
-      NEW: {
-        id: 'new',
+      [VIEW_KEYS.new]: {
         title: 'Nuevo',
         iconName: 'fa-solid fa-plus',
       },
     },
   },
-  CATEGORIES: {
-    key: 'categories',
+  [SECTION_KEYS.categories]: {
     title: 'Categorías',
     iconName: 'fa-solid fa-sitemap',
     views: {
-      SEARCH: {
-        id: 'search',
+      [VIEW_KEYS.search]: {
         title: 'Buscar',
         iconName: 'fa-solid fa-magnifying-glass',
       },
-      NEW: {
-        id: 'new',
+      [VIEW_KEYS.new]: {
         title: 'Nuevo',
         iconName: 'fa-solid fa-plus',
       },
     },
   },
-  USERS: {
-    key: 'users',
+  [SECTION_KEYS.users]: {
     title: 'Usuarios',
     iconName: 'fa-solid fa-users',
     views: {
-      SEARCH: {
-        id: 'search',
+      [VIEW_KEYS.search]: {
         title: 'Buscar',
         iconName: 'fa-solid fa-magnifying-glass',
       },
-      NEW: {
-        id: 'new',
+      [VIEW_KEYS.new]: {
         title: 'Nuevo',
         iconName: 'fa-solid fa-plus',
       },
     },
   },
-  ME: {
-    key: 'me',
+  [SECTION_KEYS.me]: {
     title: 'Mi cuenta',
     iconName: 'fa-solid fa-user',
     views: {
-      SEARCH: {
-        id: 'search',
+      [VIEW_KEYS.profile]: {
         title: 'Buscar',
         iconName: 'fa-solid fa-magnifying-glass',
-      },
-      NEW: {
-        id: 'new',
-        title: 'Nuevo',
-        iconName: 'fa-solid fa-plus',
       },
     },
   },

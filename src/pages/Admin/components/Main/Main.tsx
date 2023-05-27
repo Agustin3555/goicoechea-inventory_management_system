@@ -1,28 +1,23 @@
 import { useDarkMode } from '@/hooks'
-import { Sections } from '@/models'
+import { SECTION_KEYS } from '@/models'
 import { AppStore } from '@/redux/store'
-import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { Categories, Manufacturers, Me, Offers, Products, Sales, Users } from './components'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { MainStyled } from './Main.styled'
 
+const COMPONENTS = {
+  [SECTION_KEYS.sales]: <Sales />,
+  [SECTION_KEYS.offers]: <Offers />,
+  [SECTION_KEYS.products]: <Products />,
+  [SECTION_KEYS.manufacturers]: <Manufacturers />,
+  [SECTION_KEYS.categories]: <Categories />,
+  [SECTION_KEYS.users]: <Users />,
+  [SECTION_KEYS.me]: <Me />,
+}
+
 const Main = () => {
   const darkMode = useDarkMode()
-
-  const sections = useMemo(
-    () => ({
-      [Sections.SALES.key]: <Sales />,
-      [Sections.OFFERS.key]: <Offers />,
-      [Sections.PRODUCTS.key]: <Products />,
-      [Sections.MANUFACTURERS.key]: <Manufacturers />,
-      [Sections.CATEGORIES.key]: <Categories />,
-      [Sections.USERS.key]: <Users />,
-      [Sections.ME.key]: <Me />,
-    }),
-    []
-  )
-
   const sectionActiveState = useSelector((store: AppStore) => store.sectionActive)
 
   return (
@@ -36,7 +31,7 @@ const Main = () => {
               node.addEventListener('transitionend', done, false)
             }
           >
-            <div className="animation-container">{sections[sectionActiveState]}</div>
+            <div className="animation-container">{COMPONENTS[sectionActiveState]}</div>
           </CSSTransition>
         </SwitchTransition>
       </div>

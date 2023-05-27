@@ -7,27 +7,18 @@ import { ToggleNav, ToggleRightPanel, ViewSelector } from './components'
 import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
 import { SectionStyled } from './Section.styled'
 import { css } from 'styled-components'
+import { SECTIONS, SECTION_KEYS } from '@/models'
 
 const Section = ({
-  id,
-  title,
-  iconName,
+  sectionKey,
   views,
 }: {
-  id: string
-  title: string
-  iconName: string
-  views: {
-    id: string
-    title: string
-    iconName: string
-    component: JSX.Element[] | JSX.Element
-  }[]
+  sectionKey: SECTION_KEYS
+  views: { [key: string]: JSX.Element }
 }) => {
   const darkMode = useDarkMode()
-  const activeView = useSelector(
-    (store: AppStore) => views.filter(view => view.id === store.activeViews[id])[0]
-  )
+  const activeViewKey = useSelector((store: AppStore) => store.activeViews[sectionKey])
+  const section = SECTIONS[sectionKey]
 
   return (
     <SectionStyled.Component p={SectionStyled.adapter(darkMode)}>
@@ -39,10 +30,10 @@ const Section = ({
           />
         </div>
         <div className="icon-container">
-          <Icon iconName={iconName} style={{ size: FONT_SIZE.s }} />
+          <Icon iconName={section.iconName} style={{ size: FONT_SIZE.s }} />
         </div>
-        <h1 className="title">{title}</h1>
-        <ViewSelector sectionKey={id} views={views} />
+        <h1 className="title">{section.title}</h1>
+        <ViewSelector sectionKey={sectionKey} />
         <div className="separator-container">
           <Separator
             style={{ long: NOT_FONT_SIZE.xs, backgroundColor: { dark: COLOR.g_8 } }}
@@ -63,11 +54,11 @@ const Section = ({
       />
       <SwitchTransition>
         <CSSTransition
-          key={activeView.id}
+          key={activeViewKey}
           classNames="fade"
           addEndListener={(node, done) => node.addEventListener('transitionend', done, false)}
         >
-          <div className="animation-container">{activeView.component}</div>
+          <div className="animation-container">{views[activeViewKey]}</div>
         </CSSTransition>
       </SwitchTransition>
     </SectionStyled.Component>

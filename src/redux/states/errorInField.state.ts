@@ -1,36 +1,33 @@
-import { Sections } from '@/models/sections.model'
+import { SECTION_KEYS } from '@/models/sections.model'
+import { getDeepCopy } from '@/tools'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+type Error = undefined | boolean
+
 export interface SetErrorInFieldAction {
-  sectionKey: string
+  sectionKey: SECTION_KEYS
   fieldKey: string
-  error: undefined | boolean
+  error: Error
 }
 
 export interface ErrorInFieldState {
-  [key: string]: { [key: string]: any }
-}
-
-const initialState: ErrorInFieldState = {
-  [Sections.SALES.key]: {},
-  [Sections.OFFERS.key]: {},
-  [Sections.PRODUCTS.key]: {},
-  [Sections.MANUFACTURERS.key]: {},
-  [Sections.CATEGORIES.key]: {},
-  [Sections.USERS.key]: {},
+  [key: string]: { [key: string]: Error }
 }
 
 export const errorInFieldSlice = createSlice({
   name: 'errorInField',
-  initialState,
+  initialState: {} as ErrorInFieldState,
   reducers: {
     setErrorInField: (state, action: PayloadAction<SetErrorInFieldAction>) => {
       const { sectionKey, fieldKey, error } = action.payload
-      const stateCloned = JSON.parse(JSON.stringify(state))
+      const stateCopy = getDeepCopy(state)
 
-      stateCloned[sectionKey][fieldKey] = error
+      // Inicializar como objeto vacío si no existe
+      if (!stateCopy[sectionKey]) stateCopy[sectionKey] = {}
 
-      return stateCloned
+      stateCopy[sectionKey][fieldKey] = error
+
+      return stateCopy
     },
   },
 })

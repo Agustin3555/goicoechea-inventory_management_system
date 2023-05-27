@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux'
 import { AppStore } from '@/redux/store'
 import { ProductServices } from '@/pages/Admin/services'
 import { NOT_FONT_SIZE } from '@/styles'
+import { DEPENDENCY_TYPE } from '@/pages/Admin/hooks'
 
 const FractionFieldGroup = ({ index }: { index: number }) => {
   const keyFieldKey = useMemo(() => FractionFields.getKey(index), [])
@@ -15,9 +16,14 @@ const FractionFieldGroup = ({ index }: { index: number }) => {
   const denominatorFieldKey = useMemo(() => FractionFields.getDenominatorValue(index), [])
   const metricUnitFieldKey = useMemo(() => FractionFields.getMetricUnit(index), [])
 
-  const keyFieldState: string | undefined = useSelector(
-    (store: AppStore) => store.newResourceData[propsInCommon.sectionKey][keyFieldKey]
-  )
+  const propsInCommonCalculated = {
+    fieldDependency: [{ type: DEPENDENCY_TYPE.new, fieldKey: keyFieldKey }],
+  }
+
+  const keyFieldState = useSelector((store: AppStore) => {
+    const value = store.newResourceData[propsInCommon.sectionKey]?.[keyFieldKey]
+    return typeof value !== 'string' && value === undefined ? value : String(value)
+  })
 
   const keyLoadOptions = async () => {
     const suggestions = await ProductServices.getFractionCharSuggestions({
@@ -90,6 +96,7 @@ const FractionFieldGroup = ({ index }: { index: number }) => {
       />
       <InputSelectorField
         {...propsInCommon}
+        {...propsInCommonCalculated}
         fieldKey={numeratorFieldKey}
         title="Numerador"
         inputExtraAttrs={{
@@ -105,6 +112,7 @@ const FractionFieldGroup = ({ index }: { index: number }) => {
       />
       <InputSelectorField
         {...propsInCommon}
+        {...propsInCommonCalculated}
         fieldKey={denominatorFieldKey}
         title="Denominador"
         inputExtraAttrs={{
@@ -120,6 +128,7 @@ const FractionFieldGroup = ({ index }: { index: number }) => {
       />
       <InputSelectorField
         {...propsInCommon}
+        {...propsInCommonCalculated}
         fieldKey={metricUnitFieldKey}
         title="Unidad Métrica"
         loadOptions={metricUnitLoadOptions}

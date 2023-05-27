@@ -1,19 +1,20 @@
-import { toggleShowNav } from '@/redux/states/showNav.state'
-import { toggleShowRightPanel } from '@/redux/states/showRightPanel.state'
-import { AppStore } from '@/redux/store'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Main, Nav, RightPanel } from './components'
 import { io } from 'socket.io-client'
 import { getErrorInterpretation } from '@/tools'
 import {
+  AppStore,
   MessageType,
   clearMessageQueue,
   enqueueMessage,
   setConnection,
   tickSectionUpdate,
+  toggleShowNav,
+  toggleShowRightPanel,
 } from '@/redux'
 import { AdminStyled } from './Admin.styled'
+import { SECTIONS, SECTION_KEYS } from '@/models'
 
 const Admin = () => {
   const dispatch = useDispatch()
@@ -51,13 +52,12 @@ const Admin = () => {
       if (serverConnectedState) dispatch(setConnection(false))
     })
 
-    socket.on('updatedSection', (section: string) => {
+    socket.on('updatedSection', (section: SECTION_KEYS) => {
       dispatch(tickSectionUpdate(section))
 
       dispatch(
         enqueueMessage({
-          // TODO: cambiar a que se muestre bien la seccion
-          text: `Se ha actualizado la sección de "${section}".`,
+          text: `Se ha actualizado la sección de "${SECTIONS[section].title}".`,
           type: MessageType.warning,
         })
       )

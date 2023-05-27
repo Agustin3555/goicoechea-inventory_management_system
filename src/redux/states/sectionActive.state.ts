@@ -1,10 +1,10 @@
-import { Sections } from '@/models/sections.model'
+import { SECTION_KEYS } from '@/models/sections.model'
 import { sectionActiveEntity } from '@/services'
-import { createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
-export type SectionActiveState = string
+export type SectionActiveState = SECTION_KEYS
 
-const defaultState: SectionActiveState = Sections.SALES.key
+const defaultState: SectionActiveState = SECTION_KEYS.sales
 
 export const sectionActiveSlice = createSlice({
   name: 'sectionActive',
@@ -18,11 +18,11 @@ export const sectionActiveSlice = createSlice({
     return defaultState
   })(),
   reducers: {
-    setSectionActive: (state, action) => {
-      const { payload } = action
+    setSectionActive: (state, action: PayloadAction<SectionActiveState>) => {
+      const { payload: newSection } = action
 
-      sectionActiveEntity.set(payload)
-      return payload
+      sectionActiveEntity.set(newSection)
+      return newSection
     },
   },
 })

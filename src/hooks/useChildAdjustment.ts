@@ -12,7 +12,10 @@ export const useChildAdjustment = () => {
     // Actualizar la altura inicial del hijo
     updateChildHeight()
 
-    // Configuramos un observer de mutación para detectar cambios en el contenido del hijo
+    /*
+      Configuramos un observer de mutación para detectar cambios en el contenido del
+      hijo
+    */
     const observer = new MutationObserver(updateChildHeight)
 
     if (childRef.current)

@@ -33,7 +33,7 @@ const Login = () => {
     setFormValues({ ...formValues, [name]: value })
   }
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event: any) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async event => {
     event.preventDefault()
 
     setLoading(true)

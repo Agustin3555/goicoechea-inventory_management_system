@@ -5,8 +5,8 @@ import { ChangeEventHandler, InputHTMLAttributes, useMemo, useState } from 'reac
 import { useDispatch, useSelector } from 'react-redux'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { ErrorList, FieldName } from '..'
-import { AppError } from '@/tools'
-import { useSectionDependency, useValidateInput } from '../../hooks'
+import { AppError, ResourceAction } from '@/tools'
+import { FieldDependency, useDependency, useValidateInput } from '../../hooks'
 import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
 import {
   BLANK_SELECTION,
@@ -19,12 +19,14 @@ import {
 import { css } from 'styled-components'
 import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
 import { InputSelectorFieldStyled } from './InputSelectorField.styled'
+import { SECTION_KEYS } from '@/models'
 
 const InputSelectorField = ({
   action,
   sectionKey,
-  dependentSectionKey,
+  sectionDependency = [],
   fieldKey,
+  fieldDependency = [],
   title,
   required,
   validations,
@@ -32,14 +34,11 @@ const InputSelectorField = ({
   style,
   loadOptions,
 }: {
-  action: ActionCreatorWithPayload<{
-    sectionKey: string
-    fieldKey: string
-    value: any
-  }>
-  sectionKey: string
-  dependentSectionKey: string
+  action: ActionCreatorWithPayload<ResourceAction>
+  sectionKey: SECTION_KEYS
+  sectionDependency?: SECTION_KEYS[]
   fieldKey: string
+  fieldDependency?: FieldDependency
   title: string
   required?: boolean
   validations?: Validation[]
@@ -53,26 +52,29 @@ const InputSelectorField = ({
   const [writing, setWriting] = useState(false)
   const [selecting, setSelecting] = useState(false)
   const [options, setOptions] = useState<Option[]>([])
-  const initialValue = useSelector(
-    (store: AppStore) => store.newResourceData[sectionKey][fieldKey]
-  ) as string
-  const [inputValue, setInputValue] = useState(initialValue || '')
+
+  const initialValue = useSelector((store: AppStore) => {
+    const value = store.newResourceData[sectionKey]?.[fieldKey]
+    return typeof value !== 'string' && value === undefined ? value : String(value)
+  })
+
+  const [inputValue, setInputValue] = useState(initialValue)
+
   const finalValidations = useMemo(() => {
     if (validations || required) {
-      let v: Validation[] = []
-      if (required) v = [requiredValidation]
-      if (validations) v = [...v, ...validations]
-      return v
+      const v: Validation[] = required ? [requiredValidation] : []
+      return validations ? [...v, ...validations] : v
     }
-    return
   }, [])
+
   const { errors } = useValidateInput({
     inputValue,
     validations: finalValidations,
     sectionKey,
     fieldKey,
   })
-  useSectionDependency(setOptions, dependentSectionKey)
+
+  useDependency({ setOptions, sectionKey, sectionDependency, fieldDependency })
 
   const handleEnter = async () => {
     setSelecting(true)
@@ -103,7 +105,7 @@ const InputSelectorField = ({
     setInputValue(value)
   }
 
-  const handleInputFocus = async () => {
+  const handleInputFocus = () => {
     setWriting(true)
   }
 

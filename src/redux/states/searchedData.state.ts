@@ -1,4 +1,4 @@
-import { Sections } from '@/models/sections.model'
+import { SECTION_KEYS } from '@/models'
 import { ResourceRef } from '@/pages/Admin/tools'
 import { getDeepCopy } from '@/tools'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
@@ -23,23 +23,14 @@ export interface SearchedDataState {
   [key: string]: Item
 }
 
-const initialState: SearchedDataState = {
-  [Sections.SALES.key]: {},
-  [Sections.OFFERS.key]: {},
-  [Sections.PRODUCTS.key]: {},
-  [Sections.MANUFACTURERS.key]: {},
-  [Sections.CATEGORIES.key]: {},
-  [Sections.USERS.key]: {},
-}
-
 export const searchedDataSlice = createSlice({
   name: 'searchedData',
-  initialState,
+  initialState: {} as SearchedDataState,
   reducers: {
     setSearchedData: (
       state,
       action: PayloadAction<{
-        sectionKey: string
+        sectionKey: SECTION_KEYS
         items: ResourceRef[]
       }>
     ) => {
@@ -62,7 +53,7 @@ export const searchedDataSlice = createSlice({
     toggleSelectItem: (
       state,
       action: PayloadAction<{
-        sectionKey: string
+        sectionKey: SECTION_KEYS
         id: number
       }>
     ) => {
@@ -76,7 +67,7 @@ export const searchedDataSlice = createSlice({
     setSelectAll: (
       state,
       action: PayloadAction<{
-        sectionKey: string
+        sectionKey: SECTION_KEYS
         value: boolean
       }>
     ) => {
@@ -92,7 +83,7 @@ export const searchedDataSlice = createSlice({
     loadItemInfo: (
       state,
       action: PayloadAction<{
-        sectionKey: string
+        sectionKey: SECTION_KEYS
         id: number
         info: Info
       }>

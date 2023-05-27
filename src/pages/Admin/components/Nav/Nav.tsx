@@ -1,79 +1,42 @@
 import { ToggleDarkMode } from '@/components'
 import { useDarkMode } from '@/hooks'
-import { Sections } from '@/models'
+import { SECTION_KEYS, UserModels } from '@/models'
 import { AppStore } from '@/redux/store'
-import { exclude } from '@/tools'
-import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { SectionButton } from './components'
 import { NavStyled } from './Nav.styled'
 
-const sections = {
-  [Sections.SALES.key]: {
-    ...exclude(Sections.SALES, ['views']),
-  },
-  [Sections.OFFERS.key]: {
-    ...exclude(Sections.OFFERS, ['views']),
-  },
-  [Sections.PRODUCTS.key]: {
-    ...exclude(Sections.PRODUCTS, ['views']),
-  },
-  [Sections.MANUFACTURERS.key]: {
-    ...exclude(Sections.MANUFACTURERS, ['views']),
-  },
-  [Sections.CATEGORIES.key]: {
-    ...exclude(Sections.CATEGORIES, ['views']),
-  },
-  [Sections.USERS.key]: {
-    ...exclude(Sections.USERS, ['views']),
-  },
-  [Sections.ME.key]: {
-    ...exclude(Sections.ME, ['views']),
-  },
+// TODO: En un futuro se podria obtener esto de la API para que sea consistente con el backend
+const ALLOWED_USER_SECTIONS: { [key: string]: SECTION_KEYS[] } = {
+  [UserModels.ROLE.admin]: [
+    SECTION_KEYS.sales,
+    SECTION_KEYS.offers,
+    SECTION_KEYS.products,
+    SECTION_KEYS.manufacturers,
+    SECTION_KEYS.categories,
+    SECTION_KEYS.users,
+  ],
+  [UserModels.ROLE.employee]: [
+    SECTION_KEYS.sales,
+    SECTION_KEYS.offers,
+    SECTION_KEYS.products,
+    SECTION_KEYS.manufacturers,
+    SECTION_KEYS.categories,
+  ],
 }
-
-const adminSections = [
-  sections[Sections.SALES.key],
-  sections[Sections.OFFERS.key],
-  sections[Sections.PRODUCTS.key],
-  sections[Sections.MANUFACTURERS.key],
-  sections[Sections.CATEGORIES.key],
-  sections[Sections.USERS.key],
-]
-
-const employeeSections = [
-  sections[Sections.SALES.key],
-  sections[Sections.OFFERS.key],
-  sections[Sections.PRODUCTS.key],
-  sections[Sections.MANUFACTURERS.key],
-  sections[Sections.CATEGORIES.key],
-]
 
 const Nav = () => {
   const darkMode = useDarkMode()
   const userRole = useSelector((store: AppStore) => store.user.role)
   const showNavState = useSelector((store: AppStore) => store.showNav)
 
-  const allowedUserSections = useMemo(() => {
-    const sectionsByRole = {
-      ADMIN: adminSections,
-      EMPLOYEE: employeeSections,
-    }
-
-    return sectionsByRole[userRole]
-  }, [])
-
   return (
     <NavStyled.Component p={NavStyled.adapter(darkMode, showNavState)}>
       <nav className="top">
         <ul className="items">
-          {allowedUserSections.map(section => (
-            <li key={section.key}>
-              <SectionButton
-                id={section.key}
-                title={section.title}
-                iconName={section.iconName}
-              />
+          {ALLOWED_USER_SECTIONS[userRole].map(item => (
+            <li key={item}>
+              <SectionButton sectionKey={item} />
             </li>
           ))}
         </ul>
@@ -82,12 +45,8 @@ const Nav = () => {
         <ToggleDarkMode />
         <nav>
           <ul className="items">
-            <li key={Sections.ME.key}>
-              <SectionButton
-                id={Sections.ME.key}
-                title={Sections.ME.title}
-                iconName={Sections.ME.iconName}
-              />
+            <li key={SECTION_KEYS.me}>
+              <SectionButton sectionKey={SECTION_KEYS.me} />
             </li>
           </ul>
         </nav>

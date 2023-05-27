@@ -9,7 +9,7 @@ export const useValidateInput = ({
   sectionKey,
   fieldKey,
 }: {
-  inputValue: string
+  inputValue: number | string
   validations?: Validation[]
   sectionKey: string
   fieldKey: string

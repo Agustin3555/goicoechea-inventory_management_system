@@ -11,6 +11,7 @@ const StringFieldGroupGenerator = () => {
     <Generator title="Características por texto" handleAdd={addButtonHandleClick}>
       {items.map(index => (
         <GeneratorItem
+          key={index}
           fieldGroup={<StringFieldGroup index={index} />}
           handleRemove={() => {
             const keyFieldKey = StringFields.getKey(index)

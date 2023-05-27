@@ -1,3 +1,5 @@
+import { SECTION_KEYS } from '@/models'
+import { getDeepCopy } from '@/tools'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface UpdatesOfSectionsState {
@@ -8,15 +10,14 @@ export const updatesOfSectionsSlice = createSlice({
   name: 'updatesOfSections',
   initialState: {} as UpdatesOfSectionsState,
   reducers: {
-    tickSectionUpdate: (state, action: PayloadAction<string>) => {
-      const section = action.payload
+    tickSectionUpdate: (state, action: PayloadAction<SECTION_KEYS>) => {
+      const sectionKey = action.payload
+      const stateCopy = getDeepCopy(state)
 
-      const copy = { ...state }
+      if (stateCopy[sectionKey]) stateCopy[sectionKey]++
+      else stateCopy[sectionKey] = 1
 
-      if (copy[section]) copy[section]++
-      else copy[section] = 1
-
-      return copy
+      return stateCopy
     },
   },
 })

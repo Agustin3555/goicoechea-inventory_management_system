@@ -1,5 +1,4 @@
 import { Input } from '@/components'
-import { AppStore } from '@/redux/store'
 import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
 import { ChangeEventHandler, InputHTMLAttributes, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,8 +6,10 @@ import FieldName from '../FieldName/FieldName'
 import { useValidateInput } from '../../hooks'
 import { Validation } from '../../tools'
 import { ErrorList } from '..'
-import { NewResourceAction } from '@/redux'
 import { InputFieldStyled } from './InputField.styled'
+import { SECTION_KEYS } from '@/models'
+import { AppStore } from '@/redux'
+import { ResourceAction } from '@/tools'
 
 const InputField = ({
   action,
@@ -18,18 +19,21 @@ const InputField = ({
   validations,
   inputExtraAttrs,
 }: {
-  action: ActionCreatorWithPayload<NewResourceAction>
-  sectionKey: string
+  action: ActionCreatorWithPayload<ResourceAction>
+  sectionKey: SECTION_KEYS
   fieldKey: string
   title: string
   validations?: Validation[]
   inputExtraAttrs?: InputHTMLAttributes<HTMLInputElement>
 }) => {
   const dispatch = useDispatch()
-  const initialInputValue = useSelector(
-    (store: AppStore) => store.newResourceData[sectionKey][fieldKey]
-  ) as string
-  const [inputValue, setValue] = useState(initialInputValue || '')
+
+  const initialInputValue = useSelector((store: AppStore) => {
+    const value = store.newResourceData[sectionKey]?.[fieldKey]
+    return typeof value === 'boolean' ? '' : value ?? ''
+  })
+
+  const [inputValue, setValue] = useState(initialInputValue)
   const { errors } = useValidateInput({ inputValue, validations, sectionKey, fieldKey })
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = event => {

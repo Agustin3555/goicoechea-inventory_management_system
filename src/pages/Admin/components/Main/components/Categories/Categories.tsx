@@ -1,22 +1,14 @@
-import { Sections } from '@/models'
+import { SECTION_KEYS, VIEW_KEYS } from '@/models'
 import Section from '../Section/Section'
 
 const Categories = () => {
   return (
     <Section
-      id={Sections.CATEGORIES.key}
-      title={Sections.CATEGORIES.title}
-      iconName={Sections.CATEGORIES.iconName}
-      views={[
-        {
-          ...Sections.CATEGORIES.views.SEARCH,
-          component: <div>SEARCH</div>,
-        },
-        {
-          ...Sections.CATEGORIES.views.NEW,
-          component: <div>NEW</div>,
-        },
-      ]}
+      sectionKey={SECTION_KEYS.categories}
+      views={{
+        [VIEW_KEYS.search]: <div>SEARCH</div>,
+        [VIEW_KEYS.new]: <div>NEW</div>,
+      }}
     />
   )
 }

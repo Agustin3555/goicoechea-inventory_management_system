@@ -11,6 +11,7 @@ const QuantityFieldGroupGenerator = () => {
     <Generator title="Características por cantidad" handleAdd={addButtonHandleClick}>
       {items.map(index => (
         <GeneratorItem
+          key={index}
           fieldGroup={<QuantityFieldGroup index={index} />}
           handleRemove={() => {
             const keyFieldKey = QuantityFields.getKey(index)

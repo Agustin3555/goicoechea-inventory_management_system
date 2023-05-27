@@ -1,8 +1,8 @@
-import { Sections } from '@/models'
+import { SECTION_KEYS } from '@/models'
 import { setNewResourceData } from '@/redux'
 
 export const propsInCommon = {
   action: setNewResourceData,
-  sectionKey: Sections.PRODUCTS.key,
-  dependentSectionKey: Sections.PRODUCTS.key,
+  sectionKey: SECTION_KEYS.products,
+  sectionDependency: [SECTION_KEYS.products],
 }

@@ -1,5 +1,5 @@
 export interface Validation {
-  validation: (value: any) => boolean
+  validation: (value: number | string) => boolean
   errorMsg: string
   break?: boolean
 }

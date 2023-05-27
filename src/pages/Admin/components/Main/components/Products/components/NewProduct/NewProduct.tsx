@@ -3,14 +3,14 @@ import { New } from '../../..'
 import { setNewResourceData } from '@/redux'
 import { ManufacturerServices } from '@/services'
 import { AppError } from '@/tools'
-import { Sections } from '@/models'
 import {
   FractionFieldGroupGenerator,
   QuantityFieldGroupGenerator,
   StringFieldGroupGenerator,
 } from './components'
+import { SECTION_KEYS } from '@/models'
 
-const sectionKey = Sections.PRODUCTS.key
+const sectionKey = SECTION_KEYS.products
 
 const NewProduct = () => {
   const handleSend = async () => {
@@ -26,18 +26,18 @@ const NewProduct = () => {
         title="Nombre"
         validations={[
           {
-            validation: (value: string) => value === '',
+            validation: value => value === '',
             errorMsg: 'Campo obligatorio',
             // break: true,
             break: false,
           },
           {
-            validation: (value: string) => value.includes('m'),
+            validation: value => value.includes('m'),
             errorMsg: 'No puede contener m',
             break: false,
           },
           {
-            validation: (value: string) => value.includes('n'),
+            validation: value => value.includes('n'),
             errorMsg: 'No puede contener n',
             break: false,
           },
@@ -93,7 +93,7 @@ const NewProduct = () => {
       <SelectorField
         action={setNewResourceData}
         sectionKey={sectionKey}
-        dependentSectionKey={Sections.MANUFACTURERS.key}
+        sectionDependency={[SECTION_KEYS.manufacturers]}
         fieldKey="manufacturer"
         title="Fabricante"
         required

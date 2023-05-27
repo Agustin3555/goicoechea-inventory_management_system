@@ -34,6 +34,7 @@ export namespace SinglePageOnCardStyled {
   }
 
   export const Component = styled.div<{ p: Provider }>`
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -1,4 +1,4 @@
-import { Sections } from '@/models'
+import { SECTION_KEYS } from '@/models'
 import { Search } from '../../..'
 import { AppError } from '@/tools'
 import { ProductServices } from '@/pages/Admin/services'
@@ -18,7 +18,7 @@ const SearchProduct = () => {
   }
 
   return (
-    <Search sectionKey={Sections.PRODUCTS.key} loadItems={loadItems}>
+    <Search sectionKey={SECTION_KEYS.products} loadItems={loadItems}>
       <InputEdit />
       <InputEdit />
       <InputEdit />
