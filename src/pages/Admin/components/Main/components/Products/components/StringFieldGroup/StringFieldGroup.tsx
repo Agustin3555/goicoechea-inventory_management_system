@@ -1,34 +1,34 @@
 import { InputSelectorField } from '../../../../..'
 import FieldGroup from '../FieldGroup/FieldGroup'
-import { StringFields, propsInCommon } from '../../tools'
 import { AppError } from '@/tools'
-import { css } from 'styled-components'
-import { useMemo } from 'react'
-import { AppStore } from '@/redux/store'
-import { useSelector } from 'react-redux'
 import { ProductServices } from '@/pages/Admin/services'
-import { NOT_FONT_SIZE } from '@/styles'
-import { DEPENDENCY_TYPE } from '@/pages/Admin/hooks'
+import { useGetInputValue } from '@/pages/Admin/hooks'
+import {
+  GroupField,
+  PRODUCT_FIELD_KEYS,
+  PRODUCT_STRING_CHARS_FIELD_KEYS,
+  SECTIONS,
+  SECTION_KEYS,
+} from '@/models'
 
-const StringFieldGroup = ({ index }: { index: number }) => {
-  const keyFieldKey = useMemo(() => StringFields.getKey(index), [])
-  const valueFieldKey = useMemo(() => StringFields.getValue(index), [])
-
-  const propsInCommonCalculated = {
-    fieldDependency: [{ type: DEPENDENCY_TYPE.new, fieldKey: keyFieldKey }],
-  }
-
-  const keyFieldState = useSelector((store: AppStore) => {
-    const value = store.newResourceData[propsInCommon.sectionKey]?.[keyFieldKey]
-    return typeof value !== 'string' && value === undefined ? value : String(value)
-  })
+const StringFieldGroup = ({
+  keyFieldAddress,
+  valueFieldAddress,
+}: {
+  keyFieldAddress: string
+  valueFieldAddress: string
+}) => {
+  const keyFieldValue = useGetInputValue({ storageAddress: keyFieldAddress }) as
+    | string
+    | undefined
 
   const keyLoadOptions = async () => {
     const suggestions = await ProductServices.getStringCharSuggestions({
       field: 'KEY',
     })
 
-    if (!suggestions || suggestions instanceof AppError) return suggestions as AppError
+    if (!suggestions || suggestions instanceof AppError)
+      return suggestions as AppError
 
     return suggestions.map(item => ({
       id: item as string,
@@ -38,44 +38,43 @@ const StringFieldGroup = ({ index }: { index: number }) => {
 
   const valueLoadOptions = async () => {
     const suggestions = await ProductServices.getStringCharSuggestions({
-      key: keyFieldState,
+      key: keyFieldValue as string | undefined,
       field: 'VALUE',
     })
 
-    if (!suggestions || suggestions instanceof AppError) return suggestions as AppError
+    if (!suggestions || suggestions instanceof AppError)
+      return suggestions as AppError
 
     return suggestions.map(item => ({
-      id: item as string,
-      title: item as string,
+      id: item.toString(),
+      title: item.toString(),
     }))
   }
 
   return (
     <FieldGroup>
       <InputSelectorField
-        {...propsInCommon}
-        fieldKey={keyFieldKey}
-        title="Nombre"
-        required
+        fieldData={
+          (
+            SECTIONS[SECTION_KEYS.products].fields?.[
+              PRODUCT_FIELD_KEYS.stringChars
+            ] as GroupField
+          ).fields[PRODUCT_STRING_CHARS_FIELD_KEYS.key]
+        }
+        storageAddress={keyFieldAddress}
         loadOptions={keyLoadOptions}
-        style={{
-          styled: css`
-            width: ${NOT_FONT_SIZE['3xl']};
-          `,
-        }}
       />
       <InputSelectorField
-        {...propsInCommon}
-        {...propsInCommonCalculated}
-        fieldKey={valueFieldKey}
-        title="Valor"
-        required
+        fieldData={
+          (
+            SECTIONS[SECTION_KEYS.products].fields?.[
+              PRODUCT_FIELD_KEYS.stringChars
+            ] as GroupField
+          ).fields[PRODUCT_STRING_CHARS_FIELD_KEYS.value]
+        }
+        storageAddress={valueFieldAddress}
+        fieldDependency={[keyFieldAddress]}
         loadOptions={valueLoadOptions}
-        style={{
-          styled: css`
-            width: ${NOT_FONT_SIZE['3xl']};
-          `,
-        }}
       />
     </FieldGroup>
   )

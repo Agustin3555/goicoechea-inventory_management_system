@@ -1,5 +1,5 @@
-import { ManufacturerModels } from '@/models'
 import { OutputAdapter } from '@/tools'
+import { ManufacturerModels } from '../models'
 
 export namespace ManufacturerAdapters {
   export const getAll: {

@@ -1,4 +1,4 @@
-import { SECTION_KEYS, VIEW_KEYS } from '@/models'
+import { PRODUCT_VIEW_KEYS, SECTION_KEYS } from '@/models'
 import Section from '../Section/Section'
 import { NewProduct, SearchProduct } from './components'
 
@@ -7,8 +7,8 @@ const Products = () => {
     <Section
       sectionKey={SECTION_KEYS.products}
       views={{
-        [VIEW_KEYS.search]: <SearchProduct />,
-        [VIEW_KEYS.new]: <NewProduct />,
+        [PRODUCT_VIEW_KEYS.search]: <SearchProduct />,
+        [PRODUCT_VIEW_KEYS.new]: <NewProduct />,
       }}
     />
   )

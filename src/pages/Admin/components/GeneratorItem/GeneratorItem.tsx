@@ -1,6 +1,6 @@
-import ButtonRemove from '../ButtonRemove/ButtonRemove'
+import { ButtonRemove } from './components'
 
-const GeneratorItem = ({
+const Item = ({
   fieldGroup,
   handleRemove,
 }: {
@@ -15,4 +15,4 @@ const GeneratorItem = ({
   )
 }
 
-export default GeneratorItem
+export default Item

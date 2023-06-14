@@ -10,12 +10,14 @@ import {
   colorAlphaAdapter,
   shadowAdapter,
 } from '@/styles'
+import { BRIGHT_2, DARK_2, MAIN_GAP } from '@/tools'
 
 interface NormalizedProps {
-  color: {
+  titleColor: {
     dark: Color
     bright: Color
   }
+  mainColor: Color
   backgroundColor: {
     dark: Color
     bright: Color
@@ -23,26 +25,14 @@ interface NormalizedProps {
 }
 
 interface Provider {
+  color: Value
   box: {
-    height: Value
     selector: {
-      height: Value
-      color: Value
       backgroundColor: Value
-      dataExpanded: {
-        true: {
-          height: Value
-        }
-      }
       selected: {
-        gap: Value
-        padding: Value
         input: {
-          height: Value
-          padding: Value
-          color: Value
-          borderWidth: Value
           borderColor: Value
+          color: Value
           focus: {
             borderColor: Value
           }
@@ -52,7 +42,6 @@ interface Provider {
         }
       }
       animationContainer: {
-        height: Value
         items: {
           scrollbarThumb: {
             backgroundColor: Value
@@ -61,16 +50,17 @@ interface Provider {
             }
           }
           item: {
-            height: Value
             input: {
               hover: {
                 fakeInput: {
                   backgroundColor: Value
                 }
               }
-            }
-            fakeInput: {
-              padding: Value
+              checked: {
+                fakeInput: {
+                  backgroundColor: Value
+                }
+              }
             }
           }
         }
@@ -85,19 +75,55 @@ const INPUT_PADDING = FONT_SIZE.xs
 const ARROW_WH = FONT_SIZE.xs
 const NUM_OF_OPTIONS_TO_SHOW = 4
 
-const boxHeight = `calc(${FONT_SIZE.xs} * 3)`
-const sumOfPaddingY = `calc(${PADDING} * 2)`
-const inputHeight = `calc(${boxHeight} - ${sumOfPaddingY})`
+const boxHeight = `calc(${MAIN_GAP} * 3)`
+const inputBorderWidth = NOT_FONT_SIZE['6xs']
+const inputHeight = `calc(${boxHeight} - ${PADDING} * 2)`
 const selectedGap = `calc((${inputHeight} - ${ARROW_WH}) / 2 + ${PADDING})`
 const selectedPadding = `${PADDING} ${selectedGap} ${PADDING} ${PADDING}`
-const inputBorderWidth = NOT_FONT_SIZE['6xs']
+
+const measurementProvider = {
+  box: {
+    height: boxHeight,
+    selector: {
+      height: boxHeight,
+      dataExpanded: {
+        true: {
+          height: `calc(${boxHeight} * ${
+            1 + NUM_OF_OPTIONS_TO_SHOW
+          } + ${boxHeight} * 0.5)`,
+        },
+      },
+      selected: {
+        gap: selectedGap,
+        padding: selectedPadding,
+        input: {
+          height: inputHeight,
+          padding: `calc(${INPUT_PADDING} - ${PADDING} - ${inputBorderWidth})`,
+          borderWidth: inputBorderWidth,
+        },
+      },
+      animationContainer: {
+        height: `calc(${boxHeight} * ${NUM_OF_OPTIONS_TO_SHOW} + ${boxHeight} * 0.5)`,
+        items: {
+          item: {
+            height: boxHeight,
+            fakeInput: {
+              padding: `0 ${INPUT_PADDING}`,
+            },
+          },
+        },
+      },
+    },
+  },
+}
 
 export namespace SelectorFieldStyled {
   export interface Props {
-    color?: {
+    titleColor?: {
       dark?: Color
       bright?: Color
     }
+    mainColor?: Color
     backgroundColor?: {
       dark?: Color
       bright?: Color
@@ -107,13 +133,14 @@ export namespace SelectorFieldStyled {
 
   export const adapter = (darkMode: boolean, style?: Props): Provider => {
     const normalizedProps: NormalizedProps = {
-      color: {
-        dark: style?.color?.dark || COLOR.g_4,
-        bright: style?.color?.bright || COLOR.g_12,
+      titleColor: {
+        dark: style?.titleColor?.dark || COLOR.g_4,
+        bright: style?.titleColor?.bright || COLOR.g_12,
       },
+      mainColor: style?.mainColor || COLOR.a,
       backgroundColor: {
-        dark: style?.backgroundColor?.dark || COLOR.g_14,
-        bright: style?.backgroundColor?.bright || COLOR.g_0,
+        dark: style?.backgroundColor?.dark || DARK_2,
+        bright: style?.backgroundColor?.bright || BRIGHT_2,
       },
     }
 
@@ -124,42 +151,31 @@ export namespace SelectorFieldStyled {
     // #endregion
 
     return {
+      color: darkMode
+        ? normalizedProps.titleColor.dark
+        : normalizedProps.titleColor.bright,
       box: {
-        height: boxHeight,
         selector: {
-          height: boxHeight,
-          color: colorAdapter(
-            darkMode ? normalizedProps.color.dark : normalizedProps.color.bright
-          ),
-          backgroundColor: colorAdapter(
-            darkMode
-              ? normalizedProps.backgroundColor.dark
-              : normalizedProps.backgroundColor.bright
-          ),
-          dataExpanded: {
-            true: {
-              height: `calc(${boxHeight} * ${
-                1 + NUM_OF_OPTIONS_TO_SHOW
-              } + ${boxHeight} * 0.5)`,
-            },
-          },
+          backgroundColor: darkMode
+            ? normalizedProps.backgroundColor.dark
+            : normalizedProps.backgroundColor.bright,
           selected: {
-            gap: selectedGap,
-            padding: selectedPadding,
             input: {
-              height: inputHeight,
-              padding: `calc(${INPUT_PADDING} - ${PADDING} - ${inputBorderWidth})`,
-              color: inputColor,
-              borderWidth: inputBorderWidth,
               borderColor: colorAlphaAdapter(
-                darkMode ? normalizedProps.color.dark : normalizedProps.color.bright,
-                0
+                darkMode
+                  ? normalizedProps.backgroundColor.dark
+                  : normalizedProps.backgroundColor.bright,
+                0,
+                darkMode ? 2 : -2
               ),
+              color: inputColor,
               focus: {
                 borderColor: colorAlphaAdapter(
-                  darkMode ? normalizedProps.color.dark : normalizedProps.color.bright,
+                  darkMode
+                    ? normalizedProps.backgroundColor.dark
+                    : normalizedProps.backgroundColor.bright,
                   1,
-                  darkMode ? -8 : 10
+                  darkMode ? 2 : -2
                 ),
               },
               placeholder: {
@@ -168,7 +184,6 @@ export namespace SelectorFieldStyled {
             },
           },
           animationContainer: {
-            height: `calc(${boxHeight} * ${NUM_OF_OPTIONS_TO_SHOW} + ${boxHeight} * 0.5)`,
             items: {
               scrollbarThumb: {
                 backgroundColor: colorAdapter(
@@ -187,16 +202,17 @@ export namespace SelectorFieldStyled {
                 },
               },
               item: {
-                height: boxHeight,
                 input: {
                   hover: {
                     fakeInput: {
-                      backgroundColor: colorAdapter(darkMode ? COLOR.g_13 : COLOR.g_1),
+                      backgroundColor: darkMode ? COLOR.g_13 : COLOR.g_1,
                     },
                   },
-                },
-                fakeInput: {
-                  padding: `0 ${INPUT_PADDING}`,
+                  checked: {
+                    fakeInput: {
+                      backgroundColor: normalizedProps.mainColor,
+                    },
+                  },
                 },
               },
             },
@@ -210,18 +226,18 @@ export namespace SelectorFieldStyled {
   export const Component = styled.div<{ p: Provider }>`
     display: flex;
     flex-direction: column;
-    gap: ${FONT_SIZE.xs};
+    gap: ${MAIN_GAP};
+    color: ${({ p }) => p.color};
 
     .box {
-      height: ${({ p }) => p.box.height};
+      height: ${measurementProvider.box.height};
 
       .selector {
         position: relative;
         display: flex;
         flex-direction: column;
-        height: ${({ p }) => p.box.selector.height};
+        height: ${measurementProvider.box.selector.height};
         border-radius: ${NOT_FONT_SIZE['4xs']};
-        color: ${({ p }) => p.box.selector.color};
         background-color: ${({ p }) => p.box.selector.backgroundColor};
         overflow: hidden;
         transition: box-shadow ${MICROINTERACTION.s} ease-out,
@@ -235,16 +251,17 @@ export namespace SelectorFieldStyled {
         .selected {
           display: flex;
           align-items: center;
-          gap: ${({ p }) => p.box.selector.selected.gap};
-          padding: ${({ p }) => p.box.selector.selected.padding};
+          gap: ${measurementProvider.box.selector.selected.gap};
+          padding: ${measurementProvider.box.selector.selected.padding};
 
           .input {
             width: 100%;
-            height: ${({ p }) => p.box.selector.selected.input.height};
-            padding: ${({ p }) => p.box.selector.selected.input.padding};
+            height: ${measurementProvider.box.selector.selected.input.height};
+            padding: ${measurementProvider.box.selector.selected.input.padding};
             color: ${({ p }) => p.box.selector.selected.input.color};
             background-color: transparent;
-            border-width: ${({ p }) => p.box.selector.selected.input.borderWidth};
+            border-width: ${measurementProvider.box.selector.selected.input
+              .borderWidth};
             border-style: solid;
             border-color: ${({ p }) => p.box.selector.selected.input.borderColor};
             border-radius: ${NOT_FONT_SIZE['5xs']};
@@ -252,7 +269,8 @@ export namespace SelectorFieldStyled {
               border-color ${MICROINTERACTION.s} ease-out;
 
             :focus {
-              border-color: ${({ p }) => p.box.selector.selected.input.focus.borderColor};
+              border-color: ${({ p }) =>
+                p.box.selector.selected.input.focus.borderColor};
               outline: none;
             }
 
@@ -279,7 +297,7 @@ export namespace SelectorFieldStyled {
           display: flex;
           justify-content: center;
           align-items: center;
-          height: ${({ p }) => p.box.selector.animationContainer.height};
+          height: ${measurementProvider.box.selector.animationContainer.height};
           transition: opacity ${MICROINTERACTION.xs} ease-out;
 
           .spinner-container {
@@ -296,7 +314,8 @@ export namespace SelectorFieldStyled {
 
             ::-webkit-scrollbar-thumb {
               background-color: ${({ p }) =>
-                p.box.selector.animationContainer.items.scrollbarThumb.backgroundColor};
+                p.box.selector.animationContainer.items.scrollbarThumb
+                  .backgroundColor};
 
               :hover {
                 background-color: ${({ p }) =>
@@ -317,8 +336,8 @@ export namespace SelectorFieldStyled {
 
                 :hover + .fake-input {
                   background-color: ${({ p }) =>
-                    p.box.selector.animationContainer.items.item.input.hover.fakeInput
-                      .backgroundColor};
+                    p.box.selector.animationContainer.items.item.input.hover
+                      .fakeInput.backgroundColor};
                 }
 
                 :checked {
@@ -334,9 +353,10 @@ export namespace SelectorFieldStyled {
               .fake-input {
                 display: flex;
                 align-items: center;
-                height: ${({ p }) => p.box.selector.animationContainer.items.item.height};
-                padding: ${({ p }) =>
-                  p.box.selector.animationContainer.items.item.fakeInput.padding};
+                height: ${measurementProvider.box.selector.animationContainer.items
+                  .item.height};
+                padding: ${measurementProvider.box.selector.animationContainer.items
+                  .item.fakeInput.padding};
                 transition: color ${MICROINTERACTION.s} ease-out,
                   background-color ${MICROINTERACTION.s} ease-out;
               }
@@ -363,7 +383,7 @@ export namespace SelectorFieldStyled {
 
       .selector[data-expanded='true'] {
         z-index: 1;
-        height: ${({ p }) => p.box.selector.dataExpanded.true.height};
+        height: ${measurementProvider.box.selector.dataExpanded.true.height};
         box-shadow: ${shadowAdapter(2)};
       }
     }

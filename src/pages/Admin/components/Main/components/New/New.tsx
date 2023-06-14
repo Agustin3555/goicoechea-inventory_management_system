@@ -1,5 +1,4 @@
 import { useDarkMode } from '@/hooks'
-import { useDispatch } from 'react-redux'
 import { NewStyled } from './New.styled'
 import { ConfirmationButton, Icon } from '@/components'
 import { COLOR } from '@/styles'
@@ -14,7 +13,6 @@ const New = ({
   children: JSX.Element | JSX.Element[]
 }) => {
   const darkMode = useDarkMode()
-  const dispatch = useDispatch()
 
   return (
     <NewStyled.Component p={NewStyled.adapter(darkMode)}>

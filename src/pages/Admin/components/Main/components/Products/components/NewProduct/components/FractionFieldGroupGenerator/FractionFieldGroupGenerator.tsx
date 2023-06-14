@@ -1,28 +1,57 @@
+import { buildAddress } from '@/pages/Admin/tools'
 import { FractionFieldGroup } from '../../..'
-import { FractionFields } from '../../../../tools'
 import { useFieldGroupGenerator } from '../../hooks'
-import Generator from '../Generator/Generator'
-import GeneratorItem from '../GeneratorItem/GeneratorItem'
+import {
+  PRODUCT_FIELD_KEYS,
+  PRODUCT_FRACTION_CHARS_FIELD_KEYS,
+  PRODUCT_VIEW_KEYS,
+  SECTION_KEYS,
+} from '@/models'
+import { Generator, GeneratorItem } from '@/pages/Admin/components'
+
+const getFieldAddress = (index: number, fieldKey: string) =>
+  buildAddress(
+    SECTION_KEYS.products,
+    PRODUCT_VIEW_KEYS.new,
+    PRODUCT_FIELD_KEYS.fractionChars,
+    index,
+    fieldKey
+  )
+
+const getKeyFieldAddress = (index: number) =>
+  getFieldAddress(index, PRODUCT_FRACTION_CHARS_FIELD_KEYS.key)
+
+const getNumeratorFieldAddress = (index: number) =>
+  getFieldAddress(index, PRODUCT_FRACTION_CHARS_FIELD_KEYS.numeratorValue)
+
+const getDenominatorFieldAddress = (index: number) =>
+  getFieldAddress(index, PRODUCT_FRACTION_CHARS_FIELD_KEYS.denominatorValue)
+
+const getUnitFieldAddress = (index: number) =>
+  getFieldAddress(index, PRODUCT_FRACTION_CHARS_FIELD_KEYS.unit)
 
 const FractionFieldGroupGenerator = () => {
-  const { items, addButtonHandleClick, clearField, removeItem } = useFieldGroupGenerator()
+  const { items, addButtonHandleClick, clearField, removeItem } =
+    useFieldGroupGenerator()
 
   return (
     <Generator title="Características por fracción" handleAdd={addButtonHandleClick}>
       {items.map(index => (
         <GeneratorItem
           key={index}
-          fieldGroup={<FractionFieldGroup index={index} />}
+          fieldGroup={
+            <FractionFieldGroup
+              keyFieldAddress={getKeyFieldAddress(index)}
+              numeratorFieldAddress={getNumeratorFieldAddress(index)}
+              denominatorFieldAddress={getDenominatorFieldAddress(index)}
+              unitFieldAddress={getUnitFieldAddress(index)}
+            />
+          }
           handleRemove={() => {
-            const keyFieldKey = FractionFields.getKey(index)
-            const numeratorValueFieldKey = FractionFields.getNumeratorValue(index)
-            const denominatorValueFieldKey = FractionFields.getDenominatorValue(index)
-            const metricUnitFieldKey = FractionFields.getMetricUnit(index)
-
-            clearField(keyFieldKey)
-            clearField(numeratorValueFieldKey)
-            clearField(denominatorValueFieldKey)
-            clearField(metricUnitFieldKey)
+            clearField(getKeyFieldAddress(index))
+            clearField(getNumeratorFieldAddress(index))
+            clearField(getDenominatorFieldAddress(index))
+            clearField(getUnitFieldAddress(index))
 
             removeItem(index)
           }}

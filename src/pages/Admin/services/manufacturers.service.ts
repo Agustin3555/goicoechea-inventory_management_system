@@ -1,5 +1,5 @@
-import { ManufacturerAdapters } from '@/adapters'
 import { AppError, privateInstance } from '@/tools'
+import { ManufacturerAdapters } from '../adapters'
 
 const collection = '/manufacturers'
 

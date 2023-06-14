@@ -1,5 +1,12 @@
 import styled, { FlattenSimpleInterpolation } from 'styled-components'
-import { COLOR, FONT_SIZE, MICROINTERACTION, NOT_FONT_SIZE, shadowAdapter } from '@/styles'
+import {
+  COLOR,
+  FONT_SIZE,
+  MICROINTERACTION,
+  NOT_FONT_SIZE,
+  shadowAdapter,
+} from '@/styles'
+import { MAIN_GAP } from '@/tools'
 
 interface Provider {
   styled?: FlattenSimpleInterpolation
@@ -26,20 +33,22 @@ export namespace SnackbarStyled {
     .animation-container {
       display: flex;
       justify-content: center;
-      transition: opacity ${MICROINTERACTION.m} ease, transform ${MICROINTERACTION.m} ease-out;
+      transition: opacity ${MICROINTERACTION.m} ease,
+        transform ${MICROINTERACTION.m} ease-out;
 
       .message {
         position: fixed;
         bottom: 0;
         display: flex;
         align-items: center;
-        gap: ${FONT_SIZE.m};
-        margin: ${FONT_SIZE.xs};
+        gap: ${FONT_SIZE.s};
+        margin: ${MAIN_GAP};
         padding: ${FONT_SIZE.s};
         border-radius: ${NOT_FONT_SIZE['3xs']};
         box-shadow: ${shadowAdapter(3)};
 
         .text {
+          font-size: ${FONT_SIZE.s};
           line-height: calc(${FONT_SIZE.s} * 1.5);
         }
 

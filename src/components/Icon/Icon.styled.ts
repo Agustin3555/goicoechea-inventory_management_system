@@ -1,8 +1,8 @@
 import styled, { FlattenSimpleInterpolation } from 'styled-components'
-import { FONT_SIZE, FontSize, MICROINTERACTION, Value } from '@/styles'
+import { FONT_SIZE, FontSize, MICROINTERACTION, NotFontSize, Value } from '@/styles'
 
 interface NormalizedProps {
-  size: FontSize
+  size: FontSize | NotFontSize
 }
 
 interface Provider {
@@ -16,7 +16,7 @@ interface Provider {
 
 export namespace IconStyled {
   export interface Props {
-    size?: FontSize
+    size?: FontSize | NotFontSize
     styled?: FlattenSimpleInterpolation
   }
 

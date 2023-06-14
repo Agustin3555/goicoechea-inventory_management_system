@@ -3,8 +3,6 @@ import {
   ActiveViewsState,
   activeViewsReducer,
   darkModeReducer,
-  NewResourceDataState,
-  newResourceDataReducer,
   SearchedDataState,
   searchedDataReducer,
   sectionActiveReducer,
@@ -22,8 +20,10 @@ import {
   ShowRightPanelState,
   UserState,
   SectionActiveState,
-  ErrorInFieldState,
-  errorInFieldReducer,
+  InputValuesState,
+  inputValuesReducer,
+  InputErrorsState,
+  inputErrorsReducer,
 } from './states'
 
 export interface AppStore {
@@ -37,8 +37,8 @@ export interface AppStore {
   snackbar: SnackbarState
   updatesOfSections: UpdatesOfSectionsState
   searchedData: SearchedDataState
-  newResourceData: NewResourceDataState
-  errorInField: ErrorInFieldState
+  inputValues: InputValuesState
+  inputErrors: InputErrorsState
 }
 
 export default configureStore<AppStore>({
@@ -53,7 +53,7 @@ export default configureStore<AppStore>({
     snackbar: snackbarReducer,
     updatesOfSections: updatesOfSectionsReducer,
     searchedData: searchedDataReducer,
-    newResourceData: newResourceDataReducer,
-    errorInField: errorInFieldReducer,
+    inputValues: inputValuesReducer,
+    inputErrors: inputErrorsReducer,
   },
 })

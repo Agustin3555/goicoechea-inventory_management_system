@@ -1,43 +1,64 @@
 import { useEffect, useState } from 'react'
 import { Validation } from '../tools'
 import { useDispatch } from 'react-redux'
-import { setErrorInField } from '@/redux'
+import { setInputError } from '@/redux'
+
+// Regla de validación para campos obligatorios
+const requiredValidation: Validation = {
+  validation: value => value === undefined || value === '',
+  errorMsg: 'Campo obligatorio',
+  break: true,
+}
 
 export const useValidateInput = ({
+  storageAddress,
+  validations = [],
+  optional,
   inputValue,
-  validations,
-  sectionKey,
-  fieldKey,
 }: {
-  inputValue: number | string
+  storageAddress: string
   validations?: Validation[]
-  sectionKey: string
-  fieldKey: string
+  optional: boolean
+  inputValue?: number | string
 }) => {
   const dispatch = useDispatch()
   const [errors, setErrors] = useState<string[]>([])
+  const [hasExecutedEffect, setHasExecutedEffect] = useState(false)
+
+  validations = optional ? validations : [requiredValidation, ...validations]
 
   useEffect(() => {
-    if (validations) {
+    if (validations.length !== 0) {
       let accumulatedErrors: string[] = []
 
+      // Se recorren las reglas de validación y se acumulan los errores encontrados
       for (let i = 0; i < validations.length; i++) {
-        const item = validations[i]
+        const validationRule = validations[i]
 
-        if (item.validation(inputValue)) {
-          accumulatedErrors = [...accumulatedErrors, `• ${item.errorMsg}`]
+        if (validationRule.validation(inputValue)) {
+          accumulatedErrors = [...accumulatedErrors, `• ${validationRule.errorMsg}`]
 
-          if (item.break) break
+          if (validationRule.break) break
         }
       }
 
       setErrors(accumulatedErrors)
+
+      // Si el efecto no se ha ejecutado antes, se realiza la acción correspondiente
+      if (!hasExecutedEffect) {
+        const hasErrors = accumulatedErrors.length !== 0
+        dispatch(setInputError({ storageAddress, error: hasErrors }))
+
+        setHasExecutedEffect(true)
+      }
     }
   }, [inputValue])
 
-  useEffect(() => {
-    if (errors) dispatch(setErrorInField({ sectionKey, fieldKey, error: errors.length !== 0 }))
-  }, [errors])
+  // Función para notificar los errores manualmente
+  const notifyError = () => {
+    const hasErrors = errors.length !== 0
+    dispatch(setInputError({ storageAddress, error: hasErrors }))
+  }
 
-  return { errors }
+  return { errors, notifyError }
 }

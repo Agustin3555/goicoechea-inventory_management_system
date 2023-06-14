@@ -1,7 +1,6 @@
 import { ConfirmationButton, Icon } from '@/components'
 import { ItemPropertyStyled } from './ItemProperty.styled'
 import { useChildAdjustment, useDarkMode } from '@/hooks'
-import FieldName from '../FieldName/FieldName'
 import { css } from 'styled-components'
 import { CheckboxButton } from '../Main/components/Search/components'
 import { COLOR, FONT_SIZE } from '@/styles'
@@ -20,7 +19,7 @@ const ItemProperty = ({
 
   return (
     <ItemPropertyStyled.Component p={ItemPropertyStyled.adapter(darkMode)}>
-      <FieldName title={name} />
+      {name}
       <div className="top">
         <div className="value">{value}</div>
         <CheckboxButton

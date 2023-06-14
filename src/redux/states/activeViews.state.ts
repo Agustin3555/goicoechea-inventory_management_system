@@ -1,19 +1,28 @@
-import { SECTION_KEYS, VIEW_KEYS } from '@/models/sections.model'
+import {
+  CATEGORY_VIEW_KEYS,
+  MANUFACTURER_VIEW_KEYS,
+  ME_VIEW_KEYS,
+  OFFER_VIEW_KEYS,
+  PRODUCT_VIEW_KEYS,
+  SALE_VIEW_KEYS,
+  SECTION_KEYS,
+  USER_VIEW_KEYS,
+} from '@/models/sections.model'
 import { activeViewsEntity } from '@/services'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface ActiveViewsState {
-  [key: string]: VIEW_KEYS
+  [key: string]: string
 }
 
 const defaultState: ActiveViewsState = {
-  [SECTION_KEYS.sales]: VIEW_KEYS.search,
-  [SECTION_KEYS.offers]: VIEW_KEYS.search,
-  [SECTION_KEYS.products]: VIEW_KEYS.search,
-  [SECTION_KEYS.manufacturers]: VIEW_KEYS.search,
-  [SECTION_KEYS.categories]: VIEW_KEYS.search,
-  [SECTION_KEYS.users]: VIEW_KEYS.search,
-  [SECTION_KEYS.me]: VIEW_KEYS.profile,
+  [SECTION_KEYS.sales]: SALE_VIEW_KEYS.view,
+  [SECTION_KEYS.offers]: OFFER_VIEW_KEYS.view,
+  [SECTION_KEYS.products]: PRODUCT_VIEW_KEYS.search,
+  [SECTION_KEYS.manufacturers]: MANUFACTURER_VIEW_KEYS.view,
+  [SECTION_KEYS.categories]: CATEGORY_VIEW_KEYS.view,
+  [SECTION_KEYS.users]: USER_VIEW_KEYS.view,
+  [SECTION_KEYS.me]: ME_VIEW_KEYS.profile,
 }
 
 export const activeViewsSlice = createSlice({
@@ -30,7 +39,7 @@ export const activeViewsSlice = createSlice({
   reducers: {
     setActiveViews: (
       state,
-      action: PayloadAction<{ sectionKey: SECTION_KEYS; viewKey: VIEW_KEYS }>
+      action: PayloadAction<{ sectionKey: SECTION_KEYS; viewKey: string }>
     ) => {
       const { sectionKey, viewKey } = action.payload
       const newState = { ...state, ...{ [sectionKey]: viewKey } }

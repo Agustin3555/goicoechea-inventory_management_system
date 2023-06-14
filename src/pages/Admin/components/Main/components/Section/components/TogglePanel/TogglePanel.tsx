@@ -42,7 +42,7 @@ const TogglePanel = ({
               `,
             }}
           />
-          {text}
+          <span className="text">{text}</span>
         </div>
       </Button>
     </TogglePanelStyled.Component>

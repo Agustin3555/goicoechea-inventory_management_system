@@ -13,6 +13,7 @@ type Long = 'expanded' | NotFontSize | FontSize
 
 interface NormalizedProps {
   long: Long
+  thickness: NotFontSize | FontSize
   invert: boolean
   backgroundColor: {
     dark: Color
@@ -30,6 +31,7 @@ interface Provider {
 export namespace SeparatorStyled {
   export interface Props {
     long?: Long
+    thickness?: NotFontSize | FontSize
     invert?: boolean
     backgroundColor: {
       dark: Color
@@ -41,6 +43,7 @@ export namespace SeparatorStyled {
   export const adapter = (darkMode: boolean, style: Props): Provider => {
     const normalizedProps: NormalizedProps = {
       long: style.long || 'expanded',
+      thickness: style.thickness || NOT_FONT_SIZE['6xs'],
       invert: style.invert || false,
       backgroundColor: {
         dark: style.backgroundColor.dark,
@@ -50,14 +53,13 @@ export namespace SeparatorStyled {
 
     // #region Auxiliary vars
 
-    const thickness = NOT_FONT_SIZE['6xs']
     const long = normalizedProps.long === 'expanded' ? '100%' : normalizedProps.long
 
     // #endregion
 
     return {
-      width: normalizedProps.invert ? long : thickness,
-      height: normalizedProps.invert ? thickness : long,
+      width: normalizedProps.invert ? long : normalizedProps.thickness,
+      height: normalizedProps.invert ? normalizedProps.thickness : long,
       backgroundColor: colorAdapter(
         darkMode
           ? normalizedProps.backgroundColor.dark

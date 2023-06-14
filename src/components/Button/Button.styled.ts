@@ -6,11 +6,35 @@ import {
   FONT_SIZE,
   FontSize,
   MICROINTERACTION,
-  NOT_FONT_SIZE,
   NotFontSize,
   shadowAdapter,
   Value,
 } from '@/styles'
+import { MAIN_BORDER_RADIUS } from '@/tools'
+
+interface NormalizedProps {
+  padding: FontSize
+  tight: boolean
+  borderRadius: NotFontSize
+  backgroundColor: {
+    dark: Color
+    bright: Color
+  }
+  elevation: Elevation
+}
+
+interface Provider {
+  padding: Value
+  borderRadius: Value
+  backgroundColor: Value
+  hover: {
+    boxShadow: Value
+  }
+  active: {
+    backgroundColor: Value
+  }
+  styled?: FlattenSimpleInterpolation
+}
 
 export namespace ButtonStyled {
   export interface Props {
@@ -25,35 +49,11 @@ export namespace ButtonStyled {
     styled?: FlattenSimpleInterpolation
   }
 
-  interface NormalizedProps {
-    padding: FontSize
-    tight: boolean
-    borderRadius: NotFontSize
-    backgroundColor: {
-      dark: Color
-      bright: Color
-    }
-    elevation: Elevation
-  }
-
-  interface Provider {
-    padding: Value
-    borderRadius: Value
-    backgroundColor: Value
-    hover: {
-      boxShadow: Value
-    }
-    active: {
-      backgroundColor: Value
-    }
-    styled?: FlattenSimpleInterpolation
-  }
-
   export const adapter = (style: Props, darkMode: boolean): Provider => {
     const normalizedProps: NormalizedProps = {
       padding: style.padding || FONT_SIZE.s,
       tight: style.tight || false,
-      borderRadius: style.borderRadius || NOT_FONT_SIZE['4xs'],
+      borderRadius: style.borderRadius || MAIN_BORDER_RADIUS,
       backgroundColor: {
         dark: style.backgroundColor.dark,
         bright: style.backgroundColor.bright || style.backgroundColor.dark,

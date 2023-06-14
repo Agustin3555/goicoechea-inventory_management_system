@@ -1,35 +1,36 @@
 import { InputSelectorField } from '../../../../..'
 import FieldGroup from '../FieldGroup/FieldGroup'
-import { QuantityFields, propsInCommon } from '../../tools'
 import { AppError } from '@/tools'
-import { css } from 'styled-components'
-import { useMemo } from 'react'
 import { ProductServices } from '@/pages/Admin/services'
-import { useSelector } from 'react-redux'
-import { AppStore } from '@/redux/store'
-import { NOT_FONT_SIZE } from '@/styles'
-import { DEPENDENCY_TYPE } from '@/pages/Admin/hooks'
+import { useGetInputValue } from '@/pages/Admin/hooks'
+import {
+  GroupField,
+  PRODUCT_FIELD_KEYS,
+  PRODUCT_QUANTITY_CHARS_FIELD_KEYS,
+  SECTIONS,
+  SECTION_KEYS,
+} from '@/models'
 
-const QuantityFieldGroup = ({ index }: { index: number }) => {
-  const keyFieldKey = useMemo(() => QuantityFields.getKey(index), [])
-  const valueFieldKey = useMemo(() => QuantityFields.getValue(index), [])
-  const metricUnitFieldKey = useMemo(() => QuantityFields.getMetricUnit(index), [])
-
-  const propsInCommonCalculated = {
-    fieldDependency: [{ type: DEPENDENCY_TYPE.new, fieldKey: keyFieldKey }],
-  }
-
-  const keyFieldState = useSelector((store: AppStore) => {
-    const value = store.newResourceData[propsInCommon.sectionKey]?.[keyFieldKey]
-    return typeof value !== 'string' && value === undefined ? value : String(value)
-  })
+const QuantityFieldGroup = ({
+  keyFieldAddress,
+  valueFieldAddress,
+  unitFieldAddress,
+}: {
+  keyFieldAddress: string
+  valueFieldAddress: string
+  unitFieldAddress: string
+}) => {
+  const keyFieldValue = useGetInputValue({ storageAddress: keyFieldAddress }) as
+    | string
+    | undefined
 
   const keyLoadOptions = async () => {
     const suggestions = await ProductServices.getQuantityCharSuggestions({
       field: 'KEY',
     })
 
-    if (!suggestions || suggestions instanceof AppError) return suggestions as AppError
+    if (!suggestions || suggestions instanceof AppError)
+      return suggestions as AppError
 
     return suggestions.map(item => ({
       id: item as string,
@@ -39,11 +40,12 @@ const QuantityFieldGroup = ({ index }: { index: number }) => {
 
   const valueLoadOptions = async () => {
     const suggestions = await ProductServices.getQuantityCharSuggestions({
-      key: keyFieldState,
+      key: keyFieldValue as string | undefined,
       field: 'VALUE',
     })
 
-    if (!suggestions || suggestions instanceof AppError) return suggestions as AppError
+    if (!suggestions || suggestions instanceof AppError)
+      return suggestions as AppError
 
     return suggestions.map(item => ({
       id: item.toString(),
@@ -51,13 +53,14 @@ const QuantityFieldGroup = ({ index }: { index: number }) => {
     }))
   }
 
-  const metricUnitLoadOptions = async () => {
+  const unitLoadOptions = async () => {
     const suggestions = await ProductServices.getQuantityCharSuggestions({
-      key: keyFieldState,
+      key: keyFieldValue,
       field: 'METRIC_UNIT',
     })
 
-    if (!suggestions || suggestions instanceof AppError) return suggestions as AppError
+    if (!suggestions || suggestions instanceof AppError)
+      return suggestions as AppError
 
     return suggestions.map(item => ({
       id: item as string,
@@ -68,44 +71,40 @@ const QuantityFieldGroup = ({ index }: { index: number }) => {
   return (
     <FieldGroup>
       <InputSelectorField
-        {...propsInCommon}
-        fieldKey={keyFieldKey}
-        title="Nombre"
-        required
+        fieldData={
+          (
+            SECTIONS[SECTION_KEYS.products].fields?.[
+              PRODUCT_FIELD_KEYS.quantityChars
+            ] as GroupField
+          ).fields[PRODUCT_QUANTITY_CHARS_FIELD_KEYS.key]
+        }
+        storageAddress={keyFieldAddress}
         loadOptions={keyLoadOptions}
-        style={{
-          styled: css`
-            width: ${NOT_FONT_SIZE['3xl']};
-          `,
-        }}
       />
       <InputSelectorField
-        {...propsInCommon}
-        {...propsInCommonCalculated}
-        fieldKey={valueFieldKey}
-        title="Valor"
-        inputExtraAttrs={{
-          type: 'number',
-        }}
-        required
+        fieldData={
+          (
+            SECTIONS[SECTION_KEYS.products].fields?.[
+              PRODUCT_FIELD_KEYS.quantityChars
+            ] as GroupField
+          ).fields[PRODUCT_QUANTITY_CHARS_FIELD_KEYS.value]
+        }
+        storageAddress={valueFieldAddress}
+        fieldDependency={[keyFieldAddress]}
         loadOptions={valueLoadOptions}
-        style={{
-          styled: css`
-            width: ${NOT_FONT_SIZE['2xl']};
-          `,
-        }}
       />
       <InputSelectorField
-        {...propsInCommon}
-        {...propsInCommonCalculated}
-        fieldKey={metricUnitFieldKey}
-        title="Unidad Métrica"
-        loadOptions={metricUnitLoadOptions}
-        style={{
-          styled: css`
-            width: ${NOT_FONT_SIZE.xl};
-          `,
-        }}
+        fieldData={
+          (
+            SECTIONS[SECTION_KEYS.products].fields?.[
+              PRODUCT_FIELD_KEYS.quantityChars
+            ] as GroupField
+          ).fields[PRODUCT_QUANTITY_CHARS_FIELD_KEYS.unit]
+        }
+        storageAddress={unitFieldAddress}
+        fieldDependency={[keyFieldAddress]}
+        loadOptions={unitLoadOptions}
+        optional
       />
     </FieldGroup>
   )

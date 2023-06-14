@@ -1,136 +1,141 @@
-import { InputField, SelectorField } from '@/pages/Admin/components'
+import { CheckboxField, InputField, SelectorField } from '@/pages/Admin/components'
 import { New } from '../../..'
-import { setNewResourceData } from '@/redux'
-import { ManufacturerServices } from '@/services'
 import { AppError } from '@/tools'
 import {
+  BooleanFieldGroupGenerator,
   FractionFieldGroupGenerator,
   QuantityFieldGroupGenerator,
   StringFieldGroupGenerator,
 } from './components'
-import { SECTION_KEYS } from '@/models'
+import {
+  PRODUCT_FIELD_KEYS,
+  PRODUCT_VIEW_KEYS,
+  SECTIONS,
+  SECTION_KEYS,
+  SingleField,
+} from '@/models'
+import { buildAddress } from '@/pages/Admin/tools'
+import { CategoryServices, ManufacturerServices } from '@/pages/Admin/services'
 
-const sectionKey = SECTION_KEYS.products
+const buildFieldAddress = (fieldKey: string) =>
+  buildAddress(SECTION_KEYS.products, PRODUCT_VIEW_KEYS.new, fieldKey)
 
 const NewProduct = () => {
   const handleSend = async () => {
-    console.log('send')
+    // TODO: TASK
   }
+
+  const categoryLoadOptions = async () => {
+    const categories = await CategoryServices.getAll()
+
+    if (!categories || categories instanceof AppError) return categories as AppError
+
+    return categories.map(item => ({
+      id: item.id.toString(),
+      title: item.name,
+    }))
+  }
+
+  const manufacturerLoadOptions = async () => {
+    const manufacturers = await ManufacturerServices.getAll()
+
+    if (!manufacturers || manufacturers instanceof AppError)
+      return manufacturers as AppError
+
+    return manufacturers.map(item => ({
+      id: item.id.toString(),
+      title: item.name,
+    }))
+  }
+
+  // TODO: TASK. no se esta llamando a valores unicos en la API, hay que empatar los valores iguales en la consulta a la BD
 
   return (
     <New title="Nuevo Producto" handleSend={handleSend}>
       <InputField
-        action={setNewResourceData}
-        sectionKey={sectionKey}
-        fieldKey="name"
-        title="Nombre"
-        validations={[
-          {
-            validation: value => value === '',
-            errorMsg: 'Campo obligatorio',
-            // break: true,
-            break: false,
-          },
-          {
-            validation: value => value.includes('m'),
-            errorMsg: 'No puede contener m',
-            break: false,
-          },
-          {
-            validation: value => value.includes('n'),
-            errorMsg: 'No puede contener n',
-            break: false,
-          },
-        ]}
-        inputExtraAttrs={{
-          required: true,
-          autoComplete: 'nope',
-        }}
+        fieldData={
+          SECTIONS[SECTION_KEYS.products].fields?.[
+            PRODUCT_FIELD_KEYS.name
+          ] as SingleField
+        }
+        storageAddress={buildFieldAddress(PRODUCT_FIELD_KEYS.name)}
       />
-      <InputField
-        action={setNewResourceData}
-        sectionKey={sectionKey}
-        fieldKey="unitPrice"
-        title="Precio"
-        inputExtraAttrs={{
-          type: 'number',
-          min: 0,
-          required: true,
-        }}
-      />
-      {/* <InputSelectorField
-                action={setNewResourceData}
-                sectionKey={sectionKey}
-                dependentSectionKey={Sections.MANUFACTURERS.key}
-                fieldKey="manufacturer"
-                title="Fabricante"
-                validations={[
-                  {
-                    validation: (value: string) => value === '',
-                    errorMsg: 'Campo obligatorio',
-                    break: true,
-                  },
-                  {
-                    validation: (value: string) => value.includes('m'),
-                    errorMsg: 'No puede contener m',
-                  },
-                  {
-                    validation: (value: string) => value.includes('n'),
-                    errorMsg: 'No puede contener n',
-                  },
-                ]}
-                loadOptions={async () => {
-                  const manufacturers = await ManufacturerServices.getAll()
-                  if (!manufacturers || manufacturers instanceof AppError)
-                    return manufacturers as AppError
-
-                    return manufacturers.map(item => ({
-                      id: item.id.toString(),
-                      title: item.name,
-                    }))
-                  }}
-                /> */}
       <SelectorField
-        action={setNewResourceData}
-        sectionKey={sectionKey}
-        sectionDependency={[SECTION_KEYS.manufacturers]}
-        fieldKey="manufacturer"
-        title="Fabricante"
-        required
-        loadOptions={async () => {
-          const manufacturers = await ManufacturerServices.getAll()
-          if (!manufacturers || manufacturers instanceof AppError)
-            return manufacturers as AppError
-
-          return manufacturers.map(item => ({
-            id: item.id.toString(),
-            title: item.name,
-          }))
-        }}
+        loadOptions={categoryLoadOptions}
+        fieldData={
+          SECTIONS[SECTION_KEYS.products].fields?.[
+            PRODUCT_FIELD_KEYS.category
+          ] as SingleField
+        }
+        storageAddress={buildFieldAddress(PRODUCT_FIELD_KEYS.category)}
+        optional
+      />
+      <SelectorField
+        loadOptions={manufacturerLoadOptions}
+        fieldData={
+          SECTIONS[SECTION_KEYS.products].fields?.[
+            PRODUCT_FIELD_KEYS.manufacturer
+          ] as SingleField
+        }
+        storageAddress={buildFieldAddress(PRODUCT_FIELD_KEYS.manufacturer)}
+        optional
       />
       <InputField
-        action={setNewResourceData}
-        sectionKey={sectionKey}
-        fieldKey="stock"
-        title="Stock"
-        inputExtraAttrs={{
-          type: 'number',
-          min: 0,
-        }}
+        fieldData={
+          SECTIONS[SECTION_KEYS.products].fields?.[
+            PRODUCT_FIELD_KEYS.description
+          ] as SingleField
+        }
+        storageAddress={buildFieldAddress(PRODUCT_FIELD_KEYS.description)}
+        asTextArea
+        optional
       />
       <InputField
-        action={setNewResourceData}
-        sectionKey={sectionKey}
-        fieldKey="minStock"
-        title="Stock mínimo"
-        inputExtraAttrs={{
-          type: 'number',
-          min: 0,
-        }}
+        fieldData={
+          SECTIONS[SECTION_KEYS.products].fields?.[
+            PRODUCT_FIELD_KEYS.stock
+          ] as SingleField
+        }
+        storageAddress={buildFieldAddress(PRODUCT_FIELD_KEYS.stock)}
+        optional
       />
+      <InputField
+        fieldData={
+          SECTIONS[SECTION_KEYS.products].fields?.[
+            PRODUCT_FIELD_KEYS.minStock
+          ] as SingleField
+        }
+        storageAddress={buildFieldAddress(PRODUCT_FIELD_KEYS.minStock)}
+        optional
+      />
+      <InputField
+        fieldData={
+          SECTIONS[SECTION_KEYS.products].fields?.[
+            PRODUCT_FIELD_KEYS.price
+          ] as SingleField
+        }
+        storageAddress={buildFieldAddress(PRODUCT_FIELD_KEYS.price)}
+      />
+      <CheckboxField
+        fieldData={
+          SECTIONS[SECTION_KEYS.products].fields?.[
+            PRODUCT_FIELD_KEYS.imported
+          ] as SingleField
+        }
+        storageAddress={buildFieldAddress(PRODUCT_FIELD_KEYS.imported)}
+      />
+      <BooleanFieldGroupGenerator />
       <QuantityFieldGroupGenerator />
       <FractionFieldGroupGenerator />
       <StringFieldGroupGenerator />
+      <CheckboxField
+        fieldData={
+          SECTIONS[SECTION_KEYS.products].fields?.[
+            PRODUCT_FIELD_KEYS.discontinued
+          ] as SingleField
+        }
+        storageAddress={buildFieldAddress(PRODUCT_FIELD_KEYS.discontinued)}
+      />
     </New>
   )
 }

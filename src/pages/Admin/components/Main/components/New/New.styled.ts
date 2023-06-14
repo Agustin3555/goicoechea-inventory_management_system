@@ -1,9 +1,12 @@
 import styled from 'styled-components'
 import { COLOR, FONT_SIZE, MICROINTERACTION, Value, colorAdapter } from '@/styles'
-import { MAIN_GAP } from '@/tools'
+import { BRIGHT_1, DARK_1, MAIN_GAP } from '@/tools'
 
 interface Provider {
   title: {
+    color: Value
+  }
+  fields: {
     color: Value
   }
 }
@@ -17,6 +20,9 @@ export namespace NewStyled {
     return {
       title: {
         color: colorAdapter(darkMode ? COLOR.g_2 : COLOR.g_14),
+      },
+      fields: {
+        color: colorAdapter(darkMode ? DARK_1 : BRIGHT_1),
       },
     }
   }
@@ -40,7 +46,9 @@ export namespace NewStyled {
     .fields {
       display: flex;
       flex-wrap: wrap;
-      gap: ${MAIN_GAP};
+      column-gap: ${MAIN_GAP};
+      row-gap: calc(${MAIN_GAP} * 2);
+      color: ${({ p }) => p.fields.color};
     }
   `
 }

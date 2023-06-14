@@ -1,65 +1,57 @@
-import { Icon, Spinner } from '@/components'
+import { AnimateState, Icon, Spinner } from '@/components'
 import { useDarkMode } from '@/hooks'
-import { ChangeEventHandler, useState } from 'react'
+import { ChangeEventHandler, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { CSSTransition, SwitchTransition } from 'react-transition-group'
-import { ErrorList, FieldName } from '..'
-import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
-import { AppError, ResourceAction } from '@/tools'
+import { ErrorList } from '..'
+import { AppError } from '@/tools'
 import { css } from 'styled-components'
 import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
 import {
   BLANK_SELECTION,
+  FieldSelectorProps,
   Option,
   STATUS,
   reorderBySearch,
-  requiredValidation,
 } from '../../tools'
-import { FieldDependency, useDependency, useValidateInput } from '../../hooks'
+import { useDependency, useValidateInput } from '../../hooks'
 import { SelectorFieldStyled } from './SelectorField.styled'
-import { SECTION_KEYS } from '@/models'
+import { setInputValue } from '@/redux'
+import { Selector } from '@/models'
 
 const SelectorField = ({
-  action,
-  sectionKey,
-  sectionDependency = [],
-  fieldKey,
+  fieldData,
+  storageAddress,
   fieldDependency = [],
-  title,
-  required,
-  label = false,
-  style,
   loadOptions,
-}: {
-  action: ActionCreatorWithPayload<ResourceAction>
-  sectionKey: SECTION_KEYS
-  sectionDependency?: SECTION_KEYS[]
-  fieldKey: string
-  fieldDependency?: FieldDependency
-  title: string
-  required?: boolean
-  label?: boolean
-  style?: SelectorFieldStyled.Props
-  loadOptions: () => Promise<AppError | Option[]>
-}) => {
+  optional = false,
+  unlabeled = false,
+  style,
+}: FieldSelectorProps & { style?: SelectorFieldStyled.Props }) => {
   const darkMode = useDarkMode()
   const dispatch = useDispatch()
+
+  const { title, sectionDependency } = useMemo(() => {
+    const { title, extra } = fieldData
+    const { sectionDependency = [] } = extra as Selector
+
+    return { title, sectionDependency }
+  }, [])
+
   const [status, setStatus] = useState<STATUS>(STATUS.loading)
   const [writing, setWriting] = useState(false)
   const [selecting, setSelecting] = useState(false)
   const [options, setOptions] = useState<Option[]>([])
   const [selectedOption, setSelectedOption] = useState<Option>()
   // TODO: iniciar con el valor del state de Redux
-  const [inputValue, setInputValue] = useState('')
+  const [thisInputValue, setThisInputValue] = useState('')
 
-  const { errors } = useValidateInput({
-    inputValue,
-    validations: required ? [requiredValidation] : undefined,
-    sectionKey,
-    fieldKey,
+  const { errors, notifyError } = useValidateInput({
+    storageAddress,
+    optional,
+    inputValue: thisInputValue,
   })
 
-  // useDependency({ setOptions, sectionKey, sectionDependency, fieldDependency })
+  useDependency({ setOptions, sectionDependency, fieldDependency })
 
   const handleEnter = async () => {
     setSelecting(true)
@@ -73,24 +65,32 @@ const SelectorField = ({
         setOptions(items)
 
         if (selectedOption) {
-          const updatedSelectedOption = items.find(item => item.id === selectedOption.id)
+          const updatedSelectedOption = items.find(
+            item => item.id === selectedOption.id
+          )
 
           // TODO: testear esto cuando tenga la posibilidad de actualisar o eliminar los recursos
           if (updatedSelectedOption)
-            setSelectedOption({ id: selectedOption.id, title: updatedSelectedOption.title })
+            setSelectedOption({
+              id: selectedOption.id,
+              title: updatedSelectedOption.title,
+            })
           else {
-            dispatch(action({ sectionKey, fieldKey, value: undefined }))
+            dispatch(setInputValue({ storageAddress, value: undefined }))
             setSelectedOption(undefined)
           }
         }
 
         setStatus(STATUS.ready)
-      } else setStatus(STATUS.error)
+      } else {
+        setStatus(STATUS.error)
+      }
     }
   }
 
   const handleLeave = () => {
     setSelecting(false)
+    notifyError()
   }
 
   const handleInputFocus = () => {
@@ -98,7 +98,7 @@ const SelectorField = ({
   }
 
   const handleInputBlur = () => {
-    setInputValue(selectedOption?.title || '')
+    setThisInputValue(selectedOption?.title || '')
 
     setWriting(false)
   }
@@ -109,20 +109,20 @@ const SelectorField = ({
     const optionsCopy = reorderBySearch(value, [...options])
 
     setOptions(optionsCopy)
-    setInputValue(value)
+    setThisInputValue(value)
   }
 
   const handleItemChange: ChangeEventHandler<HTMLInputElement> = event => {
     const { id, title } = event.currentTarget
 
     if (id === BLANK_SELECTION.id) {
-      dispatch(action({ sectionKey, fieldKey, value: undefined }))
+      dispatch(setInputValue({ storageAddress, value: undefined }))
       setSelectedOption(undefined)
-      setInputValue('')
+      setThisInputValue('')
     } else {
-      dispatch(action({ sectionKey, fieldKey, value: parseInt(id) }))
+      dispatch(setInputValue({ storageAddress, value: parseInt(id) }))
       setSelectedOption({ id, title })
-      setInputValue(title)
+      setThisInputValue(title)
     }
   }
 
@@ -158,7 +158,7 @@ const SelectorField = ({
             name="view"
             title={BLANK_SELECTION.title}
             type="radio"
-            checked={inputValue === '' ? true : undefined}
+            checked={thisInputValue === '' ? true : undefined}
             onChange={handleItemChange}
           />
           <div className="fake-input">
@@ -188,7 +188,7 @@ const SelectorField = ({
 
   return (
     <SelectorFieldStyled.Component p={SelectorFieldStyled.adapter(darkMode, style)}>
-      <FieldName title={title} />
+      {!unlabeled && <span className="field-title">{title}</span>}
       <div className="box">
         <div
           className="selector"
@@ -199,8 +199,8 @@ const SelectorField = ({
           <div className="selected" title={title}>
             <input
               className="input"
-              name={fieldKey}
-              value={inputValue}
+              name={storageAddress}
+              value={thisInputValue}
               placeholder={BLANK_SELECTION.title}
               autoComplete="nope"
               onFocus={handleInputFocus}
@@ -208,20 +208,15 @@ const SelectorField = ({
               onChange={handleInputChange}
             />
             <div className="icon-container" data-expanded={writing || selecting}>
-              <Icon iconName="fa-solid fa-chevron-down" style={{ size: FONT_SIZE.xs }} />
+              <Icon
+                iconName="fa-solid fa-chevron-down"
+                style={{ size: FONT_SIZE.xs }}
+              />
             </div>
           </div>
-          <SwitchTransition>
-            <CSSTransition
-              key={status}
-              classNames="fade"
-              addEndListener={(node, done) =>
-                node.addEventListener('transitionend', done, false)
-              }
-            >
-              <div className="animation-container">{componentsByStatus[status]}</div>
-            </CSSTransition>
-          </SwitchTransition>
+          <AnimateState state={String(status)}>
+            <div className="animation-container">{componentsByStatus[status]}</div>
+          </AnimateState>
         </div>
       </div>
       <ErrorList errors={errors} />

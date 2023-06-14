@@ -4,8 +4,10 @@ export const MAIN_GAP = FONT_SIZE['2xs']
 
 export const MAIN_BORDER_RADIUS = NOT_FONT_SIZE['4xs']
 
-export const DARK_2 = COLOR.g_14
+export const DARK_1 = COLOR.g_4
+export const BRIGHT_1 = COLOR.g_12
 
+export const DARK_2 = COLOR.g_14
 export const BRIGHT_2 = COLOR.g_0
 
 export const BLUR = 'blur(.4688rem)'

@@ -1,84 +1,93 @@
-import { Icon, Spinner } from '@/components'
+import { AnimateState, Icon, Spinner } from '@/components'
 import { useDarkMode } from '@/hooks'
-import { AppStore } from '@/redux/store'
-import { ChangeEventHandler, InputHTMLAttributes, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { CSSTransition, SwitchTransition } from 'react-transition-group'
-import { ErrorList, FieldName } from '..'
-import { AppError, ResourceAction } from '@/tools'
-import { FieldDependency, useDependency, useValidateInput } from '../../hooks'
-import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
+import { ChangeEventHandler, useMemo, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { ErrorList } from '..'
+import { AppError } from '@/tools'
+import {
+  useDefaultValue,
+  useDependency,
+  useGetInputValue,
+  useValidateInput,
+} from '../../hooks'
 import {
   BLANK_SELECTION,
+  FieldSelectorProps,
   Option,
   STATUS,
-  Validation,
   reorderBySearch,
-  requiredValidation,
 } from '../../tools'
 import { css } from 'styled-components'
 import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
 import { InputSelectorFieldStyled } from './InputSelectorField.styled'
-import { SECTION_KEYS } from '@/models'
+import { setInputValue } from '@/redux'
+import { InputSelector } from '@/models'
 
 const InputSelectorField = ({
-  action,
-  sectionKey,
-  sectionDependency = [],
-  fieldKey,
+  fieldData,
+  storageAddress,
   fieldDependency = [],
-  title,
-  required,
-  validations,
-  inputExtraAttrs,
-  style,
   loadOptions,
-}: {
-  action: ActionCreatorWithPayload<ResourceAction>
-  sectionKey: SECTION_KEYS
-  sectionDependency?: SECTION_KEYS[]
-  fieldKey: string
-  fieldDependency?: FieldDependency
-  title: string
-  required?: boolean
-  validations?: Validation[]
-  inputExtraAttrs?: InputHTMLAttributes<HTMLInputElement>
-  style?: InputSelectorFieldStyled.Props
-  loadOptions: (name?: string) => Promise<AppError | Option[]>
-}) => {
+  optional = false,
+  unlabeled = false,
+  style,
+}: FieldSelectorProps & { style?: InputSelectorFieldStyled.Props }) => {
   const darkMode = useDarkMode()
   const dispatch = useDispatch()
-  const [status, setStatus] = useState<STATUS>(STATUS.loading)
-  const [writing, setWriting] = useState(false)
-  const [selecting, setSelecting] = useState(false)
-  const [options, setOptions] = useState<Option[]>([])
 
-  const initialValue = useSelector((store: AppStore) => {
-    const value = store.newResourceData[sectionKey]?.[fieldKey]
-    return typeof value !== 'string' && value === undefined ? value : String(value)
-  })
+  const {
+    title,
+    sectionDependency,
+    validations,
+    inputExtraAttrs,
+    isNumber,
+    defaultValue,
+  } = useMemo(() => {
+    const { title, extra } = fieldData
 
-  const [inputValue, setInputValue] = useState(initialValue)
+    const {
+      sectionDependency = [],
+      validations,
+      inputExtraAttrs,
+      defaultValue,
+    } = extra as InputSelector
 
-  const finalValidations = useMemo(() => {
-    if (validations || required) {
-      const v: Validation[] = required ? [requiredValidation] : []
-      return validations ? [...v, ...validations] : v
+    const isNumber = inputExtraAttrs?.type === 'number'
+
+    return {
+      title,
+      sectionDependency,
+      validations,
+      inputExtraAttrs,
+      isNumber,
+      defaultValue,
     }
   }, [])
 
-  const { errors } = useValidateInput({
-    inputValue,
-    validations: finalValidations,
-    sectionKey,
-    fieldKey,
+  const [writing, setWriting] = useState(false)
+  const [selecting, setSelecting] = useState(false)
+  const [options, setOptions] = useState<Option[]>([])
+  const [status, setStatus] = useState<STATUS>(STATUS.loading)
+  const initialInputValue = useGetInputValue({ storageAddress })
+
+  const [thisInputValue, setThisInputValue] = useState(
+    initialInputValue as undefined | number | string
+  )
+
+  const { errors, notifyError } = useValidateInput({
+    storageAddress,
+    validations,
+    optional,
+    inputValue: thisInputValue,
   })
 
-  useDependency({ setOptions, sectionKey, sectionDependency, fieldDependency })
+  useDefaultValue({ storageAddress, value: thisInputValue, defaultValue })
+  useDependency({ setOptions, sectionDependency, fieldDependency })
 
   const handleEnter = async () => {
     setSelecting(true)
 
+    // Si las opciones están vacías, serán cargadas
     if (options.length === 0) {
       setStatus(STATUS.loading)
 
@@ -88,21 +97,33 @@ const InputSelectorField = ({
         setOptions(items)
 
         setStatus(STATUS.ready)
-      } else setStatus(STATUS.error)
+      } else {
+        setStatus(STATUS.error)
+      }
     }
   }
 
   const handleLeave = () => {
     setSelecting(false)
+    notifyError()
   }
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = event => {
     const { value } = event.currentTarget
 
     const optionsCopy = reorderBySearch(value, [...options])
-
     setOptions(optionsCopy)
-    setInputValue(value)
+
+    if (value === '') {
+      setThisInputValue(undefined)
+      return
+    }
+
+    let parsedValue: number | string = value
+    // Funciona tanto para "int" como para "float"
+    if (isNumber) parsedValue = parseFloat(parsedValue)
+
+    setThisInputValue(parsedValue)
   }
 
   const handleInputFocus = () => {
@@ -111,18 +132,22 @@ const InputSelectorField = ({
 
   const handleInputBlur = () => {
     setWriting(false)
-    dispatch(action({ sectionKey, fieldKey, value: inputValue }))
+    dispatch(setInputValue({ storageAddress, value: thisInputValue }))
   }
 
   const handleItemChange: ChangeEventHandler<HTMLInputElement> = event => {
-    const { id, title } = event.currentTarget
+    const { id, title } = event.target
 
     if (id === BLANK_SELECTION.id) {
-      setInputValue('')
-      dispatch(action({ sectionKey, fieldKey, value: undefined }))
+      setThisInputValue('')
+      dispatch(setInputValue({ storageAddress, value: undefined }))
     } else {
-      setInputValue(title)
-      dispatch(action({ sectionKey, fieldKey, value: title }))
+      setThisInputValue(title)
+
+      let parsedValue: number | string = title
+      if (isNumber) parsedValue = parseFloat(parsedValue)
+
+      dispatch(setInputValue({ storageAddress, value: parsedValue }))
     }
   }
 
@@ -158,7 +183,7 @@ const InputSelectorField = ({
             name="view"
             title={BLANK_SELECTION.title}
             type="radio"
-            checked={inputValue === '' ? true : undefined}
+            checked={thisInputValue === undefined ? true : undefined}
             onChange={handleItemChange}
           />
           <div className="fake-input">
@@ -174,7 +199,7 @@ const InputSelectorField = ({
               name="view"
               title={item.title}
               type="radio"
-              checked={inputValue === item.title ? true : undefined}
+              checked={String(thisInputValue) === item.title ? true : undefined}
               onChange={handleItemChange}
             />
             <div className="fake-input">
@@ -187,8 +212,10 @@ const InputSelectorField = ({
   }
 
   return (
-    <InputSelectorFieldStyled.Component p={InputSelectorFieldStyled.adapter(darkMode, style)}>
-      <FieldName title={title} />
+    <InputSelectorFieldStyled.Component
+      p={InputSelectorFieldStyled.adapter(darkMode, style)}
+    >
+      {!unlabeled && <span className="field-title">{title}</span>}
       <div className="box">
         <div
           className="selector"
@@ -199,8 +226,8 @@ const InputSelectorField = ({
           <div className="selected" title={title}>
             <input
               className="input"
-              name={fieldKey}
-              value={inputValue}
+              name={storageAddress}
+              value={thisInputValue}
               placeholder={BLANK_SELECTION.title}
               autoComplete="nope"
               {...inputExtraAttrs}
@@ -209,20 +236,15 @@ const InputSelectorField = ({
               onChange={handleInputChange}
             />
             <div className="icon-container" data-expanded={writing || selecting}>
-              <Icon iconName="fa-solid fa-chevron-down" style={{ size: FONT_SIZE.xs }} />
+              <Icon
+                iconName="fa-solid fa-chevron-down"
+                style={{ size: FONT_SIZE.xs }}
+              />
             </div>
           </div>
-          <SwitchTransition>
-            <CSSTransition
-              key={status}
-              classNames="fade"
-              addEndListener={(node, done) =>
-                node.addEventListener('transitionend', done, false)
-              }
-            >
-              <div className="animation-container">{componentsByStatus[status]}</div>
-            </CSSTransition>
-          </SwitchTransition>
+          <AnimateState state={String(status)}>
+            <div className="animation-container">{componentsByStatus[status]}</div>
+          </AnimateState>
         </div>
       </div>
       <ErrorList errors={errors} />
