@@ -105,4 +105,43 @@ export namespace ProductAdapters {
       return convertedResource
     },
   }
+
+  export const create: {
+    input: InputAdapter<ProductModels.CreateData, any>
+  } = {
+    input: data => {
+      const convertedResource = {
+        name: data.name,
+        category: data.category,
+        manufacturer: data.manufacturer,
+        description: data.description,
+        stock: data.stock,
+        minStock: data.minStock,
+        price: data.price,
+        imported: data.imported,
+        discontinued: data.discontinued,
+        booleanFields: data.booleanChars?.map(item => ({
+          name: item.key,
+          value: item.value,
+        })),
+        quantityFields: data.quantityChars?.map(item => ({
+          name: item.key,
+          value: item.value,
+          metricUnit: item.unit,
+        })),
+        fractionFields: data.fractionChars?.map(item => ({
+          name: item.key,
+          numeratorValue: item.numeratorValue,
+          denominatorValue: item.denominatorValue,
+          metricUnit: item.unit,
+        })),
+        stringFields: data.stringChars?.map(item => ({
+          name: item.key,
+          value: item.value,
+        })),
+      }
+
+      return convertedResource
+    },
+  }
 }

@@ -1,4 +1,5 @@
 export * from './useDefaultValue.hook'
 export * from './useDependency.hook'
+export * from './useGetInputError'
 export * from './useGetInputValue'
 export * from './useValidateInput.hook'

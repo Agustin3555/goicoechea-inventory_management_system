@@ -1,4 +1,4 @@
-import { AppError, publicInstance } from '@/tools'
+import { AppError, privateInstance, publicInstance } from '@/tools'
 import { ProductAdapters } from '../adapters'
 import { ProductModels } from '../models'
 
@@ -25,7 +25,9 @@ export namespace ProductServices {
 
     if (!response || response instanceof AppError) return response as AppError
 
-    const adaptedResponse = ProductAdapters.getBooleanCharSuggestions.output(response.data)
+    const adaptedResponse = ProductAdapters.getBooleanCharSuggestions.output(
+      response.data
+    )
     return adaptedResponse
   }
 
@@ -41,7 +43,9 @@ export namespace ProductServices {
 
     if (!response || response instanceof AppError) return response as AppError
 
-    const adaptedResponse = ProductAdapters.getQuantityCharSuggestions.output(response.data)
+    const adaptedResponse = ProductAdapters.getQuantityCharSuggestions.output(
+      response.data
+    )
     return adaptedResponse
   }
 
@@ -57,7 +61,9 @@ export namespace ProductServices {
 
     if (!response || response instanceof AppError) return response as AppError
 
-    const adaptedResponse = ProductAdapters.getFractionCharSuggestions.output(response.data)
+    const adaptedResponse = ProductAdapters.getFractionCharSuggestions.output(
+      response.data
+    )
     return adaptedResponse
   }
 
@@ -73,7 +79,19 @@ export namespace ProductServices {
 
     if (!response || response instanceof AppError) return response as AppError
 
-    const adaptedResponse = ProductAdapters.getStringCharSuggestions.output(response.data)
+    const adaptedResponse = ProductAdapters.getStringCharSuggestions.output(
+      response.data
+    )
     return adaptedResponse
+  }
+
+  export const create = async (data: ProductModels.CreateData) => {
+    const adaptedInput = ProductAdapters.create.input(data)
+
+    const response = await privateInstance.post(collection, adaptedInput)
+
+    if (!response || response instanceof AppError) return response as AppError
+
+    return true
   }
 }

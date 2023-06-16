@@ -28,14 +28,16 @@ export namespace NewStyled {
   }
 
   export const Component = styled.form<{ p: Provider }>`
+    display: flex;
+    flex-direction: column;
+    gap: calc(${MAIN_GAP} * 3);
     max-height: calc(100% - 53px - ${MAIN_GAP});
+    padding-top: calc(${MAIN_GAP} * 2);
     padding-right: ${MAIN_GAP};
     overflow-y: scroll;
     overflow-x: hidden;
 
     .title {
-      margin-top: ${MAIN_GAP};
-      margin-bottom: calc(${FONT_SIZE.m} * 2);
       font-size: ${FONT_SIZE.m};
       line-height: ${FONT_SIZE.m};
       font-weight: 500;

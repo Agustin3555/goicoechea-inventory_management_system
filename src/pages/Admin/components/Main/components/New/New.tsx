@@ -1,7 +1,8 @@
 import { useDarkMode } from '@/hooks'
 import { NewStyled } from './New.styled'
 import { ConfirmationButton, Icon } from '@/components'
-import { COLOR } from '@/styles'
+import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
+import { css } from 'styled-components'
 
 const New = ({
   title,
@@ -9,7 +10,7 @@ const New = ({
   children,
 }: {
   title: string
-  handleSend: () => Promise<void>
+  handleSend: () => Promise<boolean>
   children: JSX.Element | JSX.Element[]
 }) => {
   const darkMode = useDarkMode()
@@ -20,15 +21,21 @@ const New = ({
       <div className="fields">{children}</div>
       <ConfirmationButton
         title="Crear"
+        text="Crear"
+        iconName="fa-solid fa-arrow-right"
         trigger={handleSend}
         extraAttrs={{ type: 'button' }}
-        style={{ backgroundColor: { dark: COLOR.g_10 } }}
-      >
-        <div className="content">
-          <span className="text">Crear</span>
-          <Icon iconName="" />
-        </div>
-      </ConfirmationButton>
+        style={{
+          fontSize: FONT_SIZE.s,
+          borderRadius: NOT_FONT_SIZE['3xs'],
+          primaryBackgroundColor: { dark: COLOR.g_6, bright: COLOR.g_12 },
+          color: { dark: COLOR.g_19, bright: COLOR.g_0 },
+          styled: css`
+            align-self: flex-end;
+            width: 8.4375rem;
+          `,
+        }}
+      />
     </NewStyled.Component>
   )
 }

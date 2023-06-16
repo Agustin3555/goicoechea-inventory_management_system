@@ -30,6 +30,7 @@ export namespace GlobalStyleStyled {
 
   export const Component = createGlobalStyle<{ p: Provider }>`
     * {
+      margin: 0;
       color: inherit;
     }
 

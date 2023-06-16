@@ -2,21 +2,23 @@ import { useRef, useState, useLayoutEffect } from 'react'
 
 export const useChildAdjustment = () => {
   const childRef = useRef<HTMLDivElement>(null)
+  const [childWidth, setChildWidth] = useState(0)
   const [childHeight, setChildHeight] = useState(0)
 
   useLayoutEffect(() => {
-    const updateChildHeight = () => {
+    const updateSize = () => {
+      if (childRef.current) setChildWidth(childRef.current.clientWidth)
       if (childRef.current) setChildHeight(childRef.current.clientHeight)
     }
 
     // Actualizar la altura inicial del hijo
-    updateChildHeight()
+    updateSize()
 
     /*
       Configuramos un observer de mutación para detectar cambios en el contenido del
       hijo
     */
-    const observer = new MutationObserver(updateChildHeight)
+    const observer = new MutationObserver(updateSize)
 
     if (childRef.current)
       /*
@@ -31,5 +33,5 @@ export const useChildAdjustment = () => {
     }
   }, [])
 
-  return { childRef, childHeight }
+  return { childRef, childWidth, childHeight }
 }

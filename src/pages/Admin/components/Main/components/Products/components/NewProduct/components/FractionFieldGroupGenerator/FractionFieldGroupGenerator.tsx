@@ -31,8 +31,13 @@ const getUnitFieldAddress = (index: number) =>
   getFieldAddress(index, PRODUCT_FRACTION_CHARS_FIELD_KEYS.unit)
 
 const FractionFieldGroupGenerator = () => {
-  const { items, addButtonHandleClick, clearField, removeItem } =
-    useFieldGroupGenerator()
+  const { items, addButtonHandleClick, removeItem } = useFieldGroupGenerator({
+    fieldGroupAddress: buildAddress(
+      SECTION_KEYS.products,
+      PRODUCT_VIEW_KEYS.new,
+      PRODUCT_FIELD_KEYS.fractionChars
+    ),
+  })
 
   return (
     <Generator title="Características por fracción" handleAdd={addButtonHandleClick}>
@@ -47,14 +52,7 @@ const FractionFieldGroupGenerator = () => {
               unitFieldAddress={getUnitFieldAddress(index)}
             />
           }
-          handleRemove={() => {
-            clearField(getKeyFieldAddress(index))
-            clearField(getNumeratorFieldAddress(index))
-            clearField(getDenominatorFieldAddress(index))
-            clearField(getUnitFieldAddress(index))
-
-            removeItem(index)
-          }}
+          handleRemove={() => removeItem(index)}
         />
       ))}
     </Generator>

@@ -50,7 +50,7 @@ const InputField = ({
     inputValue,
   })
 
-  useDefaultValue({ storageAddress, value: inputValue, defaultValue })
+  useDefaultValue({ storageAddress, value: inputValue, setValue, defaultValue })
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = event => {
     const { value } = event.target

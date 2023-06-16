@@ -12,96 +12,99 @@ import {
   shadowAdapter,
   Value,
 } from '@/styles'
-
-interface NormalizedProps {
-  padding: FontSize
-  tight: boolean
-  color: {
-    dark: Color
-    bright: Color
-  }
-  borderRadius: NotFontSize
-  backgroundColor: {
-    dark: Color
-    bright: Color
-  }
-  elevation: Elevation
-}
+import { BRIGHT_2, DARK_2, MAIN_BORDER_RADIUS, MAIN_GAP } from '@/tools'
+import { STATUS } from './ConfirmationButton'
 
 interface Provider {
+  fontSize: Value
+  lineHeight: Value
   padding: Value
   color: Value
   borderRadius: Value
   backgroundColor: Value
-  hover: {
-    boxShadow: Value
+  confirmationButtonAC: {
+    gap: Value
   }
-  active: {
-    backgroundColor: Value
+  loaderC: {
+    loader: {
+      width: Value
+      height: Value
+      borderRadius: Value
+      backgroundColor: Value
+      opacity: Value
+    }
   }
   styled?: FlattenSimpleInterpolation
 }
 
 export namespace ConfirmationButtonStyled {
   export interface Props {
-    padding?: FontSize
+    fontSize?: FontSize
     tight?: boolean
-    color?: {
-      dark?: Color
-      bright?: Color
-    }
     borderRadius?: NotFontSize
-    backgroundColor: {
+    color?: {
       dark: Color
-      bright?: Color
+      bright: Color
     }
-    elevation?: Elevation
+    primaryBackgroundColor?: {
+      dark: Color
+      bright: Color
+    }
+    secondaryBackgroundColor?: Color
     styled?: FlattenSimpleInterpolation
   }
 
-  export const adapter = (style: Props, darkMode: boolean): Provider => {
-    const normalizedProps: NormalizedProps = {
-      padding: style.padding || FONT_SIZE.s,
-      tight: style.tight || true,
-      borderRadius: style.borderRadius || NOT_FONT_SIZE['3xs'],
-      color: {
-        dark: style?.color?.dark || COLOR.g_4,
-        bright: style?.color?.bright || COLOR.g_12,
+  export const adapter = (
+    {
+      fontSize = MAIN_GAP,
+      tight = false,
+      borderRadius = MAIN_BORDER_RADIUS,
+      color,
+      primaryBackgroundColor = {
+        dark: DARK_2,
+        bright: BRIGHT_2,
       },
-      backgroundColor: {
-        dark: style.backgroundColor.dark,
-        bright: style.backgroundColor.bright || style.backgroundColor.dark,
-      },
-      elevation: style.elevation || 2,
-    }
-
+      secondaryBackgroundColor = COLOR.a,
+      styled,
+    }: Props,
+    darkMode: boolean,
+    status: STATUS
+  ): Provider => {
     // #region Auxiliary vars
 
-    const paddingTopBottom = normalizedProps.padding
+    const paddingTopBottom = fontSize
 
     // #endregion
 
     return {
-      padding: `${paddingTopBottom} ${
-        normalizedProps.tight ? '' : `calc(${paddingTopBottom} * 2)`
-      }`,
-      color: darkMode ? normalizedProps.color.dark : normalizedProps.color.bright,
-      borderRadius: normalizedProps.borderRadius,
+      padding: `${paddingTopBottom} ${tight ? '' : `calc(${paddingTopBottom} * 2)`}`,
+      fontSize: fontSize === FONT_SIZE['2xs'] ? FONT_SIZE.xs : fontSize,
+      lineHeight: fontSize,
+      color:
+        status !== STATUS.init
+          ? COLOR.g_0
+          : color
+          ? darkMode
+            ? color.dark
+            : color.bright
+          : '',
+      borderRadius,
       backgroundColor: darkMode
-        ? normalizedProps.backgroundColor.dark
-        : normalizedProps.backgroundColor.bright,
-      hover: {
-        boxShadow: shadowAdapter(normalizedProps.elevation),
+        ? primaryBackgroundColor.dark
+        : primaryBackgroundColor.bright,
+      styled,
+      confirmationButtonAC: {
+        gap: `calc(${fontSize} * 0.75)`,
       },
-      active: {
-        backgroundColor: colorAdapter(
-          darkMode
-            ? normalizedProps.backgroundColor.dark
-            : normalizedProps.backgroundColor.bright,
-          1
-        ),
+      loaderC: {
+        loader: {
+          width: status === STATUS.init ? 0 : '100%',
+          height: status === STATUS.init ? 0 : '100%',
+          borderRadius: status === STATUS.init ? NOT_FONT_SIZE.xl : borderRadius,
+          backgroundColor: secondaryBackgroundColor,
+          opacity: status === STATUS.init ? 0 : 1,
+        },
       },
-      styled: style?.styled,
     }
   }
 
@@ -113,37 +116,30 @@ export namespace ConfirmationButtonStyled {
     border-radius: ${({ p }) => p.borderRadius};
     background-color: ${({ p }) => p.backgroundColor};
     cursor: pointer;
-    transition: background-color ${MICROINTERACTION.s} ease-out,
+    transition: color ${MICROINTERACTION.s} ${MICROINTERACTION.s} ease-out,
+      background-color ${MICROINTERACTION.s} ease-out,
       box-shadow ${MICROINTERACTION.s} ease-out;
 
-    :hover {
-      box-shadow: ${({ p }) => p.hover.boxShadow};
+    transition :hover {
+      box-shadow: ${shadowAdapter(2)};
     }
 
     :active {
-      color: ${COLOR.g_0};
-      background-color: ${({ p }) => p.active.backgroundColor};
       box-shadow: none;
 
-      .loader-container .loader {
+      .loader-C .loader {
         width: 100%;
         height: 100%;
         border-radius: ${({ p }) => p.borderRadius};
         opacity: 1;
         transition: width ${MICROINTERACTION.xl} ease-out,
-          height ${MICROINTERACTION.xl} ease-out, border-radius ${MICROINTERACTION.xl} ease-out,
+          height ${MICROINTERACTION.xl} ease-out,
+          border-radius ${MICROINTERACTION.xl} ease-out,
           opacity ${MICROINTERACTION.xl} ease-out;
       }
     }
 
-    :disabled {
-      color: initial;
-      background-color: default;
-      box-shadow: none;
-      cursor: default;
-    }
-
-    .loader-container {
+    .loader-C {
       position: absolute;
       top: 0;
       left: 0;
@@ -154,18 +150,44 @@ export namespace ConfirmationButtonStyled {
       height: 100%;
 
       .loader {
-        width: 0;
-        height: 0;
-        border-radius: ${NOT_FONT_SIZE.xs};
-        background-color: ${COLOR.a};
-        opacity: 0;
-        transition: width ${MICROINTERACTION.s} ease-out, height ${MICROINTERACTION.s} ease-out,
-          border-radius ${MICROINTERACTION.s} ease-out, opacity ${MICROINTERACTION.s} ease-out;
+        width: ${({ p }) => p.loaderC.loader.width};
+        height: ${({ p }) => p.loaderC.loader.height};
+        border-radius: ${({ p }) => p.loaderC.loader.borderRadius};
+        background-color: ${({ p }) => p.loaderC.loader.backgroundColor};
+        opacity: ${({ p }) => p.loaderC.loader.opacity};
+        transition: width ${MICROINTERACTION.s} ease-out,
+          height ${MICROINTERACTION.s} ease-out,
+          border-radius ${MICROINTERACTION.s} ease-out,
+          opacity ${MICROINTERACTION.s} ease-out;
       }
     }
 
-    .content {
-      position: relative;
+    .confirmation-button-AC {
+      display: flex;
+      justify-content: center;
+      gap: ${({ p }) => p.confirmationButtonAC.gap};
+      transition: opacity ${MICROINTERACTION.m} ease-out;
+
+      .text {
+        font-size: ${({ p }) => p.fontSize};
+        line-height: ${({ p }) => p.lineHeight};
+      }
+    }
+
+    .fade-enter {
+      opacity: 0;
+    }
+
+    .fade-exit {
+      opacity: 1;
+    }
+
+    .fade-enter-active {
+      opacity: 1;
+    }
+
+    .fade-exit-active {
+      opacity: 0;
     }
 
     ${({ p }) => p.styled};

@@ -2,13 +2,23 @@ import { MessageType, enqueueMessage, store } from '@/redux'
 import { AppError, ERRORS, getErrorInterpretation } from '@/tools'
 
 export const catchError = (error: any) => {
+  // console.log({ error })
+
   // Se verifica si la solicitud a la API se ha completado
   if (error.response) {
     const apiErrorCode = error.response.data.errorCode
 
     // Se verifica si existe un código de error dado por la API
-    if (apiErrorCode) return new AppError(apiErrorCode)
-    else {
+    if (apiErrorCode) {
+      store.dispatch(
+        enqueueMessage({
+          text: getErrorInterpretation(apiErrorCode) as string,
+          type: MessageType.error,
+        })
+      )
+
+      return new AppError(apiErrorCode)
+    } else {
       // No existe el código de error, por lo cual es un error "no controlado"
 
       const errorMessage = getErrorInterpretation(ERRORS.unknown) as string

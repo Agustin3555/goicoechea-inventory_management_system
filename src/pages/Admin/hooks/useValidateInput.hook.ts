@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react'
 import { Validation } from '../tools'
 import { useDispatch } from 'react-redux'
 import { setInputError } from '@/redux'
+import { ERRORS, ERROR_MATCHER } from '@/tools'
 
 // Regla de validación para campos obligatorios
 const requiredValidation: Validation = {
   validation: value => value === undefined || value === '',
-  errorMsg: 'Campo obligatorio',
+  errorMsg: ERROR_MATCHER[ERRORS.client_fieldRequired],
   break: true,
 }
 

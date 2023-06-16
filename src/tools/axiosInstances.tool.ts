@@ -1,13 +1,11 @@
-import axios, { CreateAxiosDefaults } from 'axios'
+import axios from 'axios'
 
-const propsInCommon: CreateAxiosDefaults = {
-  baseURL: 'http://localhost:3000',
-}
-
-export const privateInstance = axios.create({
-  ...propsInCommon,
-})
+const baseURL = 'http://localhost:3000'
 
 export const publicInstance = axios.create({
-  ...propsInCommon,
+  baseURL,
+})
+
+export const privateInstance = axios.create({
+  baseURL: `${baseURL}/private`,
 })

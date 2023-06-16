@@ -177,12 +177,12 @@ export const SECTIONS: {
         extra: {
           validations: [
             {
-              validation: value => (value as number) < 1,
-              errorMsg: 'No puede ser menor que 1',
+              validation: value => (value as number) < 0,
+              errorMsg: 'No puede ser menor que 0',
             },
           ],
-          inputExtraAttrs: { type: 'number', min: 1 },
-          defaultValue: 1,
+          inputExtraAttrs: { type: 'number', min: 0 },
+          defaultValue: 0,
         },
       },
       [PRODUCT_FIELD_KEYS.minStock]: {
@@ -190,12 +190,12 @@ export const SECTIONS: {
         extra: {
           validations: [
             {
-              validation: value => (value as number) < 1,
-              errorMsg: 'No puede ser menor que 1',
+              validation: value => (value as number) < 0,
+              errorMsg: 'No puede ser menor que 0',
             },
           ],
-          inputExtraAttrs: { type: 'number', min: 1 },
-          defaultValue: 1,
+          inputExtraAttrs: { type: 'number', min: 0 },
+          defaultValue: 0,
         },
       },
       [PRODUCT_FIELD_KEYS.price]: {
@@ -208,6 +208,7 @@ export const SECTIONS: {
             },
           ],
           inputExtraAttrs: { type: 'number', min: 0 },
+          defaultValue: 0,
         },
       },
       [PRODUCT_FIELD_KEYS.imported]: {

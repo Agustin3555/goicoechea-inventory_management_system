@@ -11,13 +11,13 @@ export namespace ProductModels {
 
   interface QuantityChar extends Char {
     value: number
-    metricUnit: string
+    unit: string
   }
 
   interface FractionChar extends Char {
     numeratorValue: number
     denominatorValue: number
-    metricUnit: string
+    unit: string
   }
 
   interface StringChar extends Char {
@@ -71,4 +71,20 @@ export namespace ProductModels {
   }
 
   export type CharSuggestionsResponse = (number | string)[]
+
+  export interface CreateData {
+    name: string
+    category?: number
+    manufacturer?: number
+    description?: string
+    stock?: number
+    minStock?: number
+    price?: number
+    imported?: boolean
+    discontinued?: boolean
+    booleanChars?: BooleanChar[]
+    quantityChars?: QuantityChar[]
+    fractionChars?: FractionChar[]
+    stringChars?: StringChar[]
+  }
 }

@@ -25,8 +25,13 @@ const getValueFieldAddress = (index: number) =>
   getFieldAddress(index, PRODUCT_BOOLEAN_CHARS_FIELD_KEYS.value)
 
 const QuantityFieldGroupGenerator = () => {
-  const { items, addButtonHandleClick, clearField, removeItem } =
-    useFieldGroupGenerator()
+  const { items, addButtonHandleClick, removeItem } = useFieldGroupGenerator({
+    fieldGroupAddress: buildAddress(
+      SECTION_KEYS.products,
+      PRODUCT_VIEW_KEYS.new,
+      PRODUCT_FIELD_KEYS.booleanChars
+    ),
+  })
 
   return (
     <Generator title="Características booleanas" handleAdd={addButtonHandleClick}>
@@ -39,12 +44,7 @@ const QuantityFieldGroupGenerator = () => {
               valueFieldAddress={getValueFieldAddress(index)}
             />
           }
-          handleRemove={() => {
-            clearField(getKeyFieldAddress(index))
-            clearField(getValueFieldAddress(index))
-
-            removeItem(index)
-          }}
+          handleRemove={() => removeItem(index)}
         />
       ))}
     </Generator>

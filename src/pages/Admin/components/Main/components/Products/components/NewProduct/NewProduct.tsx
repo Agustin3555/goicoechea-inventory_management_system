@@ -1,6 +1,6 @@
 import { CheckboxField, InputField, SelectorField } from '@/pages/Admin/components'
 import { New } from '../../..'
-import { AppError } from '@/tools'
+import { AppError, ERRORS, ERROR_MATCHER, sleep } from '@/tools'
 import {
   BooleanFieldGroupGenerator,
   FractionFieldGroupGenerator,
@@ -14,15 +14,80 @@ import {
   SECTION_KEYS,
   SingleField,
 } from '@/models'
-import { buildAddress } from '@/pages/Admin/tools'
-import { CategoryServices, ManufacturerServices } from '@/pages/Admin/services'
+import { buildAddress, errorsExist } from '@/pages/Admin/tools'
+import {
+  CategoryServices,
+  ManufacturerServices,
+  ProductServices,
+} from '@/pages/Admin/services'
+import { useGetInputError, useGetInputValue } from '@/pages/Admin/hooks'
+import { useDispatch } from 'react-redux'
+import { MessageType, enqueueMessage } from '@/redux'
 
 const buildFieldAddress = (fieldKey: string) =>
   buildAddress(SECTION_KEYS.products, PRODUCT_VIEW_KEYS.new, fieldKey)
 
+const FIELD_GROUP_ADDRESS = buildAddress(
+  SECTION_KEYS.products,
+  PRODUCT_VIEW_KEYS.new
+)
+
+const convertChars = (chars: {}) =>
+  chars && Object.values(chars).filter(value => value !== undefined)
+
 const NewProduct = () => {
+  const dispatch = useDispatch()
+  const errors = useGetInputError({ storageAddress: FIELD_GROUP_ADDRESS })
+  const values = useGetInputValue({ storageAddress: FIELD_GROUP_ADDRESS })
+
   const handleSend = async () => {
-    // TODO: TASK
+    if (errorsExist(errors)) {
+      dispatch(
+        enqueueMessage({
+          text: ERROR_MATCHER[ERRORS.client_fieldsErrors],
+          type: MessageType.error,
+        })
+      )
+
+      return false
+    }
+
+    // TODO: para un futuro, impedir que pueda crear sin establecer una conexiopn con el servidor
+
+    const {
+      name,
+      category,
+      manufacturer,
+      description,
+      stock,
+      minStock,
+      price,
+      imported,
+      discontinued,
+    } = values as any
+
+    const booleanChars = convertChars(values.booleanChars)
+    const quantityChars = convertChars(values.quantityChars)
+    const fractionChars = convertChars(values.fractionChars)
+    const stringChars = convertChars(values.stringChars)
+
+    const response = await ProductServices.create({
+      name,
+      category,
+      manufacturer,
+      description,
+      stock,
+      minStock,
+      price,
+      imported,
+      discontinued,
+      booleanChars,
+      quantityChars,
+      fractionChars,
+      stringChars,
+    })
+
+    return response === true
   }
 
   const categoryLoadOptions = async () => {
@@ -47,8 +112,6 @@ const NewProduct = () => {
       title: item.name,
     }))
   }
-
-  // TODO: TASK. no se esta llamando a valores unicos en la API, hay que empatar los valores iguales en la consulta a la BD
 
   return (
     <New title="Nuevo Producto" handleSend={handleSend}>
@@ -115,6 +178,7 @@ const NewProduct = () => {
           ] as SingleField
         }
         storageAddress={buildFieldAddress(PRODUCT_FIELD_KEYS.price)}
+        optional
       />
       <CheckboxField
         fieldData={
