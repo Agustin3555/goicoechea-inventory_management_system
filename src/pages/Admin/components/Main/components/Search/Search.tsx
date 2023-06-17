@@ -1,23 +1,23 @@
-import { Button, Icon, Input, Separator, Spinner } from '@/components'
+import { AnimateState, Button, Icon, Input, Separator, Spinner } from '@/components'
 import { useDarkMode } from '@/hooks'
 import { AppStore } from '@/redux/store'
 import { FormEventHandler, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { Checkbox, Item } from './components'
-import { AppError } from '@/tools'
+import { AppError, sleep } from '@/tools'
 import { ResourceRef } from '@/pages/Admin/tools'
 import { ItemData, setSearchedData, setSelectAll } from '@/redux'
 import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
 import { SearchStyled } from './Search.styled'
 import { css } from 'styled-components'
+import { SECTION_KEYS } from '@/models'
 
 const Search = ({
   sectionKey,
   loadItems,
   children,
 }: {
-  sectionKey: string
+  sectionKey: SECTION_KEYS
   loadItems: () => Promise<AppError | ResourceRef[]>
   children: JSX.Element | JSX.Element[]
 }) => {
@@ -52,6 +52,7 @@ const Search = ({
 
     setLoading(true)
 
+    await sleep(500)
     const items = await loadItems()
 
     if (items && !(items instanceof AppError)) {
@@ -68,10 +69,18 @@ const Search = ({
   return (
     <SearchStyled.Component p={SearchStyled.adapter(darkMode)}>
       <div className="search-head">
-        <Checkbox id="all" title="Todo" checked={allSelected} handleChange={handleSelectAll} />
+        <Checkbox
+          id="all"
+          title="Seleccionar todo"
+          text="Todo"
+          checked={allSelected}
+          handleChange={handleSelectAll}
+        />
         <Icon iconName="fa-solid fa-cubes-stacked" style={{ size: FONT_SIZE.s }} />
         <div className="counter">{selectedItems}</div>
-        <Separator style={{ long: NOT_FONT_SIZE.xs, backgroundColor: { dark: COLOR.g_8 } }} />
+        <Separator
+          style={{ long: NOT_FONT_SIZE.xs, backgroundColor: { dark: COLOR.g_8 } }}
+        />
         <form className="form" onSubmit={loading ? undefined : handleSubmit}>
           <Input
             name={`search-${sectionKey}`}
@@ -98,26 +107,18 @@ const Search = ({
               disabled: loading,
             }}
           >
-            <SwitchTransition>
-              <CSSTransition
-                key={loading.toString()}
-                classNames="fade"
-                addEndListener={(node, done) =>
-                  node.addEventListener('transitionend', done, false)
-                }
-              >
-                <div className="button-content">
-                  {loading ? (
-                    <Spinner />
-                  ) : (
-                    <Icon
-                      iconName="fa-solid fa-magnifying-glass"
-                      style={{ size: FONT_SIZE.s }}
-                    />
-                  )}
-                </div>
-              </CSSTransition>
-            </SwitchTransition>
+            <AnimateState state={String(loading)}>
+              <div className="button-content">
+                {loading ? (
+                  <Spinner />
+                ) : (
+                  <Icon
+                    iconName="fa-solid fa-magnifying-glass"
+                    style={{ size: FONT_SIZE.s }}
+                  />
+                )}
+              </div>
+            </AnimateState>
           </Button>
         </form>
       </div>

@@ -1,6 +1,6 @@
 import { useDarkMode } from '@/hooks'
 import { NewStyled } from './New.styled'
-import { ConfirmationButton, Icon } from '@/components'
+import { ConfirmationButton } from '@/components'
 import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
 import { css } from 'styled-components'
 

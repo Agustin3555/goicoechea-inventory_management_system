@@ -50,7 +50,7 @@ const CheckboxField = ({
         />
         <div className="fake-input">
           <div className="box">
-            <div className="icon-HC">
+            <div className="icon-MC">
               <Icon
                 iconName="fa-solid fa-check"
                 style={{

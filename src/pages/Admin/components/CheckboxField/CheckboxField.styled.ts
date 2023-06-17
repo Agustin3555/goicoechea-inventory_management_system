@@ -49,7 +49,7 @@ interface Provider {
       }
       box: {
         borderColor: Value
-        iconHC: {
+        iconMC: {
           color: Value
         }
       }
@@ -133,7 +133,7 @@ export namespace CheckboxFieldStyled {
           },
           box: {
             borderColor: colorAlphaAdapter(normalizedProps.mainColor, 1),
-            iconHC: {
+            iconMC: {
               color: normalizedProps.mainColor,
             },
           },
@@ -178,7 +178,7 @@ export namespace CheckboxFieldStyled {
             border-color: ${({ p }) =>
               p.checkbox.input.checked.fakeInput.box.borderColor};
 
-            .icon-HC {
+            .icon-MC {
               opacity: 1;
               transform: initial;
             }
@@ -219,8 +219,8 @@ export namespace CheckboxFieldStyled {
           transition: background-color ${MICROINTERACTION.s} ease-out,
             border-color ${MICROINTERACTION.s} ease-out;
 
-          .icon-HC {
-            color: ${({ p }) => p.checkbox.fakeInput.box.iconHC.color};
+          .icon-MC {
+            color: ${({ p }) => p.checkbox.fakeInput.box.iconMC.color};
             opacity: 0;
             transform: scale(0);
             transition: opacity ${MICROINTERACTION.s} ease-out,

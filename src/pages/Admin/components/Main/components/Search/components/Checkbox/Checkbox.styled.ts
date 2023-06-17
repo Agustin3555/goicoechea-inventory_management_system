@@ -9,38 +9,62 @@ import {
   colorAlphaAdapter,
   shadowAdapter,
 } from '@/styles'
+import { BRIGHT_2, DARK_2, MAIN_BORDER_RADIUS, MAIN_GAP } from '@/tools'
 
 interface NormalizedProps {
-  color: {
+  mainColor: Color
+  inactiveValueColor: {
     dark: Color
     bright: Color
   }
-  backgroundColor: {
+  inactiveBackgroundColor: {
     dark: Color
     bright: Color
   }
 }
 
 interface Provider {
+  input: {
+    checked: {
+      fakeInput: {
+        backgroundColor: Value
+        box: {
+          borderColor: Value
+        }
+      }
+    }
+  }
   fakeInput: {
-    gap: Value
-    padding: Value
-    paddingRight: Value
     backgroundColor: Value
     text: {
       color: Value
+    }
+    box: {
+      borderColor: Value
+      iconMC: {
+        color: Value
+      }
     }
   }
   styled?: FlattenSimpleInterpolation
 }
 
+const VALUE_SIZE = MAIN_GAP
+const BOX_DIMENSION = FONT_SIZE.m
+
+const height = `calc(${MAIN_GAP} * 3)`
+const padding = `calc((${height} - ${BOX_DIMENSION}) * 0.5)`
+const internalDif = `calc((${BOX_DIMENSION} - ${VALUE_SIZE}) * 0.5)`
+const gap = `calc(${internalDif} + ${padding})`
+
 export namespace CheckboxStyled {
   export interface Props {
-    color?: {
+    mainColor?: Color
+    inactiveValueColor?: {
       dark?: Color
       bright?: Color
     }
-    backgroundColor?: {
+    inactiveBackgroundColor?: {
       dark?: Color
       bright?: Color
     }
@@ -49,36 +73,46 @@ export namespace CheckboxStyled {
 
   export const adapter = (darkMode: boolean, style?: Props): Provider => {
     const normalizedProps: NormalizedProps = {
-      color: {
-        dark: style?.color?.dark || COLOR.g_4,
-        bright: style?.color?.bright || COLOR.g_12,
+      mainColor: style?.mainColor || COLOR.a,
+      inactiveValueColor: {
+        dark: style?.inactiveValueColor?.dark || COLOR.g_4,
+        bright: style?.inactiveValueColor?.bright || COLOR.g_12,
       },
-      backgroundColor: {
-        dark: style?.backgroundColor?.dark || COLOR.g_14,
-        bright: style?.backgroundColor?.bright || COLOR.g_0,
+      inactiveBackgroundColor: {
+        dark: style?.inactiveBackgroundColor?.dark || DARK_2,
+        bright: style?.inactiveBackgroundColor?.bright || BRIGHT_2,
       },
     }
 
     // #region Auxiliary vars
 
-    const checkboxDimension = FONT_SIZE.m
-    const fontSize = FONT_SIZE['2xs']
-    const internalDif = `calc((${checkboxDimension} - ${fontSize}) * 0.5)`
-    const padding = `calc(${fontSize} - ${internalDif})`
-    const gap = `calc(${internalDif} + ${padding})`
-
     // #endregion
 
     return {
+      input: {
+        checked: {
+          fakeInput: {
+            backgroundColor: normalizedProps.mainColor,
+            box: {
+              borderColor: colorAlphaAdapter(normalizedProps.mainColor, 0),
+            },
+          },
+        },
+      },
       fakeInput: {
-        gap,
-        padding,
-        paddingRight: gap,
         backgroundColor: darkMode
-          ? normalizedProps.backgroundColor.dark
-          : normalizedProps.backgroundColor.bright,
+          ? normalizedProps.inactiveBackgroundColor.dark
+          : normalizedProps.inactiveBackgroundColor.bright,
         text: {
-          color: darkMode ? normalizedProps.color.dark : normalizedProps.color.bright,
+          color: darkMode
+            ? normalizedProps.inactiveValueColor.dark
+            : normalizedProps.inactiveValueColor.bright,
+        },
+        box: {
+          borderColor: colorAlphaAdapter(normalizedProps.mainColor, 1),
+          iconMC: {
+            color: normalizedProps.mainColor,
+          },
         },
       },
       styled: style?.styled,
@@ -86,6 +120,7 @@ export namespace CheckboxStyled {
   }
 
   export const Component = styled.div<{ p: Provider }>`
+    height: ${height};
     position: relative;
 
     :hover .fake-input {
@@ -101,14 +136,13 @@ export namespace CheckboxStyled {
       cursor: pointer;
 
       :checked + .fake-input {
-        background-color: ${COLOR.a};
+        background-color: ${({ p }) => p.input.checked.fakeInput.backgroundColor};
 
-        .checkbox {
+        .box {
           background-color: ${COLOR.g_0};
-          // TODO: test
-          border-color: ${colorAlphaAdapter(COLOR.a, 0)};
+          border-color: ${({ p }) => p.input.checked.fakeInput.box.borderColor};
 
-          .icon-container {
+          .icon-MC {
             opacity: 1;
             transform: initial;
           }
@@ -123,33 +157,34 @@ export namespace CheckboxStyled {
     .fake-input {
       display: flex;
       align-items: center;
-      gap: ${({ p }) => p.fakeInput.gap};
-      padding: ${({ p }) => p.fakeInput.padding};
-      padding-right: ${({ p }) => p.fakeInput.paddingRight};
-      border-radius: ${NOT_FONT_SIZE['4xs']};
+      gap: ${gap};
+      height: 100%;
+      padding: ${padding};
+      padding-right: ${gap};
+      border-radius: ${MAIN_BORDER_RADIUS};
       background-color: ${({ p }) => p.fakeInput.backgroundColor};
       overflow: hidden;
       transition: background-color ${MICROINTERACTION.s} ease-out,
         box-shadow ${MICROINTERACTION.s} ease-out;
 
-      .checkbox {
+      .box {
         display: flex;
         justify-content: center;
         align-items: center;
         flex-grow: 0;
         flex-shrink: 0;
-        width: ${FONT_SIZE.m};
-        height: ${FONT_SIZE.m};
+        width: ${BOX_DIMENSION};
+        height: ${BOX_DIMENSION};
         background-color: transparent;
         border-width: ${NOT_FONT_SIZE['6xs']};
         border-style: solid;
-        border-color: ${colorAlphaAdapter(COLOR.a, 1)};
+        border-color: ${({ p }) => p.fakeInput.box.borderColor};
         border-radius: ${NOT_FONT_SIZE['5xs']};
         transition: background-color ${MICROINTERACTION.s} ease-out,
           border-color ${MICROINTERACTION.s} ease-out;
 
-        .icon-container {
-          color: ${COLOR.a};
+        .icon-MC {
+          color: ${({ p }) => p.fakeInput.box.iconMC.color};
           opacity: 0;
           transform: scale(0);
           transition: opacity ${MICROINTERACTION.s} ease-out,
@@ -158,10 +193,10 @@ export namespace CheckboxStyled {
       }
 
       .text {
+        display: block;
         color: ${({ p }) => p.fakeInput.text.color};
-        text-overflow: ellipsis;
-        overflow: hidden;
-        transition: color ${MICROINTERACTION.s} ease-out;
+        transition: color ${MICROINTERACTION.s} ease-out,
+          opacity ${MICROINTERACTION.xs} ease-out;
       }
     }
 

@@ -1,22 +1,28 @@
 import styled from 'styled-components'
-import { COLOR, FONT_SIZE, MICROINTERACTION, NOT_FONT_SIZE, Value } from '@/styles'
+import { COLOR, MICROINTERACTION, NOT_FONT_SIZE, Value } from '@/styles'
 import { MAIN_GAP } from '@/tools'
 
 interface Provider {
-  height: Value
+  minHeight: Value
+  color: Value
   backgroundColor: Value
 }
 
 export namespace ItemStyled {
-  export const adapter = (darkMode: boolean, expanded: boolean, height: number): Provider => {
+  export const adapter = (
+    darkMode: boolean,
+    expanded: boolean,
+    height: number
+  ): Provider => {
     // #region Auxiliary vars
 
     // #endregion
 
     return {
-      height: `calc(${FONT_SIZE.xs} * 4 ${
-        expanded ? `+ ${NOT_FONT_SIZE['6xs']} + ${FONT_SIZE.xs} + ${height}px` : ''
+      minHeight: `calc(${MAIN_GAP} * 4 ${
+        expanded ? `+ ${NOT_FONT_SIZE['6xs']} + ${MAIN_GAP} + ${height}px` : ''
       })`,
+      color: darkMode ? COLOR.g_4 : COLOR.g_12,
       backgroundColor: darkMode ? COLOR.g_14 : COLOR.g_0,
     }
   }
@@ -24,29 +30,29 @@ export namespace ItemStyled {
   export const Component = styled.div<{ p: Provider }>`
     display: flex;
     flex-direction: column;
-    gap: calc(${FONT_SIZE.xs} * 0.5);
-    min-height: ${({ p }) => p.height};
-    padding: calc(${FONT_SIZE.xs} * 0.5);
+    min-height: ${({ p }) => p.minHeight};
+    color: ${({ p }) => p.color};
     border-radius: ${NOT_FONT_SIZE['3xs']};
     background-color: ${({ p }) => p.backgroundColor};
     overflow: hidden;
-    transition: min-height ${MICROINTERACTION.s} ease-out,
-      background-color ${MICROINTERACTION.s} ease-out;
+    transition: min-height 0.6s ease, background-color ${MICROINTERACTION.s} ease-out;
 
     .item-head {
+      padding: calc(${MAIN_GAP} * 0.5);
       display: flex;
       justify-content: space-between;
-      gap: calc(${FONT_SIZE.xs} * 0.5);
-
-      .actions {
-        display: flex;
-        gap: calc(${FONT_SIZE.xs} * 0.5);
-        opacity: 0;
-        transition: opacity ${MICROINTERACTION.s} ease-out;
-      }
+      gap: calc(${MAIN_GAP} * 0.5);
 
       :hover .actions {
         opacity: 1;
+      }
+
+      .actions {
+        display: flex;
+        gap: calc(${MAIN_GAP} * 0.5);
+        flex-grow: 1;
+        opacity: 0;
+        transition: opacity ${MICROINTERACTION.s} ease-out;
       }
 
       @media (pointer: coarse) {
@@ -59,6 +65,7 @@ export namespace ItemStyled {
     .properties {
       display: flex;
       gap: ${MAIN_GAP};
+      padding: ${MAIN_GAP};
     }
   `
 }

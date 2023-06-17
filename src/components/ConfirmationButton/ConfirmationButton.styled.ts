@@ -2,8 +2,6 @@ import styled, { FlattenSimpleInterpolation } from 'styled-components'
 import {
   COLOR,
   Color,
-  colorAdapter,
-  Elevation,
   FONT_SIZE,
   FontSize,
   MICROINTERACTION,
@@ -57,7 +55,7 @@ export namespace ConfirmationButtonStyled {
   export const adapter = (
     {
       fontSize = MAIN_GAP,
-      tight = false,
+      tight = true,
       borderRadius = MAIN_BORDER_RADIUS,
       color,
       primaryBackgroundColor = {
@@ -120,7 +118,7 @@ export namespace ConfirmationButtonStyled {
       background-color ${MICROINTERACTION.s} ease-out,
       box-shadow ${MICROINTERACTION.s} ease-out;
 
-    transition :hover {
+    :hover {
       box-shadow: ${shadowAdapter(2)};
     }
 

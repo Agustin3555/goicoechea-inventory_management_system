@@ -1,14 +1,14 @@
-import { ConfirmationButton, Icon, Separator } from '@/components'
+import { Button, ConfirmationButton, Icon, Separator } from '@/components'
 import { useChildAdjustment, useDarkMode } from '@/hooks'
-import { useState } from 'react'
+import { MouseEventHandler, useState } from 'react'
 import Checkbox from '../Checkbox/Checkbox'
-import CheckboxButton from '../CheckboxButton/CheckboxButton'
-import { AppStore } from '@/redux/store'
 import { useDispatch, useSelector } from 'react-redux'
-import { toggleSelectItem } from '@/redux'
-import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
+import { COLOR, MICROINTERACTION, NOT_FONT_SIZE } from '@/styles'
 import { ItemStyled } from './Item.styled'
 import { css } from 'styled-components'
+import { SECTION_KEYS } from '@/models'
+import { AppStore, toggleSelectItem } from '@/redux'
+import { MAIN_GAP } from '@/tools'
 
 const Item = ({
   sectionKey,
@@ -16,7 +16,7 @@ const Item = ({
   title,
   properties,
 }: {
-  sectionKey: string
+  sectionKey: SECTION_KEYS
   id: number
   title: string
   properties: JSX.Element | JSX.Element[]
@@ -27,46 +27,76 @@ const Item = ({
   const [expanded, setExpanded] = useState(false)
   const { childRef, childHeight } = useChildAdjustment()
 
-  const selectOne = () => {
+  const handleSelectItem = () => {
     dispatch(toggleSelectItem({ sectionKey, id }))
+  }
+
+  const handleToggleExpandClick = () => {
+    setExpanded(!expanded)
   }
 
   return (
     <ItemStyled.Component p={ItemStyled.adapter(darkMode, expanded, childHeight)}>
-      <div className="item-head" onClick={() => setExpanded(!expanded)}>
+      <div className="item-head">
         <Checkbox
           id={id.toString()}
-          title={title}
+          title={`Seleccionar ${title}`}
+          text={title}
           checked={item.meta.selected}
-          handleChange={selectOne}
+          handleChange={handleSelectItem}
           style={{
-            color: { dark: COLOR.g_0, bright: COLOR.g_16 },
-            backgroundColor: { dark: COLOR.g_13, bright: COLOR.g_1 },
+            inactiveValueColor: { dark: COLOR.g_0, bright: COLOR.g_16 },
+            inactiveBackgroundColor: { dark: COLOR.g_15, bright: COLOR.g_1 },
             styled: css`
-              width: ${NOT_FONT_SIZE['4xl']};
+              width: ${NOT_FONT_SIZE['3xl']};
             `,
           }}
         />
         <div className="actions">
-          <CheckboxButton style={{ backgroundColor: { dark: COLOR.g_13, bright: COLOR.g_1 } }}>
-            <Icon iconName="fa-solid fa-pen" style={{ size: FONT_SIZE.xs }} />
-          </CheckboxButton>
-          <ConfirmationButton
-            trigger={() => console.log('Hola')}
+          <Button
+            title={expanded ? 'Cerrar' : 'Abrir'}
+            handleClick={handleToggleExpandClick}
             style={{
-              padding: FONT_SIZE.xs,
-              tight: true,
-              borderRadius: NOT_FONT_SIZE['4xs'],
+              padding: MAIN_GAP,
               backgroundColor: { dark: COLOR.g_13, bright: COLOR.g_1 },
+              styled: css`
+                display: flex;
+                justify-content: center;
+                flex-grow: 1;
+              `,
             }}
           >
-            <Icon iconName="fa-solid fa-trash" style={{ size: FONT_SIZE.xs }} />
-          </ConfirmationButton>
+            <Icon
+              iconName="fa-solid fa-chevron-down"
+              style={{
+                styled: css`
+                  transition: transform ${MICROINTERACTION.s} ease-out;
+                  transform: rotate(${expanded ? '-180' : '0'}deg);
+                `,
+              }}
+            />
+          </Button>
+          <ConfirmationButton
+            title={`Borrar ${title}`}
+            iconName="fa-solid fa-trash"
+            trigger={() => console.log('Hola')}
+            style={{
+              borderRadius: NOT_FONT_SIZE['4xs'],
+              primaryBackgroundColor: { dark: COLOR.g_13, bright: COLOR.g_1 },
+            }}
+          />
         </div>
       </div>
-      <div style={{ flexShrink: 1 }}>
-        <Separator style={{ invert: true, backgroundColor: { dark: COLOR.g_8 } }} />
-      </div>
+      <Separator
+        style={{
+          invert: true,
+          backgroundColor: { dark: COLOR.g_8 },
+          styled: css`
+            flex-shrink: 0;
+            flex-grow: 0;
+          `,
+        }}
+      />
       <div ref={childRef} className="properties">
         {properties}
       </div>

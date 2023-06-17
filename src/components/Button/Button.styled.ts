@@ -52,7 +52,7 @@ export namespace ButtonStyled {
   export const adapter = (style: Props, darkMode: boolean): Provider => {
     const normalizedProps: NormalizedProps = {
       padding: style.padding || FONT_SIZE.s,
-      tight: style.tight || false,
+      tight: style.tight || true,
       borderRadius: style.borderRadius || MAIN_BORDER_RADIUS,
       backgroundColor: {
         dark: style.backgroundColor.dark,

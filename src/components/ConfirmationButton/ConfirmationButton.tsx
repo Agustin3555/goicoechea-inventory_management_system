@@ -1,10 +1,8 @@
 import { useChildAdjustment, useDarkMode } from '@/hooks'
 import { ButtonHTMLAttributes, useEffect, useState } from 'react'
 import { ConfirmationButtonStyled } from './ConfirmationButton.styled'
-import Spinner from '../Spinner/Spinner'
-import AnimateState from '../AnimateState/AnimateState'
 import { sleep } from '@/tools'
-import Icon from '../Icon/Icon'
+import { AnimateState, Icon, Spinner } from '..'
 
 export enum STATUS {
   init,
@@ -12,6 +10,8 @@ export enum STATUS {
   success,
   error,
 }
+
+// TODO: tiene fallos en las animaciones
 
 const ConfirmationButton = ({
   title,
@@ -30,6 +30,8 @@ const ConfirmationButton = ({
 }) => {
   const darkMode = useDarkMode()
   const [status, setStatus] = useState<STATUS>(STATUS.init)
+
+  // TODO: trato de que el boton siempre tenga en mismo ancho
   const { childRef, childWidth } = useChildAdjustment()
   const [contentWidth, setContentWidth] = useState(0)
 
@@ -86,11 +88,7 @@ const ConfirmationButton = ({
         <div className="loader" />
       </div>
       <AnimateState state={String(status)}>
-        <div
-          className="confirmation-button-AC"
-          ref={childRef}
-          style={{ width: contentWidth }}
-        >
+        <div className="confirmation-button-AC" ref={childRef}>
           {componentsByStatus[status]}
         </div>
       </AnimateState>
