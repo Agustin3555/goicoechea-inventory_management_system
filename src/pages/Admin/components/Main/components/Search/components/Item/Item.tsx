@@ -1,38 +1,105 @@
-import { Button, ConfirmationButton, Icon, Separator } from '@/components'
+import {
+  AnimateState,
+  Button,
+  ConfirmationButton,
+  Icon,
+  Spinner,
+} from '@/components'
 import { useChildAdjustment, useDarkMode } from '@/hooks'
-import { MouseEventHandler, useState } from 'react'
+import { useMemo, useState } from 'react'
 import Checkbox from '../Checkbox/Checkbox'
 import { useDispatch, useSelector } from 'react-redux'
-import { COLOR, MICROINTERACTION, NOT_FONT_SIZE } from '@/styles'
+import { COLOR, FONT_SIZE, MICROINTERACTION, NOT_FONT_SIZE } from '@/styles'
 import { ItemStyled } from './Item.styled'
 import { css } from 'styled-components'
 import { SECTION_KEYS } from '@/models'
-import { AppStore, toggleSelectItem } from '@/redux'
-import { MAIN_GAP } from '@/tools'
+import { AppStore, loadItemInfo, toggleSelectItem } from '@/redux'
+import { AppError, MAIN_GAP, sleep } from '@/tools'
+import { ResourceRef } from '@/pages/Admin/tools'
+import { LoadItemData, LoadProperties } from '../../tools'
+
+export enum STATUS {
+  loading,
+  error,
+  ready,
+}
 
 const Item = ({
   sectionKey,
-  id,
-  title,
-  properties,
+  resourceRef,
+  loadItemData,
+  loadProperties,
 }: {
   sectionKey: SECTION_KEYS
-  id: number
-  title: string
-  properties: JSX.Element | JSX.Element[]
+  resourceRef: ResourceRef
+  loadItemData: LoadItemData
+  loadProperties: LoadProperties
 }) => {
   const darkMode = useDarkMode()
   const dispatch = useDispatch()
-  const item = useSelector((store: AppStore) => store.searchedData[sectionKey][id])
-  const [expanded, setExpanded] = useState(false)
   const { childRef, childHeight } = useChildAdjustment()
+  const [expanded, setExpanded] = useState(false)
+  const [status, setStatus] = useState(STATUS.loading)
+  const { id, text } = useMemo(() => resourceRef, [])
+  const item = useSelector((store: AppStore) => store.searchedData[sectionKey][id])
 
   const handleSelectItem = () => {
     dispatch(toggleSelectItem({ sectionKey, id }))
   }
 
-  const handleToggleExpandClick = () => {
-    setExpanded(!expanded)
+  const handleToggleExpandClick = async () => {
+    setExpanded(prevExpanded => !prevExpanded)
+
+    if (!expanded && status !== STATUS.ready) {
+      if (item.info) {
+        setStatus(STATUS.ready)
+        return
+      }
+
+      setStatus(STATUS.loading)
+
+      await sleep(500)
+      const itemData = await loadItemData(id)
+
+      if (itemData && !(itemData instanceof AppError)) {
+        dispatch(loadItemInfo({ sectionKey, id, info: itemData }))
+
+        setStatus(STATUS.ready)
+        return
+      }
+
+      setStatus(STATUS.error)
+    }
+  }
+
+  const handleDeleteItem = async () => {
+    // TODO: TASK. Eliminar
+
+    return false
+  }
+
+  const componentsByStatus = {
+    [STATUS.loading]: (
+      <div className="icon-C">
+        <Spinner
+          style={{
+            semicircleBackgroundColor: { dark: COLOR.g_10, bright: COLOR.g_4 },
+            lineBackgroundColor: { dark: COLOR.g_2, bright: COLOR.g_12 },
+          }}
+        />
+      </div>
+    ),
+    [STATUS.error]: (
+      <div className="icon-C">
+        <Icon
+          iconName="fa-solid fa-xmark"
+          style={{
+            size: FONT_SIZE.m,
+          }}
+        />
+      </div>
+    ),
+    [STATUS.ready]: <div className="properties">{loadProperties(id, item)}</div>,
   }
 
   return (
@@ -40,8 +107,8 @@ const Item = ({
       <div className="item-head">
         <Checkbox
           id={id.toString()}
-          title={`Seleccionar ${title}`}
-          text={title}
+          title={`Seleccionar ${text}`}
+          text={text}
           checked={item.meta.selected}
           handleChange={handleSelectItem}
           style={{
@@ -77,9 +144,9 @@ const Item = ({
             />
           </Button>
           <ConfirmationButton
-            title={`Borrar ${title}`}
+            title={`Borrar ${text}`}
             iconName="fa-solid fa-trash"
-            trigger={() => console.log('Hola')}
+            trigger={handleDeleteItem}
             style={{
               borderRadius: NOT_FONT_SIZE['4xs'],
               primaryBackgroundColor: { dark: COLOR.g_13, bright: COLOR.g_1 },
@@ -87,18 +154,12 @@ const Item = ({
           />
         </div>
       </div>
-      <Separator
-        style={{
-          invert: true,
-          backgroundColor: { dark: COLOR.g_8 },
-          styled: css`
-            flex-shrink: 0;
-            flex-grow: 0;
-          `,
-        }}
-      />
-      <div ref={childRef} className="properties">
-        {properties}
+      <div ref={childRef} className="item-body">
+        <AnimateState state={String(status)}>
+          <div ref={childRef} className="body-AC">
+            {componentsByStatus[status]}
+          </div>
+        </AnimateState>
       </div>
     </ItemStyled.Component>
   )

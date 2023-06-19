@@ -30,19 +30,19 @@ export namespace ProductModels {
   }
 
   export interface PublicData {
-    category: ResourceRef
+    category: ResourceRef | null
     manufacturer: ResourceRef | null
     description: string | null
-    unitPrice: number
-    isImported: boolean
+    price: number
+    imported: boolean
     discontinued: boolean
-    booleanChars: BooleanChar[]
-    quantityChars: QuantityChar[]
-    fractionChars: FractionChar[]
-    stringChars: StringChar[]
+    booleanChars: BooleanChar[] | null
+    quantityChars: QuantityChar[] | null
+    fractionChars: FractionChar[] | null
+    stringChars: StringChar[] | null
   }
 
-  export interface PrivateData {
+  export interface PrivateData extends PublicData {
     stock: number
     minStock: number
     createdByUser: ResourceRef

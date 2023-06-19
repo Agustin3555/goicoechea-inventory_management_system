@@ -16,15 +16,65 @@ export namespace ProductAdapters {
   }
 
   export const getOne: {
-    output: OutputAdapter<any, ProductModels.PublicData>
+    output: OutputAdapter<any, ProductModels.PrivateData>
   } = {
     output: response => {
-      const convertedResource: ProductModels.PublicData = {
-        lastName: response.lastName,
-        email: response.email,
-        role: response.role,
+      const convertedResource: ProductModels.PrivateData = {
+        description: response.description,
+        stock: response.stock,
+        minStock: response.minStock,
+        price: response.price,
+        imported: response.imported,
+        discontinued: response.discontinued,
         createdAt: response.createdAt,
         updatedAt: response.updatedAt,
+        category: response.category && {
+          id: response.category.id,
+          text: response.category.name,
+        },
+        manufacturer: response.manufacturer && {
+          id: response.manufacturer.id,
+          text: response.manufacturer.name,
+        },
+        createdByUser: {
+          id: response.createdByUser.id,
+          text: [response.createdByUser.name, response.createdByUser.lastName].join(
+            ', '
+          ),
+        },
+        updatedByUser: response.updatedByUser && {
+          id: response.updatedByUser.id,
+          text: [response.updatedByUser.name, response.updatedByUser.lastName].join(
+            ', '
+          ),
+        },
+        booleanChars:
+          response.booleanFields &&
+          response.booleanFields.map((item: any) => ({
+            key: item.name,
+            value: item.value,
+          })),
+        quantityChars:
+          response.quantityFields &&
+          response.quantityFields.map((item: any) => ({
+            key: item.name,
+            value: item.value,
+            unit: item.metricUnit,
+          })),
+        fractionChars:
+          response.fractionFields &&
+          response.fractionFields.map((item: any) => ({
+            key: item.name,
+            numeratorValue: item.numeratorValue,
+            denominatorValue: item.denominatorValue,
+            unit: item.metricUnit,
+          })),
+        stringChars:
+          response.stringFields &&
+          response.stringFields.map((item: any) => ({
+            key: item.name,
+            value: item.value,
+          })),
       }
 
       return convertedResource

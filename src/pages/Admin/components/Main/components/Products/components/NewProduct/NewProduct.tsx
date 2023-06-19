@@ -1,6 +1,6 @@
 import { CheckboxField, InputField, SelectorField } from '@/pages/Admin/components'
 import { New } from '../../..'
-import { AppError, ERRORS, ERROR_MATCHER, sleep } from '@/tools'
+import { ERRORS, ERROR_MATCHER } from '@/tools'
 import {
   BooleanFieldGroupGenerator,
   FractionFieldGroupGenerator,
@@ -14,12 +14,13 @@ import {
   SECTION_KEYS,
   SingleField,
 } from '@/models'
-import { buildAddress, errorsExist } from '@/pages/Admin/tools'
 import {
-  CategoryServices,
-  ManufacturerServices,
-  ProductServices,
-} from '@/pages/Admin/services'
+  buildAddress,
+  categoryLoadOptions,
+  errorsExist,
+  manufacturerLoadOptions,
+} from '@/pages/Admin/tools'
+import { ProductServices } from '@/pages/Admin/services'
 import { useGetInputError, useGetInputValue } from '@/pages/Admin/hooks'
 import { useDispatch } from 'react-redux'
 import { MessageType, enqueueMessage } from '@/redux'
@@ -88,29 +89,6 @@ const NewProduct = () => {
     })
 
     return response === true
-  }
-
-  const categoryLoadOptions = async () => {
-    const categories = await CategoryServices.getAll()
-
-    if (!categories || categories instanceof AppError) return categories as AppError
-
-    return categories.map(item => ({
-      id: item.id.toString(),
-      title: item.name,
-    }))
-  }
-
-  const manufacturerLoadOptions = async () => {
-    const manufacturers = await ManufacturerServices.getAll()
-
-    if (!manufacturers || manufacturers instanceof AppError)
-      return manufacturers as AppError
-
-    return manufacturers.map(item => ({
-      id: item.id.toString(),
-      title: item.name,
-    }))
   }
 
   return (

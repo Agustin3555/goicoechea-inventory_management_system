@@ -13,6 +13,14 @@ export namespace ProductServices {
     return adaptedResponse
   }
 
+  export const getOne = async (id: number) => {
+    const response = await privateInstance.get(`${collection}/${id}`)
+    if (!response || response instanceof AppError) return response as AppError
+
+    const adaptedResponse = ProductAdapters.getOne.output(response.data)
+    return adaptedResponse
+  }
+
   export const getBooleanCharSuggestions = async (
     data: ProductModels.GetBooleanCharSuggestionsData
   ) => {

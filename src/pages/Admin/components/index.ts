@@ -6,7 +6,6 @@ export { default as InputSelectorField } from './InputSelectorField/InputSelecto
 export { default as SelectorField } from './SelectorField/SelectorField'
 export { default as ErrorList } from './ErrorList/ErrorList'
 export { default as ItemProperty } from './ItemProperty/ItemProperty'
-export { default as InputEdit } from './InputEdit/InputEdit'
 export { default as CheckboxField } from './CheckboxField/CheckboxField'
 export { default as Generator } from './Generator/Generator'
 export { default as GeneratorItem } from './GeneratorItem/GeneratorItem'

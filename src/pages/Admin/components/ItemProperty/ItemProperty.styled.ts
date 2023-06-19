@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { MAIN_GAP } from '@/tools'
-import { COLOR, FONT_SIZE } from '@/styles'
+import { COLOR } from '@/styles'
 
 interface Provider {}
 
@@ -27,6 +27,7 @@ export namespace ItemPropertyStyled {
 
     .top .value {
       color: ${COLOR.g_0};
+      line-height: calc(${MAIN_GAP} * 1.5);
     }
   `
 }

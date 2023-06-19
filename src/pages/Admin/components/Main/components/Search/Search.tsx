@@ -5,21 +5,23 @@ import { FormEventHandler, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Checkbox, Item } from './components'
 import { AppError, sleep } from '@/tools'
-import { ResourceRef } from '@/pages/Admin/tools'
 import { ItemData, setSearchedData, setSelectAll } from '@/redux'
 import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
 import { SearchStyled } from './Search.styled'
 import { css } from 'styled-components'
 import { SECTION_KEYS } from '@/models'
+import { LoadItemData, LoadItems, LoadProperties } from './tools'
 
 const Search = ({
   sectionKey,
   loadItems,
-  children,
+  loadItemData,
+  loadProperties,
 }: {
   sectionKey: SECTION_KEYS
-  loadItems: () => Promise<AppError | ResourceRef[]>
-  children: JSX.Element | JSX.Element[]
+  loadItems: LoadItems
+  loadItemData: LoadItemData
+  loadProperties: LoadProperties
 }) => {
   const darkMode = useDarkMode()
   const dispatch = useDispatch()
@@ -52,7 +54,6 @@ const Search = ({
 
     setLoading(true)
 
-    await sleep(500)
     const items = await loadItems()
 
     if (items && !(items instanceof AppError)) {
@@ -125,10 +126,10 @@ const Search = ({
       <div className="items">
         {items.map(item => (
           <Item
-            properties={children}
             sectionKey={sectionKey}
-            id={item.id}
-            title={item.data.meta.text}
+            resourceRef={{ id: item.id, text: item.data.meta.text }}
+            loadItemData={loadItemData}
+            loadProperties={loadProperties}
             key={item.id}
           />
         ))}

@@ -3,7 +3,7 @@ import { ResourceRef } from '@/pages/Admin/tools'
 import { getDeepCopy } from '@/tools'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-interface Info {
+interface ItemInfo {
   [key: string]: any
 }
 
@@ -12,7 +12,7 @@ export interface ItemData {
     selected: boolean
     text: string
   }
-  info?: Info
+  info?: ItemInfo
 }
 
 interface Item {
@@ -60,7 +60,8 @@ export const searchedDataSlice = createSlice({
       const { sectionKey, id } = action.payload
       const stateCopy = getDeepCopy(state)
 
-      stateCopy[sectionKey][id].meta.selected = !stateCopy[sectionKey][id].meta.selected
+      stateCopy[sectionKey][id].meta.selected =
+        !stateCopy[sectionKey][id].meta.selected
 
       return stateCopy
     },
@@ -85,7 +86,7 @@ export const searchedDataSlice = createSlice({
       action: PayloadAction<{
         sectionKey: SECTION_KEYS
         id: number
-        info: Info
+        info: ItemInfo
       }>
     ) => {
       const { sectionKey, id, info } = action.payload
@@ -95,10 +96,32 @@ export const searchedDataSlice = createSlice({
 
       return stateCopy
     },
+    setItemProperty: (
+      state,
+      action: PayloadAction<{
+        sectionKey: SECTION_KEYS
+        id: number
+        propertyKey: string
+        value: any
+      }>
+    ) => {
+      const { sectionKey, id, propertyKey, value } = action.payload
+      const stateCopy = getDeepCopy(state)
+
+      let propertyValue = stateCopy[sectionKey][id].info?.[propertyKey]
+      if (propertyValue) propertyValue = value
+
+      return stateCopy
+    },
   },
 })
 
-export const { setSearchedData, toggleSelectItem, setSelectAll, loadItemInfo } =
-  searchedDataSlice.actions
+export const {
+  setSearchedData,
+  toggleSelectItem,
+  setSelectAll,
+  loadItemInfo,
+  setItemProperty,
+} = searchedDataSlice.actions
 
 export default searchedDataSlice.reducer
