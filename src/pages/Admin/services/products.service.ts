@@ -9,7 +9,15 @@ export namespace ProductServices {
     const response = await publicInstance.get(collection)
     if (!response || response instanceof AppError) return response as AppError
 
-    const adaptedResponse = ProductAdapters.getAll.output(response.data)
+    const adaptedResponse = ProductAdapters.resourceSearch.output(response.data)
+    return adaptedResponse
+  }
+
+  export const getByName = async (name: string) => {
+    const response = await publicInstance.get(`${collection}/${name}`)
+    if (!response || response instanceof AppError) return response as AppError
+
+    const adaptedResponse = ProductAdapters.resourceSearch.output(response.data)
     return adaptedResponse
   }
 
@@ -101,5 +109,15 @@ export namespace ProductServices {
     if (!response || response instanceof AppError) return response as AppError
 
     return true
+  }
+
+  export const edit = async (id: number, data: ProductModels.EditData) => {
+    const adaptedInput = ProductAdapters.edit.input(data)
+
+    const response = await privateInstance.put(`${collection}/${id}`, adaptedInput)
+    if (!response || response instanceof AppError) return response as AppError
+
+    const adaptedResponse = ProductAdapters.edit.output(response.data)
+    return adaptedResponse
   }
 }

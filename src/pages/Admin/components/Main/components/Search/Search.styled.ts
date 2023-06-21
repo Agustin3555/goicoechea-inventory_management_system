@@ -59,11 +59,11 @@ export namespace SearchStyled {
       }
     }
 
-    .items {
+    .search-items {
       display: flex;
       flex-direction: column;
       gap: ${MAIN_GAP};
-      height: calc(100% - ${MAIN_GAP} - 109px);
+      max-height: calc(100% - ${MAIN_GAP} - 109px);
       overflow-y: scroll;
       padding-right: ${MAIN_GAP};
     }

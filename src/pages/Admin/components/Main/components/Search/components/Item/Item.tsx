@@ -6,7 +6,7 @@ import {
   Spinner,
 } from '@/components'
 import { useChildAdjustment, useDarkMode } from '@/hooks'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import Checkbox from '../Checkbox/Checkbox'
 import { useDispatch, useSelector } from 'react-redux'
 import { COLOR, FONT_SIZE, MICROINTERACTION, NOT_FONT_SIZE } from '@/styles'
@@ -40,7 +40,7 @@ const Item = ({
   const { childRef, childHeight } = useChildAdjustment()
   const [expanded, setExpanded] = useState(false)
   const [status, setStatus] = useState(STATUS.loading)
-  const { id, text } = useMemo(() => resourceRef, [])
+  const { id, text } = resourceRef
   const item = useSelector((store: AppStore) => store.searchedData[sectionKey][id])
 
   const handleSelectItem = () => {
@@ -99,7 +99,9 @@ const Item = ({
         />
       </div>
     ),
-    [STATUS.ready]: <div className="properties">{loadProperties(id, item)}</div>,
+    [STATUS.ready]: (
+      <div className="properties">{item && loadProperties(id, item)}</div>
+    ),
   }
 
   return (
@@ -143,7 +145,7 @@ const Item = ({
               }}
             />
           </Button>
-          <ConfirmationButton
+          {/* <ConfirmationButton
             title={`Borrar ${text}`}
             iconName="fa-solid fa-trash"
             trigger={handleDeleteItem}
@@ -151,14 +153,12 @@ const Item = ({
               borderRadius: NOT_FONT_SIZE['4xs'],
               primaryBackgroundColor: { dark: COLOR.g_13, bright: COLOR.g_1 },
             }}
-          />
+          /> */}
         </div>
       </div>
       <div ref={childRef} className="item-body">
         <AnimateState state={String(status)}>
-          <div ref={childRef} className="body-AC">
-            {componentsByStatus[status]}
-          </div>
+          <div className="body-AC">{componentsByStatus[status]}</div>
         </AnimateState>
       </div>
     </ItemStyled.Component>

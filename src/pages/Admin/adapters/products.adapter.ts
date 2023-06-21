@@ -1,8 +1,9 @@
 import { InputAdapter, OutputAdapter } from '@/tools'
 import { ProductModels } from '../models'
+import { asAppDate } from '../tools'
 
 export namespace ProductAdapters {
-  export const getAll: {
+  export const resourceSearch: {
     output: OutputAdapter<any[], ProductModels.MinData[]>
   } = {
     output: response => {
@@ -26,8 +27,8 @@ export namespace ProductAdapters {
         price: response.price,
         imported: response.imported,
         discontinued: response.discontinued,
-        createdAt: response.createdAt,
-        updatedAt: response.updatedAt,
+        createdAt: asAppDate(response.createdAt) as string,
+        updatedAt: asAppDate(response.updatedAt),
         category: response.category && {
           id: response.category.id,
           text: response.category.name,
@@ -38,15 +39,11 @@ export namespace ProductAdapters {
         },
         createdByUser: {
           id: response.createdByUser.id,
-          text: [response.createdByUser.name, response.createdByUser.lastName].join(
-            ', '
-          ),
+          text: response.createdByUser.email,
         },
         updatedByUser: response.updatedByUser && {
           id: response.updatedByUser.id,
-          text: [response.updatedByUser.name, response.updatedByUser.lastName].join(
-            ', '
-          ),
+          text: response.updatedByUser.email,
         },
         booleanChars:
           response.booleanFields &&
@@ -189,6 +186,53 @@ export namespace ProductAdapters {
           name: item.key,
           value: item.value,
         })),
+      }
+
+      return convertedResource
+    },
+  }
+
+  export const edit: {
+    input: InputAdapter<ProductModels.EditData, any>
+    output: OutputAdapter<any, ProductModels.EditResponse>
+  } = {
+    input: data => {
+      const convertedResource = {
+        name: data.name,
+        category: data.category,
+        manufacturer: data.manufacturer,
+        description: data.description,
+        stock: data.stock,
+        minStock: data.minStock,
+        price: data.price,
+        imported: data.imported,
+        discontinued: data.discontinued,
+      }
+
+      return convertedResource
+    },
+    output: response => {
+      const convertedResource: ProductModels.EditResponse = {
+        name: response.name,
+        description: response.description,
+        stock: response.stock,
+        minStock: response.minStock,
+        price: response.price,
+        imported: response.imported,
+        discontinued: response.discontinued,
+        category: response.category && {
+          id: response.category.id,
+          text: response.category.name,
+        },
+        manufacturer: response.manufacturer && {
+          id: response.manufacturer.id,
+          text: response.manufacturer.name,
+        },
+        updatedByUser: response.updatedByUser && {
+          id: response.updatedByUser.id,
+          text: response.updatedByUser.email,
+        },
+        updatedAt: asAppDate(response.updatedAt) as string,
       }
 
       return convertedResource

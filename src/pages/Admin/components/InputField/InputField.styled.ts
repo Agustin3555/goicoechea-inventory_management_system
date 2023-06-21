@@ -78,12 +78,14 @@ export namespace InputFieldStyled {
     display: flex;
     flex-direction: column;
     gap: ${MAIN_GAP};
+    min-width: calc(${MAIN_GAP} * 18);
 
     .field-title {
       color: ${({ p }) => p.fieldTitle.color};
     }
 
     .input {
+      width: 100%;
       height: calc(${MAIN_GAP} * 3);
       padding: calc((${MAIN_GAP} + (${borderWidth} * -1)) - ${NOT_FONT_SIZE['5xs']})
         calc(${MAIN_GAP} + (${borderWidth} * -1));

@@ -59,6 +59,7 @@ export enum PRODUCT_FIELD_KEYS {
   manufacturer = 'manufacturer',
   createdByUser = 'createdByUser',
   updatedByUser = 'updatedByUser',
+  chars = 'chars',
   booleanChars = 'booleanChars',
   quantityChars = 'quantityChars',
   fractionChars = 'fractionChars',
@@ -162,6 +163,18 @@ export const SECTIONS: {
       },
     },
     fields: {
+      [PRODUCT_FIELD_KEYS.createdAt]: {
+        title: 'Creación',
+      },
+      [PRODUCT_FIELD_KEYS.updatedAt]: {
+        title: 'Última actualización',
+      },
+      [PRODUCT_FIELD_KEYS.createdByUser]: {
+        title: 'Usuario creador',
+      },
+      [PRODUCT_FIELD_KEYS.updatedByUser]: {
+        title: 'Usuario actualizador',
+      },
       [PRODUCT_FIELD_KEYS.name]: {
         title: 'Nombre',
         extra: {
@@ -234,6 +247,9 @@ export const SECTIONS: {
         extra: {
           sectionDependency: [SECTION_KEYS.manufacturers],
         },
+      },
+      [PRODUCT_FIELD_KEYS.chars]: {
+        title: 'Características',
       },
       [PRODUCT_FIELD_KEYS.booleanChars]: {
         title: 'Características por cantidad',

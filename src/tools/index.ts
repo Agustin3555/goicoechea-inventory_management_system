@@ -1,5 +1,6 @@
 export * from './adapters.tool'
 export * from './axiosInstances.tool'
+export * from './cleanObject.tool'
 export * from './debounce.tool'
 export * from './error.tool'
 export * from './exclude.tool'

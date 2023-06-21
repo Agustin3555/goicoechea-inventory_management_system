@@ -20,11 +20,11 @@ const styleByType: {
   },
   [MessageType.warning]: {
     iconName: 'fa-solid fa-triangle-exclamation',
-    backgroundColor: COLOR.c_d1,
+    backgroundColor: COLOR.c,
   },
   [MessageType.error]: {
     iconName: 'fa-solid fa-exclamation',
-    backgroundColor: COLOR.a_d1,
+    backgroundColor: COLOR.a,
   },
 }
 
@@ -49,7 +49,9 @@ const Snackbar = ({ style }: { style?: SnackbarStyled.Props }) => {
         <CSSTransition
           key={currentMessage ? currentMessage.id : 'blank'}
           classNames="fade"
-          addEndListener={(node, done) => node.addEventListener('transitionend', done, false)}
+          addEndListener={(node, done) =>
+            node.addEventListener('transitionend', done, false)
+          }
         >
           <div className="animation-container">
             {currentMessage && (
@@ -66,7 +68,8 @@ const Snackbar = ({ style }: { style?: SnackbarStyled.Props }) => {
                     styled: css`
                       flex-grow: 1;
                       flex-shrink: 0;
-                      animation: dance ease-in-out ${MICROINTERACTION.xl} infinite reverse;
+                      animation: dance ease-in-out ${MICROINTERACTION.xl} infinite
+                        reverse;
 
                       @keyframes dance {
                         0%,

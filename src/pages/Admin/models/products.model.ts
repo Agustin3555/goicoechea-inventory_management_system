@@ -87,4 +87,30 @@ export namespace ProductModels {
     fractionChars?: FractionChar[]
     stringChars?: StringChar[]
   }
+
+  export interface EditData {
+    name?: string
+    category?: number
+    manufacturer?: number
+    description?: string
+    stock?: number
+    minStock?: number
+    price?: number
+    imported?: boolean
+    discontinued?: boolean
+  }
+
+  export interface EditResponse {
+    name?: string
+    category?: ResourceRef
+    manufacturer?: ResourceRef
+    description?: string
+    stock?: number
+    minStock?: number
+    price?: number
+    imported?: boolean
+    discontinued?: boolean
+    updatedByUser: ResourceRef
+    updatedAt: string
+  }
 }

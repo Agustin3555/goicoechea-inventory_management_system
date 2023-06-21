@@ -1,3 +1,4 @@
+export * from './asAppDate.tool'
 export * from './buildAddress.tool'
 export * from './errorsExist.tool'
 export * from './field.tool'

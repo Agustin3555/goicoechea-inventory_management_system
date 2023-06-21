@@ -108,7 +108,7 @@ const measurementProvider = {
           item: {
             height: boxHeight,
             fakeInput: {
-              padding: `0 ${INPUT_PADDING}`,
+              padding: INPUT_PADDING,
             },
           },
         },
@@ -227,6 +227,7 @@ export namespace SelectorFieldStyled {
     display: flex;
     flex-direction: column;
     gap: ${MAIN_GAP};
+    min-width: calc(${MAIN_GAP} * 16);
     color: ${({ p }) => p.color};
 
     .box {
@@ -345,7 +346,9 @@ export namespace SelectorFieldStyled {
 
                   + .fake-input {
                     color: ${COLOR.g_0};
-                    background-color: ${COLOR.a};
+                    background-color: ${({ p }) =>
+                      p.box.selector.animationContainer.items.item.input.checked
+                        .fakeInput.backgroundColor};
                   }
                 }
               }
@@ -353,12 +356,14 @@ export namespace SelectorFieldStyled {
               .fake-input {
                 display: flex;
                 align-items: center;
-                height: ${measurementProvider.box.selector.animationContainer.items
-                  .item.height};
                 padding: ${measurementProvider.box.selector.animationContainer.items
                   .item.fakeInput.padding};
                 transition: color ${MICROINTERACTION.s} ease-out,
                   background-color ${MICROINTERACTION.s} ease-out;
+
+                .text {
+                  white-space: nowrap;
+                }
               }
             }
           }

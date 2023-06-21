@@ -35,18 +35,19 @@ export const searchedDataSlice = createSlice({
       }>
     ) => {
       const { sectionKey, items } = action.payload
-      const stateCopy = getDeepCopy(state)
+      const stateCopy = { ...state }
 
       stateCopy[sectionKey] = {}
 
-      items.forEach(item => {
-        stateCopy[sectionKey][item.id] = {
+      stateCopy[sectionKey] = items.reduce((result, item) => {
+        result[item.id] = {
           meta: {
             text: item.text,
             selected: false,
           },
         }
-      })
+        return result
+      }, {})
 
       return stateCopy
     },
@@ -92,24 +93,22 @@ export const searchedDataSlice = createSlice({
       const { sectionKey, id, info } = action.payload
       const stateCopy = getDeepCopy(state)
 
-      stateCopy[sectionKey][id].info = info
+      stateCopy[sectionKey][id].info = { ...stateCopy[sectionKey][id].info, ...info }
 
       return stateCopy
     },
-    setItemProperty: (
+    setTextItem: (
       state,
       action: PayloadAction<{
         sectionKey: SECTION_KEYS
         id: number
-        propertyKey: string
-        value: any
+        text: string
       }>
     ) => {
-      const { sectionKey, id, propertyKey, value } = action.payload
+      const { sectionKey, id, text } = action.payload
       const stateCopy = getDeepCopy(state)
 
-      let propertyValue = stateCopy[sectionKey][id].info?.[propertyKey]
-      if (propertyValue) propertyValue = value
+      stateCopy[sectionKey][id].meta.text = text
 
       return stateCopy
     },
@@ -121,7 +120,7 @@ export const {
   toggleSelectItem,
   setSelectAll,
   loadItemInfo,
-  setItemProperty,
+  setTextItem,
 } = searchedDataSlice.actions
 
 export default searchedDataSlice.reducer

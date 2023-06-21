@@ -38,13 +38,15 @@ export namespace ItemStyled {
   }
 
   export const Component = styled.div<{ p: Provider }>`
+    flex-grow: 1;
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    min-height: ${({ p }) => p.minHeight};
+    height: ${({ p }) => p.minHeight};
     color: ${({ p }) => p.color};
     border-radius: ${NOT_FONT_SIZE['3xs']};
     overflow: hidden;
-    transition: min-height 0.6s ease, background-color ${MICROINTERACTION.s} ease-out;
+    transition: height 0.6s ease, background-color ${MICROINTERACTION.s} ease-out;
 
     :hover .item-head .actions {
       opacity: 1;
@@ -92,9 +94,8 @@ export namespace ItemStyled {
         .properties {
           display: flex;
           flex-wrap: wrap;
-          column-gap: ${MAIN_GAP};
-          row-gap: calc(${MAIN_GAP} * 2);
-          padding: ${MAIN_GAP};
+          gap: calc(${MAIN_GAP} * 2);
+          padding: calc(${MAIN_GAP} * 2);
         }
       }
 

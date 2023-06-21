@@ -1,10 +1,10 @@
 import { AnimateState, Button, Icon, Input, Separator, Spinner } from '@/components'
 import { useDarkMode } from '@/hooks'
 import { AppStore } from '@/redux/store'
-import { FormEventHandler, useMemo, useState } from 'react'
+import { ChangeEventHandler, FormEventHandler, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Checkbox, Item } from './components'
-import { AppError, sleep } from '@/tools'
+import { AppError } from '@/tools'
 import { ItemData, setSearchedData, setSelectAll } from '@/redux'
 import { COLOR, FONT_SIZE, NOT_FONT_SIZE } from '@/styles'
 import { SearchStyled } from './Search.styled'
@@ -26,6 +26,13 @@ const Search = ({
   const darkMode = useDarkMode()
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
+  const [searchName, setSearchName] = useState('')
+
+  const handleSearchNameChange: ChangeEventHandler<HTMLInputElement> = event => {
+    const { value } = event.target
+
+    setSearchName(value)
+  }
 
   const items = useSelector((store: AppStore) => {
     const keys = store.searchedData[sectionKey]
@@ -54,7 +61,7 @@ const Search = ({
 
     setLoading(true)
 
-    const items = await loadItems()
+    const items = await loadItems(searchName)
 
     if (items && !(items instanceof AppError)) {
       dispatch(setSearchedData({ sectionKey, items }))
@@ -87,7 +94,11 @@ const Search = ({
             name={`search-${sectionKey}`}
             title="Buscar por nombre"
             showLabel={false}
-            extraAttrs={{ placeholder: 'Buscar...' }}
+            extraAttrs={{
+              value: searchName,
+              onChange: handleSearchNameChange,
+              placeholder: 'Buscar...',
+            }}
             style={{
               fontSize: 's',
               styled: css`
@@ -123,16 +134,17 @@ const Search = ({
           </Button>
         </form>
       </div>
-      <div className="items">
-        {items.map(item => (
-          <Item
-            sectionKey={sectionKey}
-            resourceRef={{ id: item.id, text: item.data.meta.text }}
-            loadItemData={loadItemData}
-            loadProperties={loadProperties}
-            key={item.id}
-          />
-        ))}
+      <div className="search-items">
+        {!loading &&
+          items.map(item => (
+            <Item
+              sectionKey={sectionKey}
+              resourceRef={{ id: item.id, text: item.data.meta.text }}
+              loadItemData={loadItemData}
+              loadProperties={loadProperties}
+              key={item.id}
+            />
+          ))}
       </div>
     </SearchStyled.Component>
   )

@@ -90,7 +90,6 @@ export namespace ConfirmationButtonStyled {
       backgroundColor: darkMode
         ? primaryBackgroundColor.dark
         : primaryBackgroundColor.bright,
-      styled,
       confirmationButtonAC: {
         gap: `calc(${fontSize} * 0.75)`,
       },
@@ -103,6 +102,7 @@ export namespace ConfirmationButtonStyled {
           opacity: status === STATUS.init ? 0 : 1,
         },
       },
+      styled,
     }
   }
 
